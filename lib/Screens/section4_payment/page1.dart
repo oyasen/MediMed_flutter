@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:medimed/Screens/section4_payment/page2.dart';
+import 'package:medimed/Screens/section4_payment/page4.dart';
 
 void main() {
   runApp(const MyApp());
@@ -187,7 +187,7 @@ class PaymentPage1 extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const PaymentPage2(),
+                        builder: (context) =>  PaymentPage4(),
                       ));
                 },
                 style: const ButtonStyle(

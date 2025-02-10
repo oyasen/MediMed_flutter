@@ -12,7 +12,7 @@ class PaymentPage4 extends StatelessWidget {
             Navigator.pop(context);
           },
         ),
-        backgroundColor: Colors.blue,
+        backgroundColor: Color(0xFF0299C6),
       ),
       body: Center(
         child: Column(

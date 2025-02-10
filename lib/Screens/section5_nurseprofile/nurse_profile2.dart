@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:medimed/Screens/section5_nurseprofile/nurse_profile3.dart';
 import 'package:medimed/Widgets/custom_bottomnavigationbar.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -139,7 +140,9 @@ class NurseProfile2 extends State<AppointmentBookingScreen> {
                               }))
                     ]),
                     MaterialButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => AppointmentDetailsScreen(),));
+                      },
                       child: const Text("Save Data"),
                       color: const Color(0xff2196f3),
                     )
