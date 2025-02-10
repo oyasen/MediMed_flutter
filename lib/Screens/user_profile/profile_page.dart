@@ -10,12 +10,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: ProfilePage(),
+      home: ProfilePage2(),
     );
   }
 }
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

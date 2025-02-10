@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'my_profile.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -89,7 +91,10 @@ class UpdateProfilePage extends StatelessWidget {
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  // Implement update logic
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ProfilePage()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFF00BFFF),

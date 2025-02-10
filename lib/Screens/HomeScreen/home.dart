@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:medimed/Screens/section5_nurseprofile/nurser_profile.dart';
 
+import '../user_profile/my_profile.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -41,7 +43,9 @@ class HomeScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: Icon(Icons.settings), // Placeholder for settings icon
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage(),));
+            },
           ),
         ],
       ),
@@ -73,7 +77,7 @@ class HomeScreen extends StatelessWidget {
               shrinkWrap: true,
               crossAxisCount: 4,
               children: [
-                CategoryIcon(title: 'Dentistry', imageUrl: 'https://via.placeholder.com/50'),
+                CategoryIcon(title: 'Dentistry', imageUrl: 'https://via.placeholder.com/50' ,),
                 CategoryIcon(title: 'Cardiology', imageUrl: 'https://via.placeholder.com/50'),
                 CategoryIcon(title: 'Pulmonary', imageUrl: 'https://via.placeholder.com/50'),
                 CategoryIcon(title: 'General', imageUrl: 'https://via.placeholder.com/50'),

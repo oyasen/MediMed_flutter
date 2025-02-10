@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:medimed/Screens/section4_payment/page1.dart';
+import 'package:medimed/Screens/section4_payment/page2.dart';
 import 'package:medimed/Widgets/custom_bottomnavigationbar.dart';
 
 class AppointmentDetailsScreen extends StatelessWidget {
@@ -63,7 +65,7 @@ class AppointmentDetailsScreen extends StatelessWidget {
               height: 30,
             ),
             MaterialButton(onPressed: () {
-
+             Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentPage2(),));
             },
               color: Color(0xFF0299C6),
               child: Text("Payment", style: TextStyle(fontSize: 20 , fontWeight: FontWeight.bold) ,),

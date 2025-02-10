@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:medimed/Screens/section4_payment/page1.dart';
+import 'package:medimed/Screens/user_profile/profile_page.dart';
+import 'package:medimed/Screens/user_profile/setting.dart';
+import 'package:medimed/Screens/user_profile/update_profile.dart';
+
+import '../../Nurses/favorite.dart';
+import '../section4_payment/page2.dart';
 
 class ProfilePage extends StatelessWidget {
   @override
@@ -11,7 +17,9 @@ class ProfilePage extends StatelessWidget {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
         title: Text(
           "My Profile",
@@ -49,18 +57,31 @@ class ProfilePage extends StatelessWidget {
           Expanded(
             child: ListView(
               children: [
-                GestureDetector(
-
-                    child: buildMenuItem(Icons.person, "Profile")),
-                buildMenuItem(Icons.favorite, "Favourite"),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentPage1(),));
-                  },
-                    child: buildMenuItem(Icons.payment, "Payment Method")),
-                buildMenuItem(Icons.settings, "Settings" , ),
-
-                buildMenuItem(Icons.logout, "Logout"),
+                buildMenuItem(Icons.person, "Profile", () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => UpdateProfilePage()),
+                  );
+                }),
+                buildMenuItem(Icons.favorite, "Favourite", () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => FavoritePage()),
+                  );
+                }),
+                buildMenuItem(Icons.payment, "Payment Method", () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PaymentPage2()),
+                  );
+                }),
+                buildMenuItem(Icons.settings, "Settings", () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SettingsPage()),
+                  );
+                }),
+                buildMenuItem(Icons.logout, "Logout", () {}),
               ],
             ),
           ),
@@ -108,14 +129,12 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget buildMenuItem(IconData icon, String title) {
+  Widget buildMenuItem(IconData icon, String title, VoidCallback? onTap) {
     return ListTile(
       leading: Icon(icon, color: Colors.blue),
       title: Text(title),
       trailing: Icon(Icons.chevron_right, color: Colors.grey),
-      onTap: () {
-
-      },
+      onTap: onTap,
     );
   }
 }

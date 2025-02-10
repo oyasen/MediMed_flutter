@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:medimed/Screens/section4_payment/page2.dart';
+import 'package:medimed/Screens/user_profile/notification_setting.dart';
 
 class SettingsPage extends StatelessWidget {
   @override
@@ -32,7 +34,12 @@ class SettingsPage extends StatelessWidget {
               child: SettingsItem(
                 icon: Icons.notifications,
                 text: "Notification Setting",
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => NotificationSettingsPage()),
+                  );
+                },
               ),
             ),
             Padding(
@@ -48,7 +55,12 @@ class SettingsPage extends StatelessWidget {
               child: SettingsItem(
                 icon: Icons.payment,
                 text: "Payment",
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PaymentPage2()),
+                  );
+                },
               ),
             ),
           ],
