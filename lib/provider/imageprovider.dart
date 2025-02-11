@@ -57,6 +57,7 @@ class UploadProvider extends ChangeNotifier
       FormData formData = FormData.fromMap({
         "file": await MultipartFile.fromFile(image!.path),
         "upload_preset": uploadPreset,
+        "folder": "Photos",
       });
 
       var response = await Dio().post(
