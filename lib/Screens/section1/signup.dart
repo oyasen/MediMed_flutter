@@ -276,26 +276,49 @@ class _SignupState extends State<Signup> {
                             ElevatedButton(
                               onPressed: () async {
                                 if (formKey.currentState!.validate()) {
-                                  if (idCard == null) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(content: Text("Please select an ID Card image"))
+                                  if (gender == null) {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(
+                                        SnackBar(content: Text(
+                                            "Please select gender"))
                                     );
                                     return;
                                   }
+                                  else {
+                                    if (idCard == null) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                          SnackBar(content: Text(
+                                              "Please select an ID Card image"))
+                                      );
+                                      return;
+                                    }
 
-                                  final imageUrl = await imageprovider.uploadImageToCloudinary(idCard);
+                                    final imageUrl = await imageprovider
+                                        .uploadImageToCloudinary(idCard);
 
-                                  if (imageUrl != null) {
-                                    // Call provider to add patient
+                                    if (imageUrl != null) {
+                                      patientProvider.addPatient(
+                                          fullName: fullName.text,
+                                          url: imageUrl,
+                                          email: email.text,
+                                          pass: password.text,
+                                          contact: contact.text,
+                                          date: dob.text,
+                                          gender: gender!);
 
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => Signin()),
-                                    );
-                                  } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text("Image upload failed. Try again.")),
-                                    );
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => Signin()),
+                                      );
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(content: Text(
+                                            "Image upload failed. Try again.")),
+                                      );
+                                    }
                                   }
                                 }
                               },
