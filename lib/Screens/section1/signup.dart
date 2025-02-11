@@ -1,5 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:medimed/Screens/section1/signin.dart';
+import 'package:medimed/provider/imageprovider.dart';
+import 'package:medimed/provider/patientprovider.dart';
+import 'package:provider/provider.dart';
 import 'Validation.dart';
 import '../../Widgets/form_widget.dart';
 
@@ -23,6 +29,8 @@ class _SignupState extends State<Signup> {
 
   @override
   Widget build(BuildContext context) {
+    var imageprovider = Provider.of<UploadProvider>(context);
+    var patientProvider = Provider.of<PatientProvider>(context,listen: false);
     return Scaffold(
       body: Stack(
         children: [
@@ -62,6 +70,12 @@ class _SignupState extends State<Signup> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
+                            TextButton(onPressed: (){
+                              imageprovider.showOptions(context);
+                            }, child: Text("pick image")),
+                            Center(
+                              child: imageprovider.image == null ? Text('No Image selected') : Image.file(imageprovider.image!),
+                            ),
                             CustomFormField(
                               label: "Full Name",
                               controller: fullName,
@@ -152,8 +166,10 @@ class _SignupState extends State<Signup> {
                             ),
                             const SizedBox(height: 10),
                             ElevatedButton(
-                                onPressed: () {
+                                onPressed: () async {
                                   if (formKey.currentState!.validate()) {
+                                    final imageurl =  await imageprovider.uploadImageToCloudinary();
+                                    // patientProvider.addPatient(firstName: firstName, lastName: lastName, url: url, email: email, pass: pass, contact: contact, date: date, gender: gender, location: location)
                                     Navigator.push(context, MaterialPageRoute(builder: (context) => Signin(),));
                                   }
                                 },
