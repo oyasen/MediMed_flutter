@@ -63,7 +63,7 @@ class NurseServices
   }
   static login(String email,String pass) async {
     Response response = await dio.post('http://medimed.runasp.net/api/Nurses/login',
-        data:  {
+        data: {
           "email": email,
           "password": pass,
         }

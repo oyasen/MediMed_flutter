@@ -3,6 +3,8 @@ import 'package:medimed/Nurses/female.dart';
 import 'package:medimed/Nurses/male.dart';
 import 'package:medimed/Nurses/rating.dart';
 
+import 'female.dart';
+
 class FavoritePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
