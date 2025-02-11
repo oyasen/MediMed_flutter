@@ -22,7 +22,7 @@ class _SignupState extends State<Signup> {
   TextEditingController confirmPass = TextEditingController();
   TextEditingController dob = TextEditingController();
   TextEditingController contact = TextEditingController();
-
+  String? gender;
   File? idCard;
   final formKey = GlobalKey<FormState>();
 
@@ -148,6 +148,43 @@ class _SignupState extends State<Signup> {
                                 }
                                 return null;
                               },
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text("Gender", style: TextStyle(fontSize: 16)),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: RadioListTile<String>(
+                                          title: const Text("Male"),
+                                          value: "Male",
+                                          groupValue: gender,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              gender = value;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: RadioListTile<String>(
+                                          title: const Text("Female"),
+                                          value: "Female",
+                                          groupValue: gender,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              gender = value;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 8.0),
