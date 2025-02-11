@@ -4,7 +4,7 @@ import 'package:medimed/Models/patientmodel.dart';
 import 'package:medimed/Services/nurseServices.dart';
 import 'package:medimed/Services/patientServices.dart';
 
-class NurseProvider extends ChangeNotifier {
+class PatientProvider extends ChangeNotifier {
   Patientadd? _nurseAddModel;
   PatientModel? _nurseModel;
 

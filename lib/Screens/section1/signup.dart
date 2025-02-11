@@ -1,5 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:medimed/Screens/section1/signin.dart';
+import 'package:medimed/provider/imageprovider.dart';
+import 'package:provider/provider.dart';
 import 'Validation.dart';
 import '../../Widgets/form_widget.dart';
 
@@ -23,6 +28,7 @@ class _SignupState extends State<Signup> {
 
   @override
   Widget build(BuildContext context) {
+    var imageprovider = Provider.of<UploadProvider>(context);
     return Scaffold(
       body: Stack(
         children: [
@@ -62,6 +68,12 @@ class _SignupState extends State<Signup> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
+                            TextButton(onPressed: (){
+                              imageprovider.showOptions(context);
+                            }, child: Text("pick image")),
+                            Center(
+                              child: imageprovider.image == null ? Text('No Image selected') : Image.file(imageprovider.image!),
+                            ),
                             CustomFormField(
                               label: "Full Name",
                               controller: fullName,
@@ -152,8 +164,9 @@ class _SignupState extends State<Signup> {
                             ),
                             const SizedBox(height: 10),
                             ElevatedButton(
-                                onPressed: () {
+                                onPressed: () async {
                                   if (formKey.currentState!.validate()) {
+                                    await imageprovider.uploadImageToCloudinary();
                                     Navigator.push(context, MaterialPageRoute(builder: (context) => Signin(),));
                                   }
                                 },
