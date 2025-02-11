@@ -1,61 +1,58 @@
 import 'dart:io';
-import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 
-class UploadProvider extends ChangeNotifier
-{
+class UploadProvider extends ChangeNotifier {
   final picker = ImagePicker();
-  File? image;
-  Future<File?> pickImageFromGallery() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+  File? _selectedImage;
+
+  File? get selectedImage => _selectedImage;
+
+  Future<File?> _pickImage(ImageSource source) async {
+    final pickedFile = await picker.pickImage(source: source);
     if (pickedFile != null) {
-      image = File(pickedFile.path);
+      _selectedImage = File(pickedFile.path);
+      notifyListeners();
+      return _selectedImage;
     }
-    notifyListeners();
+    return null;
   }
-  Future<File?> pickImageFromCamera() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.camera);
-    if (pickedFile != null) {
-      image = File(pickedFile.path);
-    }
-    notifyListeners();
-  }
-  Future showOptions(context) async {
-    showCupertinoModalPopup(
+
+  Future<File?> pickImageFromGallery() => _pickImage(ImageSource.gallery);
+  Future<File?> pickImageFromCamera() => _pickImage(ImageSource.camera);
+
+  Future<File?> showOptions(BuildContext context) async {
+    return await showCupertinoModalPopup<File?>(
       context: context,
       builder: (context) => CupertinoActionSheet(
         actions: [
           CupertinoActionSheetAction(
             child: Text('Photo Gallery'),
-            onPressed: () {
-              // close the options modal
-              Navigator.of(context).pop();
-              // get image from gallery
-              pickImageFromGallery();
+            onPressed: () async {
+              Navigator.of(context).pop(await pickImageFromGallery());
             },
           ),
           CupertinoActionSheetAction(
             child: Text('Camera'),
-            onPressed: () {
-              // close the options modal
-              Navigator.of(context).pop();
-              // get image from camera
-              pickImageFromCamera();
+            onPressed: () async {
+              Navigator.of(context).pop(await pickImageFromCamera());
             },
           ),
         ],
       ),
     );
   }
-  Future<String?> uploadImageToCloudinary() async {
+
+  Future<String?> uploadImageToCloudinary(File? image) async {
+    if (image == null) return null; // Prevent null reference
+
     try {
       String cloudName = "dia0n1hla";
-      String uploadPreset = "preset";  // Set in Cloudinary dashboard
+      String uploadPreset = "preset";
 
       FormData formData = FormData.fromMap({
-        "file": await MultipartFile.fromFile(image!.path),
+        "file": await MultipartFile.fromFile(image.path),
         "upload_preset": uploadPreset,
         "folder": "Photos",
       });
@@ -66,7 +63,7 @@ class UploadProvider extends ChangeNotifier
       );
 
       if (response.statusCode == 200) {
-        return response.data["secure_url"]; // URL of the uploaded image
+        return response.data["secure_url"];
       } else {
         print("Upload failed: ${response.data}");
         return null;

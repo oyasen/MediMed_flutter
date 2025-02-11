@@ -6,3 +6,6 @@ bool isValidPass(String? text) {
   return RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~-]).{8,16}$')
       .hasMatch(text!);
 }
+bool isValidContact(String? text) {
+  return text!.startsWith("20")&&text.length==12?true:false;
+}
