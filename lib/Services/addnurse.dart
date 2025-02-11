@@ -3,14 +3,14 @@ import 'package:medimed/Models/nursemodel.dart';
 
 class Addnurse {
   static Dio dio = Dio();
-  static getAll(String firstName, String license, String diploma, String criminalRec, String address, String location, String lastName, String url, String email, int contact, String pass) async {
+  static signup(String firstName, String license, String diploma, String criminalRec, String address, String location, String lastName, String url, String email, int contact, String pass) async {
     Response response = await dio.post('https://localhost:7047/api/Nurses',
         data:  {
           "firstName": firstName,
           "lastName": lastName,
           "email": email,
           "password": pass,
-          "licenseNumber": "string",
+          "licenseNumber": license,
           "contact": contact,
           "professionalPracticeLicense": license,
           "graduationCertificate": diploma,

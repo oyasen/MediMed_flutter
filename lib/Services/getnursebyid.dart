@@ -1,13 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:medimed/Models/nursemodel.dart';
 
-class Deletepatient {
+class GetNurseById {
   static Dio dio = Dio();
-  static delete(int id) async {
-    Response response = await dio.delete('https://localhost:7047/api/Patients/$id',
-    );
+  static getById(int id) async {
+    Response response = await dio.get('https://localhost:7047/api/Nurses/$id');
     if (response.statusCode == 200) {
-      return;
+      return Nursemodel(Model: response.data);
     } else {
       throw Exception(response.statusMessage);
     }

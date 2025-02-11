@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:medimed/Screens/section4_payment/page1.dart';
+import 'package:medimed/Screens/section4_payment/page2.dart';
 import 'package:medimed/Widgets/custom_bottomnavigationbar.dart';
 
 class AppointmentDetailsScreen extends StatelessWidget {
@@ -14,38 +16,60 @@ class AppointmentDetailsScreen extends StatelessWidget {
         ),
         title: const Text('N. Olivia Turner, M.D.'),
       ),
-      body: const Padding(
-        padding: EdgeInsets.all(16.0),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(
+            const SizedBox(
               height: 150,
             ),
-            CircleAvatar(
+            const CircleAvatar(
+              radius: 100,
               backgroundImage: NetworkImage(""),
             ),
-            SizedBox(
+            const SizedBox(
               height: 150,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [Text("Full name"), Text("john Doe")],
+            Container(
+              width: 300,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [Text("Full name" , style: TextStyle(fontSize: 20 , fontWeight: FontWeight.bold),),
+                  Text("john Doe" , style: TextStyle(fontSize: 15 , fontWeight: FontWeight.bold))],
+              ),
             ),
+            const SizedBox(
+              height: 30,
+            ),
+             Container(
+               width: 300,
+               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [Text("Age",style: TextStyle(fontSize: 20 , fontWeight: FontWeight.bold)), Text("25",style: TextStyle(fontSize: 15 , fontWeight: FontWeight.bold))],
+                           ),
+             ),
+            const SizedBox(
+              height: 30,
+            ),
+             Container(
+               width: 300,
+               child: Row(
+                 crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [Text("Gender",style: TextStyle(fontSize: 20 , fontWeight: FontWeight.bold)),
+                  Text("Male",style: TextStyle(fontSize: 15 , fontWeight: FontWeight.bold))],
+                           ),
+             ),
             SizedBox(
               height: 30,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [Text("Age"), Text("25")],
-            ),
-            SizedBox(
-              height: 30,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [Text("Gender"), Text("Male")],
-            ),
+            MaterialButton(onPressed: () {
+             Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentPage2(),));
+            },
+              color: Color(0xFF0299C6),
+              child: Text("Payment", style: TextStyle(fontSize: 20 , fontWeight: FontWeight.bold) ,),
+            )
           ],
         ),
       ),

@@ -153,7 +153,9 @@ class _SignupState extends State<Signup> {
                             const SizedBox(height: 10),
                             ElevatedButton(
                                 onPressed: () {
-                                  if (formKey.currentState!.validate()) {}
+                                  if (formKey.currentState!.validate()) {
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => Signin(),));
+                                  }
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: const Color(0xff8761ea),

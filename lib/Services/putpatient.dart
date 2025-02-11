@@ -3,7 +3,7 @@ import 'package:medimed/Models/nursemodel.dart';
 
 class Putpatient {
   static Dio dio = Dio();
-  static getAll(int id, String firstName, String location, String lastName, String url, String email, int contact, String pass, String date, String gender) async {
+  static update(int id, String firstName, String location, String lastName, String url, String email, int contact, String pass, String date, String gender) async {
     Response response = await dio.post('https://localhost:7047/api/Patients/$id',
         data:  {
           "firstName": firstName,

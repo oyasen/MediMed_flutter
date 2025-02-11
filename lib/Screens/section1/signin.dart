@@ -4,6 +4,8 @@ import '../section2_questions/questionpage_1.dart';
 import 'Validation.dart';
 import 'forget_pass.dart';
 import '../../Widgets/form_widget.dart';
+import 'package:medimed/Screens/section4_payment/page2.dart';
+import 'package:medimed/Screens/HomeScreen/home.dart';
 
 class Signin extends StatefulWidget {
   const Signin({super.key});
@@ -121,7 +123,7 @@ class _SigninState extends State<Signin> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              const Questionpage1(),
+                                               HomeScreen(),
                                         ));
                                   }
                                 },
