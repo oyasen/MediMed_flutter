@@ -186,8 +186,8 @@ class _SignupState extends State<Signup> {
                                                   borderRadius: BorderRadius.circular(10), // Rounded corners
                                                   child: Image.file(
                                                     idCard!,
-                                                    width: 150, // Adjust size as needed
-                                                    height: 150,
+                                                    width: 50, // Adjust size as needed
+                                                    height: 50,
                                                     fit: BoxFit.cover,
                                                   ),
                                                 ),
