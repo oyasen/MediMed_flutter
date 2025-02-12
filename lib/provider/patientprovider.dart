@@ -13,26 +13,22 @@ class PatientProvider extends ChangeNotifier {
 
   // Add Nurse
   Future<void> addPatient({
-    required String firstName,
-    required String lastName,
+    required String fullName,
     required String url,
     required String email,
     required String pass,
-    required int contact,
+    required String contact,
     required String date,
     required String gender,
-    required String location,
   }) async {
     _nurseAddModel = await PatientServices.signup(
-      firstName,
-      lastName,
-      email,
-      pass,
-      url,
-      contact,
-      date,
-      gender,
-      location,
+      fullName: fullName,
+      email: email,
+      pass: pass,
+      url: url,
+      contact: contact,
+      date: date,
+      gender: gender
     );
     notifyListeners();
   }

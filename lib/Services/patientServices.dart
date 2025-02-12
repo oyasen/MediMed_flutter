@@ -6,18 +6,16 @@ import 'package:medimed/Models/patientmodel.dart';
 class PatientServices
 {
   static Dio dio = Dio();
-  static signup(String firstName,  String lastName,  String email, String pass, String url,  int contact,  String date, String gender, String location,) async {
+  static signup({required String fullName,required String email,required String pass,required String url,required String contact,required  String date,required String gender}) async {
     Response response = await dio.post('http://medimed.runasp.net/api/Patients',
         data:  {
-          "firstName": firstName,
-          "lastName": lastName,
+          "fullName": fullName,
           "email": email,
           "password": pass,
           "dateOfBirth": date,
           "gender": gender,
           "contact": contact,
-          "idCard": url,
-          "location": location
+          "idCard": url
         }
     );
     if (response.statusCode == 200) {
