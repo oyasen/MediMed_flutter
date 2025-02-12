@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medimed/Screens/section1/signup.dart';
+import 'package:medimed/provider/patientprovider.dart';
+import 'package:provider/provider.dart';
 import '../section2_questions/questionpage_1.dart';
 import 'Validation.dart';
 import 'forget_pass.dart';
@@ -27,6 +29,8 @@ class _SigninState extends State<Signin> {
 
   @override
   Widget build(BuildContext context) {
+    var patientProvider = Provider.of<PatientProvider>(context);
+
     return Scaffold(
       body: Stack(
         children: [
@@ -117,8 +121,17 @@ class _SigninState extends State<Signin> {
                               ],
                             ),
                             ElevatedButton(
-                                onPressed: () {
+                                onPressed: () async {
                                   if (formKey.currentState!.validate()) {
+                                    await patientProvider.loginPatient(email.text, password.text);
+                                    if (patientProvider.nurseAddModel!.id == 0) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                          const SnackBar(content: Text(
+                                              "Please Check you E-mail and Password"))
+                                      );
+                                      return;
+                                    }
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
