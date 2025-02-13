@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medimed/Screens/section5_nurseprofile/nurser_profile.dart';
+import 'package:medimed/provider/nurseprovider.dart';
 import 'package:medimed/provider/patientprovider.dart';
 import 'package:provider/provider.dart';
 import '../user_profile/my_profile.dart';
@@ -9,9 +10,9 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var patientProvider = Provider.of<PatientProvider>(context);
     if(patientProvider.patientModel == null)
-      {
-        patientProvider.getPatientById(patientProvider.patientAddModel!.id);
-      }
+    {
+      patientProvider.getPatientById(patientProvider.patientAddModel!.id);
+    }
     return Scaffold(
       backgroundColor: Color(0xFFF5F9FF),
       appBar: AppBar(
@@ -77,35 +78,34 @@ class HomeScreen extends StatelessWidget {
             ),
             SizedBox(height: 20),
             Expanded(
-              child: ListView(
-                children: [
-                  DoctorCard(
-                    name: 'Olivia Turner',
-                    specialty: 'Dermato-Endocrinology',
-                    rating: 5.0,
-                    imageUrl: 'https://via.placeholder.com/100',
-                  ),
-                  DoctorCard(
-                    name: 'Alexander Bennett',
-                    specialty: 'Dermato-Genetics',
-                    rating: 4.5,
-                    imageUrl: 'https://via.placeholder.com/100',
-                  ),
-                  DoctorCard(
-                    name: 'Sophia Martinez',
-                    specialty: 'Cosmetic Bioengineering',
-                    rating: 4.8,
-                    imageUrl: 'https://via.placeholder.com/100',
-                  ),
-                  DoctorCard(
-                    name: 'Michael Davidson',
-                    specialty: 'Nano-Dermatology',
-                    rating: 4.7,
-                    imageUrl: 'https://via.placeholder.com/100',
-                  ),
-                ],
-              ),
+              child: Consumer<NurseProvider>(
+                builder: (context, value, child) {
+                  if (value.nurseModel == null) {
+                    value.getAllNurses();
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  else {
+                    return
+                      ListView.builder(
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              DoctorCard(
+                                name: '${value.nurseModel?.Model[index]['fullName']}',
+                                specialty: '${value.nurseModel?.Model[index]['specialization']}',
+                                rating: 5.0,
+                                imageUrl: '${value.nurseModel?.Model[index]['idCard']}',
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                  }
+                },
             ),
+            )
           ],
         ),
       ),
@@ -163,7 +163,6 @@ class DoctorCard extends StatelessWidget {
         },
         child: ListTile(
           leading: CircleAvatar(
-            backgroundImage: NetworkImage(imageUrl), // Placeholder for doctor image
           ),
           title: Text(name, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
           subtitle: Text(specialty, style: TextStyle(color: Colors.grey)),
