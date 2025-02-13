@@ -22,26 +22,19 @@ class BookingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       backgroundColor: Colors.black,
       body: Center(
         child: Container(
           padding: const EdgeInsets.all(20),
-          width: double.infinity,
-          height: double.infinity,
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(0),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(height: 0),
-              Align(
-                alignment: Alignment.topLeft,
-                child: Icon(Icons.arrow_back, color: Colors.blue),
-              ),
-              const SizedBox(height: 0),
               CircleAvatar(
                 radius: 50,
                 backgroundImage: NetworkImage(

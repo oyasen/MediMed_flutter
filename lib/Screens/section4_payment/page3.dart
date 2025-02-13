@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:u_credit_card/u_credit_card.dart';
 import 'package:medimed/Screens/section4_payment/page4.dart';
-
 class PaymentPage3 extends StatelessWidget {
 
-  PaymentPage3({
+  const PaymentPage3({
     super.key,
   });
 
@@ -23,7 +22,7 @@ class PaymentPage3 extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            CreditCardUi(
+            const CreditCardUi(
               cardHolderFullName: 'John Doe',
               cardNumber: '1234567812345678',
               validFrom: '01/23',
@@ -44,11 +43,10 @@ class PaymentPage3 extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(19, 50, 19, 0),
               child: MaterialButton(
                 onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PaymentPage4(),
-                      ));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => PaymentPage4()),
+                      );
                 },
                 color: const Color(0xff0299c6),
                 child: const Text("Save Card"),
