@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medimed/Nurses/favorite.dart';
 import 'package:medimed/Nurses/rating.dart';
+import 'package:medimed/Screens/Buttons.dart';
 import 'package:medimed/Screens/section1/signup.dart';
 import 'package:medimed/Screens/section4_payment/page1.dart';
 import 'package:medimed/Screens/section5_nurseprofile/nurser_profile.dart';
@@ -35,7 +36,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: Signup(),
+        home: ButtonPage(),
       ),
     );
   }
