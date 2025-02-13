@@ -60,10 +60,6 @@ class _PaymentOptionState extends State<PaymentOption> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => PaymentPage3(
-                        cardNumber: '',
-                        cardHolderName: '',
-                        cvvCode: '',
-                        expiryDate: '',
                       ),
                     ));
               });
