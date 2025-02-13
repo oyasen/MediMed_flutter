@@ -1,29 +1,10 @@
 import 'package:flutter/material.dart';
-
-// import 'package:flutter_credit_card/flutter_credit_card.dart';
-import 'package:medimed/Screens/section4_payment/page1.dart';
-
+import 'package:u_credit_card/u_credit_card.dart';
+import 'package:medimed/Screens/section4_payment/page4.dart';
 class PaymentPage3 extends StatelessWidget {
-  final String cardNumber; // Example
-  final String expiryDate; // Example
-  final String cardHolderName; // Example
-  final String cvvCode; // Example
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  final GlobalKey<FormFieldState<String>> cardNumberKey =
-      GlobalKey<FormFieldState<String>>();
-  final GlobalKey<FormFieldState<String>> cvvCodeKey =
-      GlobalKey<FormFieldState<String>>();
-  final GlobalKey<FormFieldState<String>> expiryDateKey =
-      GlobalKey<FormFieldState<String>>();
-  final GlobalKey<FormFieldState<String>> cardHolderKey =
-      GlobalKey<FormFieldState<String>>();
 
-  PaymentPage3({
+  const PaymentPage3({
     super.key,
-    required this.cardNumber,
-    required this.expiryDate,
-    required this.cardHolderName,
-    required this.cvvCode,
   });
 
   @override
@@ -41,17 +22,31 @@ class PaymentPage3 extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            const CreditCardUi(
+              cardHolderFullName: 'John Doe',
+              cardNumber: '1234567812345678',
+              validFrom: '01/23',
+              validThru: '01/28',
+              topLeftColor: Colors.blue,
+              doesSupportNfc: true,
+              placeNfcIconAtTheEnd: true,
+              cardType: CardType.debit,
+              cardProviderLogo: FlutterLogo(),
+              cardProviderLogoPosition: CardProviderLogoPosition.right,
+              showBalance: true,
+              balance: 128.32434343,
+              autoHideBalance: true,
+              enableFlipping: true, // 👈 Enables the flipping
+              cvvNumber: '123', // 👈 CVV number to be shown on the back of the card
+            ),
             Padding(
               padding: const EdgeInsets.fromLTRB(19, 50, 19, 0),
               child: MaterialButton(
                 onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PaymentPage1(
-
-                        ),
-                      ));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => PaymentPage4()),
+                      );
                 },
                 color: const Color(0xff0299c6),
                 child: const Text("Save Card"),

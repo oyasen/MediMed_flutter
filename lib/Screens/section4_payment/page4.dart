@@ -52,7 +52,7 @@ class PaymentPage4 extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.only(left: 50.0),
                       child: Text(
-                        'You have successfully booked an appointment with',
+                        'You have successfully booked an appointment with the nurse',
                         style: TextStyle(
                           fontSize: 16,
                         ),

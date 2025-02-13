@@ -49,10 +49,6 @@ class _RequestsPageState extends State<RequestsPage> {
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.blue),
-          onPressed: () {},
-        ),
         actions: [
           IconButton(
             icon: Icon(Icons.search, color: Colors.blue),
