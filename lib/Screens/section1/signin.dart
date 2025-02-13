@@ -124,7 +124,7 @@ class _SigninState extends State<Signin> {
                                 onPressed: () async {
                                   if (formKey.currentState!.validate()) {
                                     await patientProvider.loginPatient(email.text, password.text);
-                                    if (patientProvider.nurseAddModel!.id == 0) {
+                                    if (patientProvider.patientAddModel!.id == 0) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                           const SnackBar(content: Text(

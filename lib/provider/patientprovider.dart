@@ -5,11 +5,11 @@ import 'package:medimed/Services/nurseServices.dart';
 import 'package:medimed/Services/patientServices.dart';
 
 class PatientProvider extends ChangeNotifier {
-  Patientadd? _nurseAddModel;
-  PatientModel? _nurseModel;
+  Patientadd? _patientAddModel;
+  PatientModel? _patientModel;
 
-  Patientadd? get nurseAddModel => _nurseAddModel;
-  PatientModel? get nurseModel => _nurseModel;
+  Patientadd? get patientAddModel => _patientAddModel;
+  PatientModel? get patientModel => _patientModel;
 
   // Add Nurse
   Future<void> addPatient({
@@ -21,7 +21,7 @@ class PatientProvider extends ChangeNotifier {
     required String date,
     required String gender,
   }) async {
-    _nurseAddModel = await PatientServices.signup(
+    _patientAddModel = await PatientServices.signup(
       fullName: fullName,
       email: email,
       pass: pass,
@@ -35,25 +35,25 @@ class PatientProvider extends ChangeNotifier {
 
   // Get Nurse by ID
   Future<void> getPatientById(int id) async {
-    _nurseModel = await PatientServices.getById(id);
+    _patientModel = await PatientServices.getById(id);
     notifyListeners();
   }
 
   // Get Nurse Patients
   Future<void> getPatientsNurse(int id) async {
-    _nurseModel = await PatientServices.getNurses(id);
+    _patientModel = await PatientServices.getNurses(id);
     notifyListeners();
   }
 
   // Get All Nurses
   Future<void> getAllPatient() async {
-    _nurseModel = await PatientServices.getAll();
+    _patientModel = await PatientServices.getAll();
     notifyListeners();
   }
 
   // Login Nurse
   Future<void> loginPatient(String email, String pass) async {
-    _nurseAddModel = await PatientServices.login(email, pass);
+    _patientAddModel = await PatientServices.login(email, pass);
     notifyListeners();
   }
 

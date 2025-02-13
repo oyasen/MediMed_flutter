@@ -298,7 +298,7 @@ class _SignupState extends State<Signup> {
                                         .uploadImageToCloudinary(idCard);
 
                                     if (imageUrl != null) {
-                                      patientProvider.addPatient(
+                                      await patientProvider.addPatient(
                                           fullName: fullName.text,
                                           url: imageUrl,
                                           email: email.text,
@@ -306,7 +306,7 @@ class _SignupState extends State<Signup> {
                                           contact: contact.text,
                                           date: dob.text,
                                           gender: gender!);
-
+                                      if(patientProvider.patientAddModel?.id != 0)
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
