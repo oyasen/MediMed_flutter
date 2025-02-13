@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:medimed/Screens/section1/signup.dart';
 import 'package:medimed/Screens/section1/signup_nurse.dart';
+import 'package:medimed/Screens/user_profile/Notifications.dart';
+import 'package:medimed/provider/nurseprovider.dart';
+import 'package:provider/provider.dart';
 import '../section2_questions/questionpage_1.dart';
 import 'Validation.dart';
 import 'forget_pass.dart';
@@ -28,6 +31,7 @@ class _SigninState extends State<SigninNurse> {
 
   @override
   Widget build(BuildContext context) {
+    var nurseProvider = Provider.of<NurseProvider>(context);
     return Scaffold(
       body: Stack(
         children: [
@@ -118,13 +122,22 @@ class _SigninState extends State<SigninNurse> {
                               ],
                             ),
                             ElevatedButton(
-                                onPressed: () {
+                                onPressed: () async{
                                   if (formKey.currentState!.validate()) {
+                                    await nurseProvider.loginNurse(email.text, password.text);
+                                    if (nurseProvider.nurseAddModel!.id == 0) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                          const SnackBar(content: Text(
+                                              "Please Check you E-mail and Password"))
+                                      );
+                                      return;
+                                    }
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              HomeScreen(),
+                                              NotificationsPage(),
                                         ));
                                   }
                                 },

@@ -1,25 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:medimed/Screens/section5_nurseprofile/nurser_profile.dart';
-
+import 'package:medimed/provider/patientprovider.dart';
+import 'package:provider/provider.dart';
 import '../user_profile/my_profile.dart';
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: HomeScreen(),
-    );
-  }
-}
 
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    var patientProvider = Provider.of<PatientProvider>(context);
+    if(patientProvider.patientModel == null)
+      {
+        patientProvider.getPatientById(patientProvider.patientAddModel!.id);
+      }
     return Scaffold(
       backgroundColor: Color(0xFFF5F9FF),
       appBar: AppBar(
@@ -28,14 +20,14 @@ class HomeScreen extends StatelessWidget {
         title: Row(
           children: [
             CircleAvatar(
-              backgroundImage: NetworkImage('https://via.placeholder.com/150'), // Placeholder for profile image
+              backgroundImage: NetworkImage(patientProvider.patientModel?.Model["idCard"]), // Placeholder for profile image
             ),
             SizedBox(width: 10),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Hi, Welcome Back', style: TextStyle(fontSize: 12, color: Colors.grey)),
-                Text('John Doe', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Text(patientProvider.patientModel?.Model["fullName"], style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               ],
             ),
           ],

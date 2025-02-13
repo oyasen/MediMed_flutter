@@ -13,31 +13,16 @@ class NurseProvider extends ChangeNotifier {
 
   // Add Nurse
   Future<void> addNurse({
-    required String firstName,
-    required String license,
+    required String fullName,
+    required String email,
+    required String pass,
+    required String contact,
     required String diploma,
     required String criminalRec,
-    required String address,
-    required String location,
-    required String lastName,
-    required String url,
-    required String email,
-    required int contact,
-    required String pass,
+    required String idCard,
+    required String prof,
   }) async {
-    _nurseAddModel = await NurseServices.signup(
-      firstName,
-      license,
-      diploma,
-      criminalRec,
-      address,
-      location,
-      lastName,
-      url,
-      email,
-      contact,
-      pass,
-    );
+    _nurseAddModel = await NurseServices.signup(fullName: fullName, email: email, pass: pass, contact: contact, grad: diploma, criminalRec: criminalRec, idCard: idCard, prof: prof);
     notifyListeners();
   }
 

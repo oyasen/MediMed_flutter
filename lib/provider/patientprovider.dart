@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:medimed/Models/nursemodel.dart';
 import 'package:medimed/Models/patientAdd.dart';
 import 'package:medimed/Models/patientmodel.dart';
+import 'package:medimed/Models/patientsmodel.dart';
 import 'package:medimed/Services/nurseServices.dart';
 import 'package:medimed/Services/patientServices.dart';
 
 class PatientProvider extends ChangeNotifier {
   Patientadd? _patientAddModel;
   PatientModel? _patientModel;
+  PatientsModel? _patientsModel;
+  Nursemodel? _nurseModel;
 
   Patientadd? get patientAddModel => _patientAddModel;
   PatientModel? get patientModel => _patientModel;
+  Nursemodel? get nurseModel => _nurseModel;
+  PatientsModel? get patientsModel => _patientsModel;
 
   // Add Nurse
   Future<void> addPatient({
@@ -41,13 +47,13 @@ class PatientProvider extends ChangeNotifier {
 
   // Get Nurse Patients
   Future<void> getPatientsNurse(int id) async {
-    _patientModel = await PatientServices.getNurses(id);
+    _nurseModel = await PatientServices.getNurses(id);
     notifyListeners();
   }
 
   // Get All Nurses
   Future<void> getAllPatient() async {
-    _patientModel = await PatientServices.getAll();
+    _patientsModel = await PatientServices.getAll();
     notifyListeners();
   }
 

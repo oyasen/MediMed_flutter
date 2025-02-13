@@ -5,7 +5,7 @@ import 'package:medimed/Screens/section1/login_nurse.dart';
 import 'package:medimed/Screens/section1/signin.dart';
 import 'package:medimed/Screens/section1/validation.dart';
 import 'package:medimed/provider/imageprovider.dart';
-import 'package:medimed/provider/patientprovider.dart';
+import 'package:medimed/provider/nurseprovider.dart';
 import 'package:provider/provider.dart';
 import '../../Widgets/form_widget.dart';
 
@@ -25,12 +25,15 @@ class _SignupState extends State<SignupNurse> {
   TextEditingController contact = TextEditingController();
   String? gender;
   File? idCard;
+  File? prof;
+  File? grad;
+  File? crim;
   final formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     var imageprovider = Provider.of<UploadProvider>(context, listen: false);
-    var patientProvider = Provider.of<PatientProvider>(context, listen: false);
+    var nurseProvider = Provider.of<NurseProvider>(context, listen: false);
 
     return Scaffold(
       body: Stack(
@@ -249,30 +252,30 @@ class _SignupState extends State<SignupNurse> {
                                         File? selectedImage = await imageprovider.showOptions(context);
                                         if (selectedImage != null) {
                                           setState(() {
-                                            idCard = selectedImage;
+                                            prof = selectedImage;
                                           });
                                         }
                                       },
                                       child:const Text("Pick Image"),
                                     ),
                                     Visibility(
-                                      visible: idCard != null,
+                                      visible: prof != null,
                                       child: Row(
                                         children: [
                                           TextButton(
                                             onPressed: () {
                                               setState(() {
-                                                idCard = null;
+                                                prof = null;
                                               });
                                             },
                                             child: const Icon(Icons.delete, color: Colors.red),
                                           ),
-                                          if (idCard != null)
+                                          if (prof != null)
                                             Center(
                                               child: ClipRRect(
                                                 borderRadius: BorderRadius.circular(10), // Rounded corners
                                                 child: Image.file(
-                                                  idCard!,
+                                                  prof!,
                                                   width: 50, // Adjust size as needed
                                                   height: 50,
                                                   fit: BoxFit.cover,
@@ -300,30 +303,30 @@ class _SignupState extends State<SignupNurse> {
                                         File? selectedImage = await imageprovider.showOptions(context);
                                         if (selectedImage != null) {
                                           setState(() {
-                                            idCard = selectedImage;
+                                            grad = selectedImage;
                                           });
                                         }
                                       },
                                       child:const Text("Pick Image"),
                                     ),
                                     Visibility(
-                                      visible: idCard != null,
+                                      visible: grad != null,
                                       child: Row(
                                         children: [
                                           TextButton(
                                             onPressed: () {
                                               setState(() {
-                                                idCard = null;
+                                                grad = null;
                                               });
                                             },
                                             child: const Icon(Icons.delete, color: Colors.red),
                                           ),
-                                          if (idCard != null)
+                                          if (grad != null)
                                             Center(
                                               child: ClipRRect(
                                                 borderRadius: BorderRadius.circular(10), // Rounded corners
                                                 child: Image.file(
-                                                  idCard!,
+                                                  grad!,
                                                   width: 50, // Adjust size as needed
                                                   height: 50,
                                                   fit: BoxFit.cover,
@@ -351,30 +354,30 @@ class _SignupState extends State<SignupNurse> {
                                         File? selectedImage = await imageprovider.showOptions(context);
                                         if (selectedImage != null) {
                                           setState(() {
-                                            idCard = selectedImage;
+                                            crim = selectedImage;
                                           });
                                         }
                                       },
                                       child:const Text("Pick Image"),
                                     ),
                                     Visibility(
-                                      visible: idCard != null,
+                                      visible: crim != null,
                                       child: Row(
                                         children: [
                                           TextButton(
                                             onPressed: () {
                                               setState(() {
-                                                idCard = null;
+                                                crim = null;
                                               });
                                             },
                                             child: const Icon(Icons.delete, color: Colors.red),
                                           ),
-                                          if (idCard != null)
+                                          if (crim != null)
                                             Center(
                                               child: ClipRRect(
                                                 borderRadius: BorderRadius.circular(10), // Rounded corners
                                                 child: Image.file(
-                                                  idCard!,
+                                                  crim!,
                                                   width: 50, // Adjust size as needed
                                                   height: 50,
                                                   fit: BoxFit.cover,
@@ -444,32 +447,74 @@ class _SignupState extends State<SignupNurse> {
                                       );
                                       return;
                                     }
+                                    if (prof == null) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                          SnackBar(content: Text(
+                                              "Please select an Professional Practice License image"))
+                                      );
+                                      return;
+                                    }
+                                    if (grad == null) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                          SnackBar(content: Text(
+                                              "Please select an Graduation Certificate image"))
+                                      );
+                                      return;
+                                    }
+                                    if (crim == null) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                          SnackBar(content: Text(
+                                              "Please select an Criminal Record And Identification image"))
+                                      );
+                                      return;
+                                    }
 
-                                    final imageUrl = await imageprovider
-                                        .uploadImageToCloudinary(idCard);
-
-                                    if (imageUrl != null) {
-                                      await patientProvider.addPatient(
-                                          fullName: fullName.text,
-                                          url: imageUrl,
-                                          email: email.text,
-                                          pass: password.text,
-                                          contact: contact.text,
-                                          date: dob.text,
-                                          gender: gender!);
-                                      if(patientProvider.patientAddModel?.id != 0)
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => Signin()),
-                                        );
-                                    } else {
+                                    final idCardUrl = await imageprovider.uploadImageToCloudinary(idCard);
+                                    final profUrl = await imageprovider.uploadImageToCloudinary(prof);
+                                    final gradUrl = await imageprovider.uploadImageToCloudinary(grad);
+                                    final crimUrl = await imageprovider.uploadImageToCloudinary(crim);
+                                    if (idCardUrl == null) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                         SnackBar(content: Text(
                                             "Image upload failed. Try again.")),
                                       );
+                                      return;
                                     }
+                                    if (profUrl == null) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(content: Text(
+                                            "Image upload failed. Try again.")),
+                                      );
+                                      return;
+                                    }
+                                    if (gradUrl == null) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(content: Text(
+                                            "Image upload failed. Try again.")),
+                                      );
+                                      return;
+                                    }
+                                    if (crimUrl == null) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(content: Text(
+                                            "Image upload failed. Try again.")),
+                                      );
+                                      return;
+                                    }
+                                    await nurseProvider.addNurse(fullName: fullName.text, email: email.text, pass: password.text, contact: contact.text, diploma: gradUrl, criminalRec: crimUrl, idCard: idCardUrl, prof: profUrl);
+                                    if(nurseProvider.nurseAddModel?.id != 0)
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => Signin()),
+                                      );
                                   }
                                 }
                               },
