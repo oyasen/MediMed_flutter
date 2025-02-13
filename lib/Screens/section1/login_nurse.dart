@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medimed/Screens/section1/signup.dart';
+import 'package:medimed/Screens/section1/signup_nurse.dart';
 import '../section2_questions/questionpage_1.dart';
 import 'Validation.dart';
 import 'forget_pass.dart';
@@ -7,14 +8,14 @@ import '../../Widgets/form_widget.dart';
 import 'package:medimed/Screens/section4_payment/page2.dart';
 import 'package:medimed/Screens/HomeScreen/home.dart';
 
-class Signin extends StatefulWidget {
-  const Signin({super.key});
+class SigninNurse extends StatefulWidget {
+  const SigninNurse({super.key});
 
   @override
-  State<Signin> createState() => _SigninState();
+  State<SigninNurse> createState() => _SigninState();
 }
 
-class _SigninState extends State<Signin> {
+class _SigninState extends State<SigninNurse> {
   TextEditingController fullName = TextEditingController();
 
   TextEditingController email = TextEditingController();
@@ -50,7 +51,7 @@ class _SigninState extends State<Signin> {
                 width: double.infinity,
                 child: Padding(
                   padding:
-                      const EdgeInsets.only(left: 18.0, top: 20, right: 18),
+                  const EdgeInsets.only(left: 18.0, top: 20, right: 18),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -104,7 +105,7 @@ class _SigninState extends State<Signin> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              const Forgetpass(),
+                                          const Forgetpass(),
                                         ));
                                   },
                                   child: const Text(
@@ -123,7 +124,7 @@ class _SigninState extends State<Signin> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                               HomeScreen(),
+                                              HomeScreen(),
                                         ));
                                   }
                                 },
@@ -149,7 +150,7 @@ class _SigninState extends State<Signin> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const Signup(),
+                                    builder: (context) => const SignupNurse(),
                                   ));
                             },
                             child: const Text(

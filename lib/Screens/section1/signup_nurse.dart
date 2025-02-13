@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:medimed/Screens/section1/login_nurse.dart';
 import 'package:medimed/Screens/section1/signin.dart';
 import 'package:medimed/Screens/section1/validation.dart';
 import 'package:medimed/provider/imageprovider.dart';
@@ -8,14 +9,14 @@ import 'package:medimed/provider/patientprovider.dart';
 import 'package:provider/provider.dart';
 import '../../Widgets/form_widget.dart';
 
-class Signup extends StatefulWidget {
-  const Signup({super.key});
+class SignupNurse extends StatefulWidget {
+  const SignupNurse({super.key});
 
   @override
-  State<Signup> createState() => _SignupState();
+  State<SignupNurse> createState() => _SignupState();
 }
 
-class _SignupState extends State<Signup> {
+class _SignupState extends State<SignupNurse> {
   TextEditingController fullName = TextEditingController();
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
@@ -186,60 +187,210 @@ class _SignupState extends State<Signup> {
                                 ],
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("ID Card", style: TextStyle(fontSize: 16)),
-                                  Row(
-                                    children: [
-                                      ElevatedButton(
-                                        onPressed: () async {
-                                          File? selectedImage = await imageprovider.showOptions(context);
-                                          if (selectedImage != null) {
-                                            setState(() {
-                                              idCard = selectedImage;
-                                            });
-                                          }
-                                        },
-                                        child: Text("Pick Image"),
-                                      ),
-                                      Visibility(
-                                        visible: idCard != null,
-                                        child: Row(
-                                          children: [
-                                            TextButton(
-                                              onPressed: () {
-                                                setState(() {
-                                                  idCard = null;
-                                                });
-                                              },
-                                              child: const Icon(Icons.delete, color: Colors.red),
-                                            ),
-                                            if (idCard != null)
-                                              Center(
-                                                child: ClipRRect(
-                                                  borderRadius: BorderRadius.circular(10), // Rounded corners
-                                                  child: Image.file(
-                                                    idCard!,
-                                                    width: 50, // Adjust size as needed
-                                                    height: 50,
-                                                    fit: BoxFit.cover,
-                                                  ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                               const Text("ID Card", style: TextStyle(fontSize: 16)),
+                                Row(
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: () async {
+                                        File? selectedImage = await imageprovider.showOptions(context);
+                                        if (selectedImage != null) {
+                                          setState(() {
+                                            idCard = selectedImage;
+                                          });
+                                        }
+                                      },
+                                      child: const Text("Pick Image"),
+                                    ),
+                                    Visibility(
+                                      visible: idCard != null,
+                                      child: Row(
+                                        children: [
+                                          TextButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                idCard = null;
+                                              });
+                                            },
+                                            child: const Icon(Icons.delete, color: Colors.red),
+                                          ),
+                                          if (idCard != null)
+                                            Center(
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.circular(10), // Rounded corners
+                                                child: Image.file(
+                                                  idCard!,
+                                                  width: 50, // Adjust size as needed
+                                                  height: 50,
+                                                  fit: BoxFit.cover,
                                                 ),
                                               ),
-                                          ],
-                                        ),
+                                            ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 10),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
 
-                                ],
-                              ),
+                              ],
                             ),
-                            const SizedBox(height: 10),
+                            const SizedBox(height: 5),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                               const Text("Professional Practice License", style: TextStyle(fontSize: 16)),
+                                Row(
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: () async {
+                                        File? selectedImage = await imageprovider.showOptions(context);
+                                        if (selectedImage != null) {
+                                          setState(() {
+                                            idCard = selectedImage;
+                                          });
+                                        }
+                                      },
+                                      child:const Text("Pick Image"),
+                                    ),
+                                    Visibility(
+                                      visible: idCard != null,
+                                      child: Row(
+                                        children: [
+                                          TextButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                idCard = null;
+                                              });
+                                            },
+                                            child: const Icon(Icons.delete, color: Colors.red),
+                                          ),
+                                          if (idCard != null)
+                                            Center(
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.circular(10), // Rounded corners
+                                                child: Image.file(
+                                                  idCard!,
+                                                  width: 50, // Adjust size as needed
+                                                  height: 50,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
+
+                              ],
+                            ),
+                            const SizedBox(height: 5),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text("Graduation Certificate", style: TextStyle(fontSize: 16)),
+                                Row(
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: () async {
+                                        File? selectedImage = await imageprovider.showOptions(context);
+                                        if (selectedImage != null) {
+                                          setState(() {
+                                            idCard = selectedImage;
+                                          });
+                                        }
+                                      },
+                                      child:const Text("Pick Image"),
+                                    ),
+                                    Visibility(
+                                      visible: idCard != null,
+                                      child: Row(
+                                        children: [
+                                          TextButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                idCard = null;
+                                              });
+                                            },
+                                            child: const Icon(Icons.delete, color: Colors.red),
+                                          ),
+                                          if (idCard != null)
+                                            Center(
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.circular(10), // Rounded corners
+                                                child: Image.file(
+                                                  idCard!,
+                                                  width: 50, // Adjust size as needed
+                                                  height: 50,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
+
+                              ],
+                            ),
+                            const SizedBox(height: 5),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text("Criminal Record And Identification", style: TextStyle(fontSize: 16)),
+                                Row(
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: () async {
+                                        File? selectedImage = await imageprovider.showOptions(context);
+                                        if (selectedImage != null) {
+                                          setState(() {
+                                            idCard = selectedImage;
+                                          });
+                                        }
+                                      },
+                                      child:const Text("Pick Image"),
+                                    ),
+                                    Visibility(
+                                      visible: idCard != null,
+                                      child: Row(
+                                        children: [
+                                          TextButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                idCard = null;
+                                              });
+                                            },
+                                            child: const Icon(Icons.delete, color: Colors.red),
+                                          ),
+                                          if (idCard != null)
+                                            Center(
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.circular(10), // Rounded corners
+                                                child: Image.file(
+                                                  idCard!,
+                                                  width: 50, // Adjust size as needed
+                                                  height: 50,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
+
+                              ],
+                            ),
+                            const SizedBox(height: 5),
                             const Column(
                               children: [
                                 Row(
@@ -272,7 +423,7 @@ class _SignupState extends State<Signup> {
                                 )
                               ],
                             ),
-                            const SizedBox(height: 10),
+                            const SizedBox(height: 5),
                             ElevatedButton(
                               onPressed: () async {
                                 if (formKey.currentState!.validate()) {
@@ -307,11 +458,11 @@ class _SignupState extends State<Signup> {
                                           date: dob.text,
                                           gender: gender!);
                                       if(patientProvider.patientAddModel?.id != 0)
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => Signin()),
-                                      );
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => Signin()),
+                                        );
                                     } else {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
@@ -344,7 +495,7 @@ class _SignupState extends State<Signup> {
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => const Signin()),
+                                MaterialPageRoute(builder: (context) => const SigninNurse()),
                               );
                             },
                             child: const Text(

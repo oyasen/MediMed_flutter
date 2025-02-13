@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medimed/Screens/section4_payment/page1.dart';
+import 'package:medimed/Screens/user_profile/Notifications.dart';
 import 'package:medimed/Screens/user_profile/profile_page.dart';
 import 'package:medimed/Screens/user_profile/setting.dart';
 import 'package:medimed/Screens/user_profile/update_profile.dart';
@@ -79,6 +80,12 @@ class ProfilePage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => SettingsPage()),
+                  );
+                }),
+                buildMenuItem(Icons.settings, "Notification Requests", () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => NotificationsPage()),
                   );
                 }),
                 buildMenuItem(Icons.logout, "Logout", () {}),
