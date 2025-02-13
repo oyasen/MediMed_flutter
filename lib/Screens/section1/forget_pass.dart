@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:medimed/Screens/section1/signin.dart';
 import 'package:medimed/Screens/section1/signup.dart';
+import 'package:medimed/provider/patientprovider.dart';
+import 'package:provider/provider.dart';
 import 'Validation.dart';
 import '../../Widgets/form_widget.dart';
 
@@ -21,6 +24,7 @@ class _ForgetpassState extends State<Forgetpass> {
 
   @override
   Widget build(BuildContext context) {
+    var patientProvider = Provider.of<PatientProvider>(context);
     return Scaffold(
       body: Stack(
         children: [
@@ -105,8 +109,23 @@ class _ForgetpassState extends State<Forgetpass> {
                             ),
                             const SizedBox(height: 10),
                             ElevatedButton(
-                                onPressed: () {
-                                  if (formKey.currentState!.validate()) {}
+                                onPressed: () async {
+                                  if (formKey.currentState!.validate()) {
+                                    await patientProvider.forgetPassword(email.text, password.text);
+                                    if (!patientProvider.patientAddModel!.id) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                          const SnackBar(content: Text(
+                                              "Please Check your E-mail"))
+                                      );
+                                      return;
+                                    }
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => const Signin(),
+                                        ));
+                                  }
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: const Color(0xff8761ea),
@@ -126,12 +145,16 @@ class _ForgetpassState extends State<Forgetpass> {
                         children: [
                           const Text('Did not Joined Yey?'),
                           TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const Signup(),
-                                  ));
+                            onPressed: () async{
+
+
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const Signup(),
+                                    ));
+
+
                             },
                             child: const Text(
                               'Sign Up',

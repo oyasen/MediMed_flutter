@@ -26,6 +26,7 @@ class PatientProvider extends ChangeNotifier {
     required String contact,
     required String date,
     required String gender,
+    required String Specialization
   }) async {
     _patientAddModel = await PatientServices.signup(
       fullName: fullName,
@@ -34,7 +35,8 @@ class PatientProvider extends ChangeNotifier {
       url: url,
       contact: contact,
       date: date,
-      gender: gender
+      gender: gender,
+        Specialization:Specialization
     );
     notifyListeners();
   }
@@ -60,6 +62,10 @@ class PatientProvider extends ChangeNotifier {
   // Login Nurse
   Future<void> loginPatient(String email, String pass) async {
     _patientAddModel = await PatientServices.login(email, pass);
+    notifyListeners();
+  }
+  Future<void> forgetPassword(String email, String pass) async {
+    _patientAddModel = await PatientServices.forget(email, pass);
     notifyListeners();
   }
 
