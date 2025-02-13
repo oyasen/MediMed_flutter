@@ -78,7 +78,7 @@ class PatientServices
     }
   }
   static forget(String email,String pass) async {
-    Response response = await dio.post('https://localhost:7047/api/Nurses/forgetpassword',data: {
+    Response response = await dio.post('https://medimed.runasp.net/api/Nurses/forgetpassword',data: {
       "email": email,
       "password":pass
     });
