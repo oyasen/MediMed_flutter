@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:medimed/Screens/section4_payment/page4.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
+import 'package:medimed/Screens/section4_payment/page4.dart';
+
+import '../../Payment Method/payment_manager.dart';
+import '../../Widgets/form_widget.dart';
 
 class PaymentPage3 extends StatefulWidget {
   const PaymentPage3({super.key});
@@ -10,24 +13,7 @@ class PaymentPage3 extends StatefulWidget {
 }
 
 class _PaymentPage3State extends State<PaymentPage3> {
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
-  // ✅ Declare missing keys
-  final GlobalKey<FormFieldState<String>> cardNumberKey =
-  GlobalKey<FormFieldState<String>>();
-  final GlobalKey<FormFieldState<String>> cvvCodeKey =
-  GlobalKey<FormFieldState<String>>();
-  final GlobalKey<FormFieldState<String>> expiryDateKey =
-  GlobalKey<FormFieldState<String>>();
-  final GlobalKey<FormFieldState<String>> cardHolderKey =
-  GlobalKey<FormFieldState<String>>();
-
-  // ✅ Credit card details variables
-  String cardNumber = "";
-  String expiryDate = "";
-  String cardHolderName = "";
-  String cvvCode = "";
-
+  TextEditingController priceCont = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,10 +30,10 @@ class _PaymentPage3State extends State<PaymentPage3> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             CreditCardWidget(
-              cardNumber: cardNumber,
-              expiryDate: expiryDate,
-              cardHolderName: cardHolderName,
-              cvvCode: cvvCode,
+              cardNumber: "XXXX XXXX XXXX XXXX",
+              expiryDate: "01/20",
+              cardHolderName: "MediMed",
+              cvvCode: "xxx",
               showBackView: false,
               onCreditCardWidgetChange: (CreditCardBrand brand) {},
               bankName: 'Name of the Bank',
@@ -94,102 +80,30 @@ class _PaymentPage3State extends State<PaymentPage3> {
               chipColor: Colors.yellow[100],
               padding: 16,
             ),
-            CreditCardForm(
-              formKey: formKey, // ✅ Required
-              cardNumber: cardNumber,
-              expiryDate: expiryDate,
-              cardHolderName: cardHolderName,
-              cvvCode: cvvCode,
-              cardNumberKey: cardNumberKey,
-              cvvCodeKey: cvvCodeKey,
-              expiryDateKey: expiryDateKey,
-              cardHolderKey: cardHolderKey,
-
-              // ✅ Update credit card details dynamically
-              onCreditCardModelChange: (CreditCardModel data) {
-                setState(() {
-                  cardNumber = data.cardNumber;
-                  expiryDate = data.expiryDate;
-                  cardHolderName = data.cardHolderName;
-                  cvvCode = data.cvvCode;
-                });
-              },
-
-              obscureCvv: true,
-              obscureNumber: true,
-              isHolderNameVisible: true,
-              isCardNumberVisible: true,
-              isExpiryDateVisible: true,
-              enableCvv: true,
-              cvvValidationMessage: 'Please input a valid CVV',
-              dateValidationMessage: 'Please input a valid date',
-              numberValidationMessage: 'Please input a valid number',
-
-              // ✅ Validation functions
-              cardNumberValidator: (String? cardNumber) {
-                if (cardNumber == null || cardNumber.length < 16) {
-                  return 'Invalid card number';
-                }
-                return null;
-              },
-              expiryDateValidator: (String? expiryDate) {
-                if (expiryDate == null || expiryDate.length != 5) {
-                  return 'Invalid expiry date';
-                }
-                return null;
-              },
-              cvvValidator: (String? cvv) {
-                if (cvv == null || cvv.length < 3) {
-                  return 'Invalid CVV';
-                }
-                return null;
-              },
-              cardHolderValidator: (String? cardHolderName) {
-                if (cardHolderName == null || cardHolderName.isEmpty) {
-                  return 'Enter cardholder name';
-                }
-                return null;
-              },
-
-              onFormComplete: () {
-                // ✅ Callback for when the form is completely filled
-                if (formKey.currentState!.validate()) {
-                  debugPrint("Form is valid!");
-                }
-              },
-              autovalidateMode: AutovalidateMode.always,
-              disableCardNumberAutoFillHints: false,
-              inputConfiguration: const InputConfiguration(
-                cardNumberDecoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Number',
-                  hintText: 'XXXX XXXX XXXX XXXX',
-                ),
-                expiryDateDecoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Expired Date',
-                  hintText: 'XX/XX',
-                ),
-                cvvCodeDecoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'CVV',
-                  hintText: 'XXX',
-                ),
-                cardHolderDecoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Card Holder',
-                ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(19, 50, 19, 0),
+              child: CustomFormField(
+                controller: priceCont,
+                label: 'Price',
               ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(19, 50, 19, 0),
               child: MaterialButton(
-                onPressed: () {
-                  if (formKey.currentState!.validate()) {
+                onPressed: () async {
+                  int amount = int.tryParse(priceCont.text) ?? 0;
+                  bool isSuccess = await PaymentManager.makePayment(amount, "EGP");
+
+                  if (isSuccess) {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => PaymentPage4(),
+                      MaterialPageRoute(builder: (context) => PaymentPage4()),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Payment failed. Please try again."),
+                        backgroundColor: Colors.red,
                       ),
                     );
                   }
