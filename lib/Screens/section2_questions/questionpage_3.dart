@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:medimed/Screens/section2_questions/questionpage_3.dart';
 
 void main() {
   runApp(const Questionpage3());
 }
 
 class Questionpage3 extends StatelessWidget {
-  const Questionpage3({Key? key}) : super(key: key);
+  const Questionpage3({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +18,7 @@ class Questionpage3 extends StatelessWidget {
 }
 
 class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:medimed/Screens/section1/signup.dart';
 import 'package:medimed/provider/patientprovider.dart';
 import 'package:provider/provider.dart';
-import '../section2_questions/questionpage_1.dart';
 import 'Validation.dart';
 import 'forget_pass.dart';
 import '../../Widgets/form_widget.dart';
-import 'package:medimed/Screens/section4_payment/page2.dart';
 import 'package:medimed/Screens/HomeScreen/home.dart';
 
 class Signin extends StatefulWidget {
@@ -124,7 +122,7 @@ class _SigninState extends State<Signin> {
                                 onPressed: () async {
                                   if (formKey.currentState!.validate()) {
                                     await patientProvider.loginPatient(email.text, password.text);
-                                    if (patientProvider.patientAddModel!.id == 0) {
+                                    if (patientProvider.patientAddModel?.id == 0) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                           const SnackBar(content: Text(

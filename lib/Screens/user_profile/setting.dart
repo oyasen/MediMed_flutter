@@ -3,6 +3,8 @@ import 'package:medimed/Screens/section4_payment/page2.dart';
 import 'package:medimed/Screens/user_profile/notification_setting.dart';
 
 class SettingsPage extends StatelessWidget {
+  const SettingsPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,7 +77,7 @@ class SettingsItem extends StatelessWidget {
   final String text;
   final VoidCallback onTap;
 
-  SettingsItem({
+  const SettingsItem({super.key, 
     required this.icon,
     required this.text,
     required this.onTap,

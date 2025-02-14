@@ -67,15 +67,23 @@ class PatientServices
     }
   }
   static login(String email,String pass) async {
-    Response response = await dio.post('https://medimed.runasp.net/api/Patients/login',data: {
+    try
+    {
+      Response response = await dio.post('https://medimed.runasp.net/api/Patients/login',data: {
       "email": email,
-      "password":pass
+      "password": pass
     });
     if (response.statusCode == 200) {
       return Patientadd.fromJson(response.data);
     } else {
-      throw Exception(response.statusMessage);
+      throw Exception(response.data["response"]);
     }
+
+    }
+    catch(ex){
+      rethrow;
+    }
+
   }
   static forget(String email,String pass) async {
     Response response = await dio.post('https://medimed.runasp.net/api/Nurses/forgetpassword',data: {

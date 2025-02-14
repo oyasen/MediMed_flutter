@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:medimed/Screens/section4_payment/page1.dart';
 import 'package:medimed/Screens/user_profile/Notifications.dart';
-import 'package:medimed/Screens/user_profile/profile_page.dart';
 import 'package:medimed/Screens/user_profile/setting.dart';
 import 'package:medimed/Screens/user_profile/update_profile.dart';
 
@@ -9,6 +7,8 @@ import '../../Nurses/favorite.dart';
 import '../section4_payment/page2.dart';
 
 class ProfilePage extends StatelessWidget {
+  const ProfilePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

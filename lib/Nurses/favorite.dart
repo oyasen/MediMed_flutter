@@ -3,9 +3,10 @@ import 'package:medimed/Nurses/female.dart';
 import 'package:medimed/Nurses/male.dart';
 import 'package:medimed/Nurses/rating.dart';
 
-import 'female.dart';
 
 class FavoritePage extends StatelessWidget {
+  const FavoritePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,8 +42,8 @@ class FavoritePage extends StatelessWidget {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => RatingPage(),));
                   },
                   child: CircleAvatar(
-                    child: Icon(Icons.star_border, color: Colors.blue,),
-                    radius: 15,),
+                    radius: 15,
+                    child: Icon(Icons.star_border, color: Colors.blue,),),
                 ),
                 SizedBox(width: 5),
                 GestureDetector(
@@ -50,8 +51,7 @@ class FavoritePage extends StatelessWidget {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => FavoritePage(),));
 
                   },
-                  child: CircleAvatar(child: Icon(Icons.favorite_border, color: Colors.blue),
-                    radius: 15,),
+                  child: CircleAvatar(radius: 15,child: Icon(Icons.favorite_border, color: Colors.blue),),
                 ),
                 SizedBox(width: 5),
                 GestureDetector(
@@ -59,16 +59,14 @@ class FavoritePage extends StatelessWidget {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => FemalePage(),));
 
                   },
-                  child: CircleAvatar(child: Icon(Icons.female, color: Colors.blue),
-                    radius: 15,),
+                  child: CircleAvatar(radius: 15,child: Icon(Icons.female, color: Colors.blue),),
                 ),
                 SizedBox(width: 5),
                 GestureDetector(
                   onTap: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => MalePage(),));
                   },
-                  child: CircleAvatar(child: Icon(Icons.male, color: Colors.blue),
-                    radius: 15,),
+                  child: CircleAvatar(radius: 15,child: Icon(Icons.male, color: Colors.blue),),
                 ),
 
               ],
@@ -126,7 +124,7 @@ class NurseCard extends StatelessWidget {
   final String name;
   final String specialty;
 
-  NurseCard({
+  const NurseCard({super.key, 
     required this.imageUrl,
     required this.name,
     required this.specialty,

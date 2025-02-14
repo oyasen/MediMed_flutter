@@ -7,6 +7,8 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -21,6 +23,8 @@ class UpdateProfilePage extends StatelessWidget {
   final TextEditingController phoneController = TextEditingController(text: '+123 567 89000');
   final TextEditingController emailController = TextEditingController(text: 'johndoe@example.com');
   final TextEditingController dobController = TextEditingController(text: 'DD/MM/YYYY');
+
+  UpdateProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {

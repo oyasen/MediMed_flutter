@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:medimed/Screens/section5_nurseprofile/Requests.dart';
-import 'package:medimed/Screens/section5_nurseprofile/nurse_profile3.dart';
 import 'package:medimed/Widgets/custom_bottomnavigationbar.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -13,9 +12,9 @@ class AppointmentBookingScreen extends StatefulWidget {
 
 class NurseProfile2 extends State<AppointmentBookingScreen> {
   int _selectedIndex = -1;
-  DateTime _selectedDay = DateTime.now();
-  DateTime _focusedDay = DateTime.now();
-  CalendarFormat _calendarFormat = CalendarFormat.month;
+  final DateTime _selectedDay = DateTime.now();
+  final DateTime _focusedDay = DateTime.now();
+  final CalendarFormat _calendarFormat = CalendarFormat.month;
 
   List<String> availableTimeSlots = [
     '''9:00AM - 
@@ -144,8 +143,8 @@ class NurseProfile2 extends State<AppointmentBookingScreen> {
                       onPressed: () {
                         Navigator.push(context, MaterialPageRoute(builder: (context) =>RequestsPage() ,));
                       },
-                      child: const Text("Save Data"),
                       color: const Color(0xff2196f3),
+                      child: const Text("Save Data"),
                     )
                   ]))),
       bottomNavigationBar: MyBottomNavigationBar(),

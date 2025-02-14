@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:medimed/Screens/section4_payment/page1.dart';
 import 'package:medimed/Screens/section4_payment/page2.dart';
 import 'package:medimed/Widgets/custom_bottomnavigationbar.dart';
 
 class AppointmentDetailsScreen extends StatelessWidget {
+  const AppointmentDetailsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +32,7 @@ class AppointmentDetailsScreen extends StatelessWidget {
             const SizedBox(
               height: 150,
             ),
-            Container(
+            SizedBox(
               width: 300,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -42,7 +43,7 @@ class AppointmentDetailsScreen extends StatelessWidget {
             const SizedBox(
               height: 30,
             ),
-             Container(
+             SizedBox(
                width: 300,
                child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -52,7 +53,7 @@ class AppointmentDetailsScreen extends StatelessWidget {
             const SizedBox(
               height: 30,
             ),
-             Container(
+             SizedBox(
                width: 300,
                child: Row(
                  crossAxisAlignment: CrossAxisAlignment.center,

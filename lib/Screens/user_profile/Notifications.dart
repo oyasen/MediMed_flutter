@@ -5,6 +5,8 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -31,6 +33,8 @@ class NotificationsPage extends StatelessWidget {
     {'name': 'Michael Davidson', 'message': 'Accept your request', 'image': 'assets/michael.png'},
     {'name': 'Olivia Turner', 'message': 'Delete your request', 'image': 'assets/olivia.png'},
   ];
+
+   NotificationsPage({super.key});
 
   @override
   Widget build(BuildContext context) {

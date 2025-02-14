@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 import '../user_profile/my_profile.dart';
 
 class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     var patientProvider = Provider.of<PatientProvider>(context);
@@ -127,7 +129,7 @@ class CategoryIcon extends StatelessWidget {
   final String title;
   final String imageUrl;
 
-  CategoryIcon({required this.title, required this.imageUrl});
+  const CategoryIcon({super.key, required this.title, required this.imageUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -150,7 +152,7 @@ class DoctorCard extends StatelessWidget {
   final double rating;
   final String imageUrl;
 
-  DoctorCard({required this.name, required this.specialty, required this.rating, required this.imageUrl});
+  const DoctorCard({super.key, required this.name, required this.specialty, required this.rating, required this.imageUrl});
 
   @override
   Widget build(BuildContext context) {

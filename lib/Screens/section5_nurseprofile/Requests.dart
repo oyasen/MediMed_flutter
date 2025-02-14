@@ -6,6 +6,8 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -16,6 +18,8 @@ class MyApp extends StatelessWidget {
 }
 
 class RequestsPage extends StatefulWidget {
+  const RequestsPage({super.key});
+
   @override
   _RequestsPageState createState() => _RequestsPageState();
 }

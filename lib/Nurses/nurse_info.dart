@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class NurseInfoPage extends StatelessWidget {
+  const NurseInfoPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,17 +35,13 @@ class NurseInfoPage extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    CircleAvatar(child: Icon(Icons.star_border, color: Colors.blue,),
-                      radius: 15,),
+                    CircleAvatar(radius: 15,child: Icon(Icons.star_border, color: Colors.blue,),),
                     SizedBox(width: 5),
-                    CircleAvatar(child: Icon(Icons.favorite_border, color: Colors.blue),
-                      radius: 15,),
+                    CircleAvatar(radius: 15,child: Icon(Icons.favorite_border, color: Colors.blue),),
                     SizedBox(width: 5),
-                    CircleAvatar(child: Icon(Icons.female, color: Colors.blue),
-                      radius: 15,),
+                    CircleAvatar(radius: 15,child: Icon(Icons.female, color: Colors.blue),),
                     SizedBox(width: 5),
-                    CircleAvatar(child: Icon(Icons.male, color: Colors.blue),
-                      radius: 15,),
+                    CircleAvatar(radius: 15,child: Icon(Icons.male, color: Colors.blue),),
 
                   ],
                 ),
@@ -105,11 +103,11 @@ class NurseInfoPage extends StatelessWidget {
                     SizedBox(height: 10),
                     ElevatedButton(
                       onPressed: () {},
-                      child: Text("Schedule"),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue,
                         foregroundColor: Colors.white,
                       ),
+                      child: Text("Schedule"),
                     ),
                   ],
                 ),

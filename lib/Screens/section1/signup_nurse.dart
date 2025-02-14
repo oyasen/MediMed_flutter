@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:medimed/Screens/section1/login_nurse.dart';
 import 'package:medimed/Screens/section1/signin.dart';
@@ -509,12 +508,13 @@ class _SignupState extends State<SignupNurse> {
                                       return;
                                     }
                                     await nurseProvider.addNurse(fullName: fullName.text, email: email.text, pass: password.text, contact: contact.text, diploma: gradUrl, criminalRec: crimUrl, idCard: idCardUrl, prof: profUrl);
-                                    if(nurseProvider.nurseAddModel?.id != 0)
+                                    if(nurseProvider.nurseAddModel?.id != 0) {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) => Signin()),
                                       );
+                                    }
                                   }
                                 }
                               },
