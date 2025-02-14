@@ -6,7 +6,7 @@ void main() {
 }
 
 class Questionpage2 extends StatelessWidget {
-  const Questionpage2({Key? key}) : super(key: key);
+  const Questionpage2({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class Questionpage2 extends StatelessWidget {
 }
 
 class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -6,6 +6,8 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -16,6 +18,8 @@ class MyApp extends StatelessWidget {
 }
 
 class ProfilePage2 extends StatelessWidget {
+  const ProfilePage2({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,7 +67,7 @@ class OptionTile extends StatelessWidget {
   final String title;
   final VoidCallback onTap;
 
-  OptionTile({required this.icon, required this.title, required this.onTap});
+  const OptionTile({super.key, required this.icon, required this.title, required this.onTap});
 
   @override
   Widget build(BuildContext context) {

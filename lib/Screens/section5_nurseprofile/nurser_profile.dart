@@ -15,8 +15,8 @@ class NurseProfileScreen1 extends StatefulWidget {
 }
 
 class _NurseProfileScreen1State extends State<NurseProfileScreen1> {
-  List<DateTime> _selectedDates = [];
-  EventList<Event> _markedDateMap = EventList<Event>(
+  final List<DateTime> _selectedDates = [];
+  final EventList<Event> _markedDateMap = EventList<Event>(
     events: {},
   );
 

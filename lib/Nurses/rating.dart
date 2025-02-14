@@ -5,6 +5,8 @@ import 'package:medimed/Nurses/male.dart';
 import 'package:medimed/Nurses/nurse_info.dart';
 
 class RatingPage extends StatelessWidget {
+  const RatingPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,8 +42,8 @@ class RatingPage extends StatelessWidget {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => RatingPage(),));
                   },
                   child: CircleAvatar(
-                    child: Icon(Icons.star_border, color: Colors.blue,),
-                    radius: 15,),
+                    radius: 15,
+                    child: Icon(Icons.star_border, color: Colors.blue,),),
                 ),
                 SizedBox(width: 5),
                 GestureDetector(
@@ -49,8 +51,7 @@ class RatingPage extends StatelessWidget {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => FavoritePage(),));
 
                   },
-                  child: CircleAvatar(child: Icon(Icons.favorite_border, color: Colors.blue),
-                    radius: 15,),
+                  child: CircleAvatar(radius: 15,child: Icon(Icons.favorite_border, color: Colors.blue),),
                 ),
                 SizedBox(width: 5),
                 GestureDetector(
@@ -58,16 +59,14 @@ class RatingPage extends StatelessWidget {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => FemalePage(),));
 
                   },
-                  child: CircleAvatar(child: Icon(Icons.female, color: Colors.blue),
-                    radius: 15,),
+                  child: CircleAvatar(radius: 15,child: Icon(Icons.female, color: Colors.blue),),
                 ),
                 SizedBox(width: 5),
                 GestureDetector(
                   onTap: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => MalePage(),));
                   },
-                  child: CircleAvatar(child: Icon(Icons.male, color: Colors.blue),
-                    radius: 15,),
+                  child: CircleAvatar(radius: 15,child: Icon(Icons.male, color: Colors.blue),),
                 ),
 
               ],
@@ -128,7 +127,7 @@ class NurseCard extends StatelessWidget {
   final String specialty;
   final String rating;
 
-  NurseCard({
+  const NurseCard({super.key, 
     required this.imageUrl,
     required this.name,
     required this.specialty,
@@ -184,11 +183,11 @@ class NurseCard extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) =>NurseInfoPage() ,));
                   },
-                  child: Text("Info"),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     foregroundColor: Colors.white,
                   ),
+                  child: Text("Info"),
                 ),
               ],
             ),

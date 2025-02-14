@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:medimed/Screens/section1/signup.dart';
 import 'package:medimed/Screens/section1/signup_nurse.dart';
 import 'package:medimed/Screens/user_profile/Notifications.dart';
 import 'package:medimed/provider/nurseprovider.dart';
 import 'package:provider/provider.dart';
-import '../section2_questions/questionpage_1.dart';
 import 'Validation.dart';
 import 'forget_pass.dart';
 import '../../Widgets/form_widget.dart';
-import 'package:medimed/Screens/section4_payment/page2.dart';
-import 'package:medimed/Screens/HomeScreen/home.dart';
 
 class SigninNurse extends StatefulWidget {
   const SigninNurse({super.key});

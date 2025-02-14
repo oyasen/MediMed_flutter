@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:medimed/Screens/section1/signin.dart';
 import 'package:medimed/Screens/section1/validation.dart';
@@ -320,12 +319,13 @@ class _SignupState extends State<Signup> {
                                           gender: gender!,
                                           Specialization:spec.text
                                       );
-                                      if(patientProvider.patientAddModel?.id != 0)
-                                      Navigator.push(
+                                      if(patientProvider.patientAddModel?.id != 0) {
+                                        Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) => Signin()),
                                       );
+                                      }
                                     } else {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(

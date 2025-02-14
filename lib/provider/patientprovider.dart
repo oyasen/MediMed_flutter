@@ -3,7 +3,6 @@ import 'package:medimed/Models/nursemodel.dart';
 import 'package:medimed/Models/patientAdd.dart';
 import 'package:medimed/Models/patientmodel.dart';
 import 'package:medimed/Models/patientsmodel.dart';
-import 'package:medimed/Services/nurseServices.dart';
 import 'package:medimed/Services/patientServices.dart';
 
 class PatientProvider extends ChangeNotifier {
@@ -62,7 +61,10 @@ class PatientProvider extends ChangeNotifier {
   // Login Nurse
   Future<void> loginPatient(String email, String pass) async {
     _patientAddModel = await PatientServices.login(email, pass);
-    notifyListeners();
+    if(_patientAddModel != null)
+      {
+        notifyListeners();
+      }
   }
   Future<void> forgetPassword(String email, String pass) async {
     _patientAddModel = await PatientServices.forget(email, pass);
