@@ -22,6 +22,8 @@ class _SignupState extends State<SignupNurse> {
   TextEditingController confirmPass = TextEditingController();
   TextEditingController dob = TextEditingController();
   TextEditingController contact = TextEditingController();
+  TextEditingController spec = TextEditingController();
+
   String? gender;
   File? idCard;
   File? prof;
@@ -148,6 +150,17 @@ class _SignupState extends State<SignupNurse> {
                                 }
                                 if (!isValidContact(text)) {
                                   return 'Invalid phone number';
+                                }
+                                return null;
+                              },
+                            ),
+                            CustomFormField(
+                              label: "Specialization",
+                              keyboardType: TextInputType.name,
+                              controller: spec,
+                              validator: (text) {
+                                if (text == null || text.trim().isEmpty) {
+                                  return 'Please enter Specialization';
                                 }
                                 return null;
                               },
@@ -507,7 +520,7 @@ class _SignupState extends State<SignupNurse> {
                                       );
                                       return;
                                     }
-                                    await nurseProvider.addNurse(fullName: fullName.text, email: email.text, pass: password.text, contact: contact.text, diploma: gradUrl, criminalRec: crimUrl, idCard: idCardUrl, prof: profUrl);
+                                    await nurseProvider.addNurse(fullName: fullName.text, email: email.text, pass: password.text, contact: contact.text, diploma: gradUrl, criminalRec: crimUrl, idCard: idCardUrl, prof: profUrl, spec: spec.text);
                                     if(nurseProvider.nurseAddModel?.id != 0) {
                                       Navigator.push(
                                         context,

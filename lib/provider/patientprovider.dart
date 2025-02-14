@@ -25,7 +25,6 @@ class PatientProvider extends ChangeNotifier {
     required String contact,
     required String date,
     required String gender,
-    required String Specialization
   }) async {
     _patientAddModel = await PatientServices.signup(
       fullName: fullName,
@@ -35,7 +34,6 @@ class PatientProvider extends ChangeNotifier {
       contact: contact,
       date: date,
       gender: gender,
-        Specialization:Specialization
     );
     notifyListeners();
   }

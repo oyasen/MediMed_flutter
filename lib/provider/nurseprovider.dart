@@ -21,8 +21,9 @@ class NurseProvider extends ChangeNotifier {
     required String criminalRec,
     required String idCard,
     required String prof,
+    required String spec,
   }) async {
-    _nurseAddModel = await NurseServices.signup(fullName: fullName, email: email, pass: pass, contact: contact, grad: diploma, criminalRec: criminalRec, idCard: idCard, prof: prof);
+    _nurseAddModel = await NurseServices.signup(fullName: fullName, email: email, pass: pass, contact: contact, grad: diploma, criminalRec: criminalRec, idCard: idCard, prof: prof, spec : spec);
     notifyListeners();
   }
 
@@ -102,6 +103,10 @@ class NurseProvider extends ChangeNotifier {
   Future<void> deleteNursePatient(
       { required int nurseId, required int patientId}) async {
     await NurseServices.deleteNurse(nurseId, patientId);
+    notifyListeners();
+  }
+  Future<void> forgetPassword(String email, String pass) async {
+    _nurseAddModel = await NurseServices.forget(email, pass);
     notifyListeners();
   }
 }

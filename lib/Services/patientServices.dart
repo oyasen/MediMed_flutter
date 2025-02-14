@@ -6,7 +6,7 @@ import 'package:medimed/Models/patientmodel.dart';
 class PatientServices
 {
   static Dio dio = Dio();
-  static signup({required String Specialization, required String fullName,required String email,required String pass,required String url,required String contact,required  String date,required String gender}) async {
+  static signup({required String fullName,required String email,required String pass,required String url,required String contact,required  String date,required String gender}) async {
     Response response = await dio.post('https://medimed.runasp.net/api/Patients',
         data:  {
           "fullName": fullName,
@@ -86,7 +86,7 @@ class PatientServices
 
   }
   static forget(String email,String pass) async {
-    Response response = await dio.post('https://medimed.runasp.net/api/Nurses/forgetpassword',data: {
+    Response response = await dio.post('https://medimed.runasp.net/api/Patients/forget',data: {
       "email": email,
       "password":pass
     });

@@ -21,7 +21,6 @@ class _SignupState extends State<Signup> {
   TextEditingController confirmPass = TextEditingController();
   TextEditingController dob = TextEditingController();
   TextEditingController contact = TextEditingController();
-  TextEditingController spec = TextEditingController();
   String? gender;
   File? idCard;
   final formKey = GlobalKey<FormState>();
@@ -145,17 +144,6 @@ class _SignupState extends State<Signup> {
                                 }
                                 if (!isValidContact(text)) {
                                   return 'Invalid phone number';
-                                }
-                                return null;
-                              },
-                            ),
-                            CustomFormField(
-                              label: "Specialization",
-                              keyboardType: TextInputType.name,
-                              controller: spec,
-                              validator: (text) {
-                                if (text == null || text.trim().isEmpty) {
-                                  return 'Please enter Specialization';
                                 }
                                 return null;
                               },
@@ -317,7 +305,6 @@ class _SignupState extends State<Signup> {
                                           contact: contact.text,
                                           date: dob.text,
                                           gender: gender!,
-                                          Specialization:spec.text
                                       );
                                       if(patientProvider.patientAddModel?.id != 0) {
                                         Navigator.push(

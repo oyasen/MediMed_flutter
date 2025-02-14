@@ -1,7 +1,7 @@
 class NurseAdd {
-  int id;
+  var id;
   NurseAdd({required this.id});
-  factory NurseAdd.fromJson(int id) {
+  factory NurseAdd.fromJson(var id) {
     return NurseAdd(id:id);
   }
 }

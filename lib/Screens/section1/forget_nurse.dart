@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:medimed/Screens/section1/login_nurse.dart';
 import 'package:medimed/Screens/section1/signup_nurse.dart';
-import 'package:medimed/Screens/user_profile/Notifications.dart';
 import 'package:medimed/provider/nurseprovider.dart';
 import 'package:provider/provider.dart';
 import 'Validation.dart';
-import 'forget_pass.dart';
 import '../../Widgets/form_widget.dart';
 
-class SigninNurse extends StatefulWidget {
-  const SigninNurse({super.key});
+class ForgetNurse extends StatefulWidget {
+  const ForgetNurse({super.key});
 
   @override
-  State<SigninNurse> createState() => _SigninState();
+  State<ForgetNurse> createState() => _ForgetpassState();
 }
 
-class _SigninState extends State<SigninNurse> {
-  TextEditingController fullName = TextEditingController();
-
+class _ForgetpassState extends State<ForgetNurse> {
   TextEditingController email = TextEditingController();
 
   TextEditingController password = TextEditingController();
@@ -27,7 +24,7 @@ class _SigninState extends State<SigninNurse> {
 
   @override
   Widget build(BuildContext context) {
-    var nurseProvider = Provider.of<NurseProvider>(context);
+    var patientProvider = Provider.of<NurseProvider>(context);
     return Scaffold(
       body: Stack(
         children: [
@@ -56,7 +53,7 @@ class _SigninState extends State<SigninNurse> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        'Sign In',
+                        'Forget Password',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 30,
@@ -82,7 +79,7 @@ class _SigninState extends State<SigninNurse> {
                               },
                             ),
                             CustomFormField(
-                              label: "Password",
+                              label: "New Password",
                               controller: password,
                               keyboardType: TextInputType.visiblePassword,
                               obsecure: true,
@@ -96,44 +93,37 @@ class _SigninState extends State<SigninNurse> {
                                 return null;
                               },
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                          const Forgetpass(),
-                                        ));
-                                  },
-                                  child: const Text(
-                                    'Forget Password?',
-                                    style: TextStyle(
-                                        color: Color(0xff74b2cd),
-                                        fontSize: 17.5),
-                                  ),
-                                ),
-                              ],
+                            CustomFormField(
+                              label: "Confirm Password",
+                              controller: confirmPass,
+                              obsecure: true,
+                              validator: (text) {
+                                if (text == null || text.trim().isEmpty) {
+                                  return 'plz, enter confirm pass';
+                                }
+                                if (password.text != text) {
+                                  return 'confirm password does not match';
+                                }
+                                return null;
+                              },
                             ),
+                            const SizedBox(height: 10),
                             ElevatedButton(
-                                onPressed: () async{
+                                onPressed: () async {
                                   if (formKey.currentState!.validate()) {
-                                    await nurseProvider.loginNurse(email.text, password.text);
-                                    if (nurseProvider.nurseAddModel!.id == 0) {
+                                    await patientProvider.forgetPassword(email.text, password.text);
+                                    if (!patientProvider.nurseAddModel!.id) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                           const SnackBar(content: Text(
-                                              "Please Check your E-mail and Password"))
+                                              "Please Check your E-mail"))
                                       );
                                       return;
                                     }
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) =>
-                                              NotificationsPage(id: nurseProvider.nurseAddModel!.id),
+                                          builder: (context) => const SigninNurse(),
                                         ));
                                   }
                                 },
@@ -153,14 +143,16 @@ class _SigninState extends State<SigninNurse> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text('Did not Joined Yet?'),
+                          const Text('Did not Joined Yey?'),
                           TextButton(
-                            onPressed: () {
+                            onPressed: () async{
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => const SignupNurse(),
                                   ));
+
+
                             },
                             child: const Text(
                               'Sign Up',

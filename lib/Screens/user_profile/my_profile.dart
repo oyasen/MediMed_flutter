@@ -85,7 +85,7 @@ class ProfilePage extends StatelessWidget {
                 buildMenuItem(Icons.settings, "Notification Requests", () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => NotificationsPage()),
+                    MaterialPageRoute(builder: (context) => NotificationsPage(id: null,)),
                   );
                 }),
                 buildMenuItem(Icons.logout, "Logout", () {}),
