@@ -43,6 +43,7 @@ dependencies:
   u_credit_card:
   flutter_stripe:
   flutter_credit_card:
+  intl: ^0.19.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

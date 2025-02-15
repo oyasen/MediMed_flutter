@@ -1,8 +1,9 @@
-class PatientsModel
-{
-  List<Map<dynamic,dynamic>> Model;
+class PatientsModel {
+  List<Map<String, dynamic>> Model;
+
   PatientsModel({required this.Model});
-  factory PatientsModel.fromJson(List<Map<dynamic,dynamic>> json) {
-    return PatientsModel(Model: json);
+
+  factory PatientsModel.fromJson(List<dynamic> json) {
+    return PatientsModel(Model: List<Map<String, dynamic>>.from(json));
   }
 }

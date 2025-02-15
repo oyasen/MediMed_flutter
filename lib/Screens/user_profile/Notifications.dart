@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:medimed/provider/nurseprovider.dart';
 import 'package:provider/provider.dart';
 
+import 'details.dart';
+
 class NotificationsPage extends StatelessWidget {
   final int? id;
 
@@ -20,13 +22,13 @@ class NotificationsPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   IconButton(
-                    icon: Icon(Icons.arrow_back),
+                    icon: const Icon(Icons.arrow_back),
                     color: Colors.blue,
                     onPressed: () {
                       Navigator.pop(context);
                     },
                   ),
-                  Text(
+                  const Text(
                     'Notifications',
                     style: TextStyle(
                       fontSize: 24,
@@ -34,13 +36,13 @@ class NotificationsPage extends StatelessWidget {
                       color: Colors.blue,
                     ),
                   ),
-                  Icon(Icons.search, color: Colors.blue),
+                  const Icon(Icons.search, color: Colors.blue),
                 ],
               ),
             ),
             Expanded(
               child: Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(30),
@@ -59,28 +61,51 @@ class NotificationsPage extends StatelessWidget {
                     }
 
                     return ListView.builder(
-                      padding: EdgeInsets.symmetric(vertical: 10),
+                      padding: const EdgeInsets.symmetric(vertical: 10),
                       itemCount: value.nurseModel!.Model.length,
                       itemBuilder: (context, index) {
                         var nurse = value.nurseModel!.Model[index];
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Color(0xFF66D2FF),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: ListTile(
-                              leading: CircleAvatar(
-                                backgroundImage: nurse['idCard'] != null
-                                    ? AssetImage(nurse['idCard']!)
-                                    : null,
+                        var patientData = nurse['patient'];
+
+                        return GestureDetector(
+                          onTap: () {
+                            // Navigate to PatientDetailsPage with parameters
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PatientDetailsPage(
+                                  nurseId: id!,  // Passing nurseId
+                                  patientData: patientData, // Passing patient data
+                                ),
                               ),
-                              title: Text(
-                                nurse['fullName'] ?? "Unknown",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF66D2FF),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  backgroundImage: patientData['idCard'] != null
+                                      ? NetworkImage(patientData['idCard']!)
+                                      : null,
+                                ),
+                                title: Text(
+                                  patientData['fullName'] ?? "Unknown",
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  "Status: ${nurse['status'] ?? 'Unknown'}",
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),
@@ -93,9 +118,9 @@ class NotificationsPage extends StatelessWidget {
               ),
             ),
             Container(
-              color: Color(0xFF66D2FF),
-              padding: EdgeInsets.symmetric(vertical: 10),
-              child: Row(
+              color: const Color(0xFF66D2FF),
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Icon(Icons.home, color: Colors.white, size: 30),

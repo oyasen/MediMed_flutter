@@ -1,30 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/classes/event_list.dart';
-import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
-    show CalendarCarousel;
+import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart' show CalendarCarousel;
 import 'package:medimed/Widgets/custom_bottomnavigationbar.dart';
 
 import 'nurse_profile2.dart';
 
 class NurseProfileScreen1 extends StatefulWidget {
-  const NurseProfileScreen1({super.key});
+  final Map<String, dynamic> nurseData;
+  final int patientData;
+
+  const NurseProfileScreen1({super.key, required this.nurseData, required this.patientData});
 
   @override
   State<NurseProfileScreen1> createState() => _NurseProfileScreen1State();
 }
 
 class _NurseProfileScreen1State extends State<NurseProfileScreen1> {
-  final List<DateTime> _selectedDates = [];
+  DateTime? _selectedDate;
   final EventList<Event> _markedDateMap = EventList<Event>(
     events: {},
   );
-
-  void _clearSelectedDates() {
-    setState(() {
-      _selectedDates.clear();
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,31 +40,37 @@ class _NurseProfileScreen1State extends State<NurseProfileScreen1> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Card(
+              Card(
                 elevation: 4,
                 child: Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Center(
+                        child: CircleAvatar(
+                          radius: 50,
+                          backgroundImage: NetworkImage(widget.nurseData['idCard'] ?? 'https://via.placeholder.com/150'),
+                        ),
+                      ),
+                      SizedBox(height: 10),
                       Text(
-                        'N. Olivia Turner, M.D.',
+                        widget.nurseData['name'] ?? 'Nurse Name',
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Text('Dermato-Endocrinology'),
-                      Text('20 years of experience'),
+                      Text(widget.nurseData['specialization'] ?? 'Specialization'),
+                      Text('${widget.nurseData['experienceYears'] ?? '0'} years of experience'),
                       Row(
                         children: [
                           Icon(Icons.star, color: Colors.amber),
-                          Text('4.5'),
+                          Text(widget.nurseData['rating']?.toString() ?? '4.5'),
                         ],
                       ),
-                      Text('Mon-Sat, 9 AM - 4 PM'),
-                      Text(
-                          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'),
+                      Text(widget.nurseData['availability'] ?? 'Availability: Not specified'),
+                      Text(widget.nurseData['bio'] ?? 'An experienced and compassionate nurse dedicated to providing high-quality patient care. Skilled in assisting medical teams and ensuring patient comfort.'),
                     ],
                   ),
                 ),
@@ -77,18 +79,14 @@ class _NurseProfileScreen1State extends State<NurseProfileScreen1> {
               CalendarCarousel<Event>(
                 onDayPressed: (DateTime date, List<Event> events) {
                   setState(() {
-                    int index = _selectedDates.indexOf(date);
-                    if (index != -1) {
-                      _selectedDates.removeAt(index);
-                    } else {
-                      _selectedDates.add(date);
-                    }
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AppointmentBookingScreen(),
-                        ));
+                    _selectedDate = date;
                   });
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AppointmentBooking(nurseData: widget.nurseData, patientData: widget.patientData,),
+                    ),
+                  );
                 },
                 selectedDayButtonColor: Colors.blue,
                 selectedDayBorderColor: Colors.blue,
@@ -97,51 +95,46 @@ class _NurseProfileScreen1State extends State<NurseProfileScreen1> {
                   color: Colors.red,
                 ),
                 thisMonthDayBorderColor: Colors.grey,
-                customDayBuilder: (
-                  bool isSelectable,
-                  int index,
-                  bool isSelectedDay,
-                  bool isToday,
-                  bool isPrevMonthDay,
-                  TextStyle textStyle,
-                  bool isNextMonthDay,
-                  bool isThisMonthDay,
-                  DateTime day,
-                ) {
-                  int selectedIndex = _selectedDates.indexOf(day);
-                  if (selectedIndex != -1) {
-                    return Center(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.blue,
-                          shape: BoxShape.circle,
-                        ),
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          (selectedIndex + 1).toString(),
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    );
-                  } else {
-                    return null;
-                  }
-                },
-                weekFormat: false,
                 markedDatesMap: _markedDateMap,
                 height: 420.0,
                 daysHaveCircularBorder: false,
               ),
+              if (_selectedDate != null)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "Selected Date: ${_selectedDate!.toLocal().toString().split(' ')[0]}",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue),
+                  ),
+                ),
               const SizedBox(height: 20),
             ],
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _clearSelectedDates,
-        child: Icon(Icons.refresh),
-      ),
       bottomNavigationBar: MyBottomNavigationBar(),
+    );
+  }
+}
+
+class AppointmentBookingScreen extends StatelessWidget {
+  final DateTime selectedDate;
+
+  const AppointmentBookingScreen({super.key, required this.selectedDate});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Appointment Booking"),
+        backgroundColor: Colors.blue,
+      ),
+      body: Center(
+        child: Text(
+          "Selected Date: ${selectedDate.toLocal().toString().split(' ')[0]}",
+          style: TextStyle(fontSize: 20),
+        ),
+      ),
     );
   }
 }

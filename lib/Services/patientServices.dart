@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:medimed/Models/nursemodel.dart';
 import 'package:medimed/Models/patientAdd.dart';
 import 'package:medimed/Models/patientmodel.dart';
+import 'package:medimed/Models/patientsmodel.dart';
 
 class PatientServices
 {
@@ -58,14 +59,17 @@ class PatientServices
       throw Exception(response.statusMessage);
     }
   }
-  static getNurses(int patientId) async {
-    Response response = await dio.get('https://medimed.runasp.net/api/Patients/$patientId/nurses');
-    if (response.statusCode == 200) {
-      return Nursemodel.fromJson(response.data);
+  static Future<PatientsModel> getNurses(int patientId) async {
+    Response response = await dio.get(
+        'https://medimed.runasp.net/api/Patients/$patientId/nurses');
+
+    if (response.statusCode == 200 && response.data is List) {
+      return PatientsModel.fromJson(response.data);
     } else {
-      throw Exception(response.statusMessage);
+      throw Exception("Failed to load nurses: ${response.statusMessage}");
     }
   }
+
   static login(String email,String pass) async {
     try
     {
@@ -97,26 +101,49 @@ class PatientServices
     }
   }
 
-  static update(int id, String firstName, String location, String lastName, String url, String email, int contact, String pass, String date, String gender) async {
-    Response response = await dio.post('https://medimed.runasp.net/api/Patients/$id',
-        data:  {
-          "firstName": firstName,
-          "lastName": lastName,
+  static Future<void> update({
+    required int id,
+    required String fullname,
+    required String email,
+    required String password,
+    required String dateOfBirth,
+    required String gender,
+    required int contact,
+    required String imageUrl,
+    required String location,
+  }) async {
+    try {
+      Response response = await dio.put( // ✅ Changed from POST to PUT
+        'https://medimed.runasp.net/api/Patients/$id',
+        data: {
+          "fullName": fullname,
           "email": email,
-          "password": pass,
-          "dateOfBirth": date,
+          "password": password,
+          "dateOfBirth": dateOfBirth,
           "gender": gender,
           "contact": contact,
-          "idCard": url,
+          "idCard": imageUrl,
           "location": location
-        }
-    );
-    if (response.statusCode == 200) {
-      return;
-    } else {
-      throw Exception(response.statusMessage);
+        },
+        options: Options(headers: {
+          "Content-Type": "application/json", // ✅ Ensure JSON format
+          "Accept": "application/json",
+          // "Authorization": "Bearer YOUR_ACCESS_TOKEN", // ✅ Add if required
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        print("Patient updated successfully.");
+      } else {
+        throw Exception("Failed to update patient: ${response.statusMessage}");
+      }
+    } catch (e) {
+      print("Error updating patient: $e");
+      throw Exception("Failed to update patient.");
     }
   }
+
+
   static deletePatient(int nurseId, int patientId) async {
     Response response = await dio.delete('https://medimed.runasp.net/api/Patients/$patientId/remove-nurse/$nurseId',
     );

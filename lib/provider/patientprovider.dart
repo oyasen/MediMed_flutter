@@ -37,7 +37,10 @@ class PatientProvider extends ChangeNotifier {
     );
     notifyListeners();
   }
-
+  addPatientsNurses(int nurseId, int patientId, String status) async {
+    await PatientServices.book(nurseId, patientId, status);
+    notifyListeners();
+  }
   // Get Nurse by ID
   Future<void> getPatientById(int id) async {
     _patientModel = await PatientServices.getById(id);
@@ -46,9 +49,14 @@ class PatientProvider extends ChangeNotifier {
 
   // Get Nurse Patients
   Future<void> getPatientsNurse(int id) async {
-    _nurseModel = await PatientServices.getNurses(id);
-    notifyListeners();
+    try {
+      _patientsModel = await PatientServices.getNurses(id);
+      notifyListeners();
+    } catch (e) {
+      print("Error fetching nurses: $e");
+    }
   }
+
 
   // Get All Nurses
   Future<void> getAllPatient() async {
@@ -72,8 +80,7 @@ class PatientProvider extends ChangeNotifier {
   // Update Nurse
   Future<void> updatePatient({
     required int id,
-    required String firstName,
-    required String lastName,
+    required String fullname,
     required String url,
     required String email,
     required String pass,
@@ -82,20 +89,26 @@ class PatientProvider extends ChangeNotifier {
     required String gender,
     required String location,
   }) async {
-    await PatientServices.update(
-      id,
-      firstName,
-      lastName,
-      email,
-      pass,
-      url,
-      contact,
-      date,
-      gender,
-      location,
-    );
-    notifyListeners();
+    try {
+      await PatientServices.update(
+        id: id,
+        fullname: fullname,
+        email: email,
+        password: pass, // Changed to 'password' for clarity
+        imageUrl: url, // Changed 'url' to 'imageUrl' for clarity
+        contact: contact,
+        dateOfBirth: date, // Changed 'date' to 'dateOfBirth' for clarity
+        gender: gender,
+        location: location,
+      );
+
+      notifyListeners();
+    } catch (error) {
+      print("Error updating patient: $error");
+      throw Exception("Failed to update patient.");
+    }
   }
+
 
   // Update Nurse Patient
   Future<void> updateNursePatient({

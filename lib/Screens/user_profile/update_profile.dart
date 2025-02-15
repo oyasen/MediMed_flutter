@@ -1,33 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../Models/patientmodel.dart';
+import '../../provider/patientprovider.dart';
 
-import 'my_profile.dart';
+class UpdateProfilePage extends StatefulWidget {
+  final PatientModel patient;
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  UpdateProfilePage({super.key, required this.patient});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: UpdateProfilePage(),
-    );
+  _UpdateProfilePageState createState() => _UpdateProfilePageState();
+}
+
+class _UpdateProfilePageState extends State<UpdateProfilePage> {
+  late TextEditingController nameController;
+  late TextEditingController phoneController;
+  late TextEditingController emailController;
+  late TextEditingController dobController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Extract data from Model Map
+    Map<dynamic, dynamic> data = widget.patient.Model;
+
+    nameController = TextEditingController(text: data['fullName'] ?? '');
+    phoneController = TextEditingController(text: data['contact']?.toString() ?? '');
+    emailController = TextEditingController(text: data['email'] ?? '');
+    dobController = TextEditingController(text: data['dateOfBirth'] ?? '');
   }
-}
-
-class UpdateProfilePage extends StatelessWidget {
-  final TextEditingController nameController = TextEditingController(text: 'John Doe');
-  final TextEditingController phoneController = TextEditingController(text: '+123 567 89000');
-  final TextEditingController emailController = TextEditingController(text: 'johndoe@example.com');
-  final TextEditingController dobController = TextEditingController(text: 'DD/MM/YYYY');
-
-  UpdateProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final patientProvider = Provider.of<PatientProvider>(context, listen: false);
+
     return Scaffold(
       backgroundColor: Color(0xFFF5F9FF),
       appBar: AppBar(
@@ -44,61 +51,35 @@ class UpdateProfilePage extends StatelessWidget {
             Center(
               child: CircleAvatar(
                 radius: 60,
-                backgroundImage: NetworkImage('https://via.placeholder.com/150'), // Placeholder image for profile
+                backgroundImage: NetworkImage(widget.patient.Model['idCard'] ?? 'https://via.placeholder.com/150'),
               ),
             ),
             SizedBox(height: 20),
-            Text('Full Name', style: TextStyle(fontSize: 16)),
-            TextField(
-              controller: nameController,
-              decoration: InputDecoration(
-                hintText: 'Enter your full name',
-                border: OutlineInputBorder(),
-                filled: true,
-                fillColor: Colors.white,
-              ),
-            ),
-            SizedBox(height: 20),
-            Text('Phone Number', style: TextStyle(fontSize: 16)),
-            TextField(
-              controller: phoneController,
-              decoration: InputDecoration(
-                hintText: 'Enter your phone number',
-                border: OutlineInputBorder(),
-                filled: true,
-                fillColor: Colors.white,
-              ),
-            ),
-            SizedBox(height: 20),
-            Text('Email', style: TextStyle(fontSize: 16)),
-            TextField(
-              controller: emailController,
-              decoration: InputDecoration(
-                hintText: 'Enter your email',
-                border: OutlineInputBorder(),
-                filled: true,
-                fillColor: Colors.white,
-              ),
-            ),
-            SizedBox(height: 20),
-            Text('Date Of Birth', style: TextStyle(fontSize: 16)),
-            TextField(
-              controller: dobController,
-              decoration: InputDecoration(
-                hintText: 'DD/MM/YYYY',
-                border: OutlineInputBorder(),
-                filled: true,
-                fillColor: Colors.white,
-              ),
-            ),
+            buildTextField("Full Name", nameController),
+            buildTextField("Phone Number", phoneController, isNumber: true),
+            buildTextField("Email", emailController),
+            buildTextField("Date Of Birth", dobController),
             SizedBox(height: 40),
             Center(
               child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ProfilePage()),
+                onPressed: () async {
+                  await patientProvider.updatePatient(
+                    id: widget.patient.Model['id'] ?? 0, // Ensure this exists
+                    fullname: nameController.text,
+                    url: widget.patient.Model['idCard'] ?? '',
+                    email: emailController.text,
+                    pass: widget.patient.Model['password'] ?? '',
+                    contact: int.tryParse(phoneController.text) ?? 0,
+                    date: dobController.text,
+                    gender: widget.patient.Model['gender'] ?? 'Other',
+                    location: widget.patient.Model['location'] ?? 'Unknown',
                   );
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Profile updated successfully!'))
+                  );
+
+                  Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFF00BFFF),
@@ -110,6 +91,26 @@ class UpdateProfilePage extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget buildTextField(String label, TextEditingController controller, {bool isNumber = false}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: TextStyle(fontSize: 16)),
+        TextField(
+          controller: controller,
+          keyboardType: isNumber ? TextInputType.number : TextInputType.text,
+          decoration: InputDecoration(
+            hintText: 'Enter $label',
+            border: OutlineInputBorder(),
+            filled: true,
+            fillColor: Colors.white,
+          ),
+        ),
+        SizedBox(height: 20),
+      ],
     );
   }
 }

@@ -10,11 +10,12 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var patientProvider = Provider.of<PatientProvider>(context);
-    if(patientProvider.patientModel == null)
-    {
+    var patientProvider = Provider.of<PatientProvider>(context, listen: false);
+
+    if (patientProvider.patientModel == null && patientProvider.patientAddModel != null) {
       patientProvider.getPatientById(patientProvider.patientAddModel!.id);
     }
+
     return Scaffold(
       backgroundColor: Color(0xFFF5F9FF),
       appBar: AppBar(
@@ -22,24 +23,47 @@ class HomeScreen extends StatelessWidget {
         elevation: 0,
         title: Row(
           children: [
-            CircleAvatar(
-              backgroundImage: NetworkImage(patientProvider.patientModel?.Model["idCard"]), // Placeholder for profile image
+            Consumer<PatientProvider>(
+              builder: (context, provider, child) {
+                return CircleAvatar(
+                  backgroundImage: provider.patientModel?.Model["idCard"] != null
+                      ? NetworkImage(provider.patientModel!.Model["idCard"])
+                      : null,
+                  child: provider.patientModel?.Model["idCard"] == null
+                      ? Icon(Icons.person, color: Colors.grey)
+                      : null,
+                );
+              },
             ),
             SizedBox(width: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Hi, Welcome Back', style: TextStyle(fontSize: 12, color: Colors.grey)),
-                Text(patientProvider.patientModel?.Model["fullName"], style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              ],
+            Consumer<PatientProvider>(
+              builder: (context, provider, child) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Hi, Welcome Back', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                    Text(
+                      provider.patientModel?.Model["fullName"] ?? 'User',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                );
+              },
             ),
           ],
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.settings), // Placeholder for settings icon
+            icon: Icon(Icons.settings),
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage(),));
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProfilePage(
+                    imageUrl: patientProvider.patientModel?.Model["idCard"] ?? '',
+                  ),
+                ),
+              );
             },
           ),
         ],
@@ -72,10 +96,10 @@ class HomeScreen extends StatelessWidget {
               shrinkWrap: true,
               crossAxisCount: 4,
               children: [
-                CategoryIcon(title: 'Dentistry', imageUrl: 'https://via.placeholder.com/50' ,),
-                CategoryIcon(title: 'Cardiology', imageUrl: 'https://via.placeholder.com/50'),
-                CategoryIcon(title: 'Pulmonary', imageUrl: 'https://via.placeholder.com/50'),
-                CategoryIcon(title: 'General', imageUrl: 'https://via.placeholder.com/50'),
+                CategoryIcon(title: 'Dentistry', imageUrl: 'https://cdn-icons-png.flaticon.com/512/2947/2947853.png'),
+                CategoryIcon(title: 'Cardiology', imageUrl: 'https://cdn-icons-png.flaticon.com/512/2966/2966327.png'),
+                CategoryIcon(title: 'Pulmonary', imageUrl: 'https://cdn-icons-png.flaticon.com/512/1052/1052860.png'),
+                CategoryIcon(title: 'General', imageUrl: 'https://cdn-icons-png.flaticon.com/512/2921/2921822.png'),
               ],
             ),
             SizedBox(height: 20),
@@ -84,29 +108,26 @@ class HomeScreen extends StatelessWidget {
                 builder: (context, value, child) {
                   if (value.nurseModel == null) {
                     value.getAllNurses();
-                    return const Center(
-                      child: CircularProgressIndicator(),
+                    return const Center(child: CircularProgressIndicator());
+                  } else {
+                    return ListView.builder(
+                      itemCount: value.nurseModel?.Model.length ?? 0,
+                      itemBuilder: (context, index) {
+                        var nurse = value.nurseModel?.Model[index]; // Get nurse data
+
+                        return DoctorCard(
+                          name: nurse['fullName'] ?? 'Nurse Name',
+                          specialty: nurse['specialaization'] ?? 'Specialization',
+                          rating: nurse['rating']?.toDouble() ?? 5.0,
+                          imageUrl: nurse['idCard'] ?? '',
+                          nurseData: nurse,
+                          patientData: patientProvider.patientAddModel!.id, // Pass the actual nurse data
+                        );
+                      },
                     );
                   }
-                  else {
-                    return
-                      ListView.builder(
-                        itemBuilder: (context, index) {
-                          return Column(
-                            children: [
-                              DoctorCard(
-                                name: '${value.nurseModel?.Model[index]['fullName']}',
-                                specialty: '${value.nurseModel?.Model[index]['specialization']}',
-                                rating: 5.0,
-                                imageUrl: '${value.nurseModel?.Model[index]['idCard']}',
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                  }
                 },
-            ),
+              ),
             )
           ],
         ),
@@ -137,7 +158,8 @@ class CategoryIcon extends StatelessWidget {
       children: [
         CircleAvatar(
           backgroundColor: Colors.white,
-          backgroundImage: NetworkImage(imageUrl), // Placeholder for category image
+          backgroundImage: NetworkImage(imageUrl),
+          onBackgroundImageError: (_, __) => Icon(Icons.image_not_supported),
         ),
         SizedBox(height: 5),
         Text(title, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
@@ -151,8 +173,10 @@ class DoctorCard extends StatelessWidget {
   final String specialty;
   final double rating;
   final String imageUrl;
+  final Map<String, dynamic> nurseData;
+  final int patientData;
 
-  const DoctorCard({super.key, required this.name, required this.specialty, required this.rating, required this.imageUrl});
+  const DoctorCard({super.key, required this.name, required this.specialty, required this.rating, required this.imageUrl, required this.nurseData, required this.patientData});
 
   @override
   Widget build(BuildContext context) {
@@ -161,10 +185,12 @@ class DoctorCard extends StatelessWidget {
       color: Colors.white,
       child: GestureDetector(
         onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder:(context) => NurseProfileScreen1(), ));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => NurseProfileScreen1(nurseData: nurseData, patientData: patientData,)));
         },
         child: ListTile(
           leading: CircleAvatar(
+            backgroundImage: imageUrl.isNotEmpty ? NetworkImage(imageUrl) : null,
+            child: imageUrl.isEmpty ? Icon(Icons.person, color: Colors.grey) : null,
           ),
           title: Text(name, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
           subtitle: Text(specialty, style: TextStyle(color: Colors.grey)),

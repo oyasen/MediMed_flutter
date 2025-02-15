@@ -1,5 +1,3 @@
-
-
 class PatientModel {
   Map<dynamic,dynamic> Model;
   PatientModel({required this.Model});
