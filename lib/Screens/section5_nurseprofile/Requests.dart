@@ -26,7 +26,6 @@ class _RequestsPageState extends State<RequestsPage> {
 
   @override
   Widget build(BuildContext context) {
-    var nurseProvider = Provider.of<NurseProvider>(context);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
