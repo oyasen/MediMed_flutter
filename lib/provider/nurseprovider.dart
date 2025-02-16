@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:medimed/Models/nurseadd.dart';
 import 'package:medimed/Models/nursemodel.dart';
+import 'package:medimed/Models/nursesmodel.dart';
+import 'package:medimed/Models/patientsmodel.dart';
 import 'package:medimed/Services/nurseservices.dart'; // تأكد من استيراد الخدمة الصحيحة
 
 class NurseProvider extends ChangeNotifier {
   NurseAdd? _nurseAddModel;
   Nursemodel? _nurseModel;
-
+  Nursegetmodel? _nurseGetModel;
+  PatientsModel? _patientsModel;
   NurseAdd? get nurseAddModel => _nurseAddModel;
 
   Nursemodel? get nurseModel => _nurseModel;
+  Nursegetmodel? get nurseGetModel => _nurseGetModel;
+  PatientsModel? get patientsModel => _patientsModel;
 
   // Add Nurse
   Future<void> addNurse({
@@ -29,14 +34,14 @@ class NurseProvider extends ChangeNotifier {
 
   // Get Nurse by ID
   Future<void> getNurseById(int id) async {
-    _nurseModel = await NurseServices.getById(id);
+    _nurseGetModel = await NurseServices.getById(id);
     notifyListeners();
   }
 
   // Get Nurse Patients
   Future<void> getNursePatients(int id) async {
     try {
-      _nurseModel = await NurseServices.getPatients(id);
+      _patientsModel = await NurseServices.getPatients(id);
       notifyListeners();
     } catch (e) {
       print("Error fetching patients: $e");

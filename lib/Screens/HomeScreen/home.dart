@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:medimed/Screens/section5_nurseprofile/Requests.dart';
 import 'package:medimed/Screens/section5_nurseprofile/nurser_profile.dart';
 import 'package:medimed/provider/nurseprovider.dart';
 import 'package:medimed/provider/patientprovider.dart';
@@ -12,9 +13,9 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var patientProvider = Provider.of<PatientProvider>(context, listen: false);
 
-    if (patientProvider.patientModel == null && patientProvider.patientAddModel != null) {
+
       patientProvider.getPatientById(patientProvider.patientAddModel!.id);
-    }
+
 
     return Scaffold(
       backgroundColor: Color(0xFFF5F9FF),
@@ -53,6 +54,17 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
         actions: [
+          IconButton(
+            icon: Icon(Icons.notifications),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => RequestsPage(patientData: patientProvider.patientAddModel!.id)
+                ),
+              );
+            },
+          ),
           IconButton(
             icon: Icon(Icons.settings),
             onPressed: () {

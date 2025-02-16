@@ -1,26 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:medimed/Models/nursesmodel.dart';
+import 'package:medimed/Screens/section4_payment/page2.dart';
+import 'package:medimed/provider/patientprovider.dart';
+import 'package:provider/provider.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: BookingPage(),
-    );
-  }
-}
 
 class BookingPage extends StatelessWidget {
-  const BookingPage({super.key});
+  var nurse;
+  var book;
+  BookingPage({super.key,required this.nurse,required this.book});
 
   @override
   Widget build(BuildContext context) {
+    print(nurse);
     return Scaffold(
       appBar: AppBar(),
       backgroundColor: Colors.black,
@@ -37,24 +29,23 @@ class BookingPage extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 50,
-                backgroundImage: NetworkImage(
-                    'https://randomuser.me/api/portraits/men/1.jpg'),
+                backgroundImage: nurse["idCard"] == null ? null: NetworkImage(nurse["idCard"]),
               ),
               const SizedBox(height: 20),
               _buildLabel('Booking For'),
-              _buildTextField('John Doe'),
+              _buildTextField(nurse["fullName"]),
               _buildLabel('Phone Number'),
-              _buildTextField('+123 567 89000'),
+              _buildTextField(nurse["contact"]),
               _buildLabel('Price'),
-              _buildTextField('5000'),
+              _buildTextField(book["price"]?? "0"),
               _buildLabel('Booking Time'),
-              _buildTextField('DD / MM / YYYY'),
+              _buildTextField(book["bookTime"].toString().split("T").join(' ')),
               const SizedBox(height: 100),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _buildButton('Accept', Colors.blue),
-                  _buildButton('Delete', Colors.red),
+                  _buildButton('Accept', Colors.blue,context,nurse["id"],book["patientId"]),
+                  _buildButton('Delete', Colors.red,context,nurse["id"],book["patientId"]),
                 ],
               ),
             ],
@@ -80,7 +71,8 @@ class BookingPage extends StatelessWidget {
     );
   }
 
-  Widget _buildTextField(String hintText) {
+  Widget _buildTextField(var hintText) {
+    hintText = hintText.toString();
     return TextField(
       readOnly: true,
       decoration: InputDecoration(
@@ -96,9 +88,22 @@ class BookingPage extends StatelessWidget {
     );
   }
 
-  Widget _buildButton(String text, Color color) {
+  Widget _buildButton(String text, Color color,BuildContext context,nurseId , patientId) {
+    var provider = Provider.of<PatientProvider>(context, listen: false);
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: () async{
+        if(text == "Accepted")
+          {
+            await provider.updateNursePatient(nurseId: nurseId, patientId:patientId, status: "Accept");
+            await provider.getPatientsNurse(nurseId);
+            Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentPage2(),));
+          }
+        else
+          {
+            await provider.deletePatientNurse(nurseId: nurseId, patientId: patientId);
+            Navigator.pop(context);
+          }
+      },
       style: ElevatedButton.styleFrom(
         backgroundColor: color,
         shape: RoundedRectangleBorder(

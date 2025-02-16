@@ -40,6 +40,7 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
         context,
         MaterialPageRoute(
           builder: (context) => SuccessPage(
+            nurseId: widget.nurseId,
             status: newStatus,
             patientName: widget.patientData['fullName'] ?? "Unknown",
             price: price,

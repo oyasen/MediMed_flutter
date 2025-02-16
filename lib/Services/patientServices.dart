@@ -59,12 +59,12 @@ class PatientServices
       throw Exception(response.statusMessage);
     }
   }
-  static Future<PatientsModel> getNurses(int patientId) async {
+  static Future<Nursemodel> getNurses(int patientId) async {
     Response response = await dio.get(
         'https://medimed.runasp.net/api/Patients/$patientId/nurses');
 
     if (response.statusCode == 200 && response.data is List) {
-      return PatientsModel.fromJson(response.data);
+      return Nursemodel.fromJson(response.data);
     } else {
       throw Exception("Failed to load nurses: ${response.statusMessage}");
     }
@@ -154,10 +154,9 @@ class PatientServices
     }
   }
   static updateNurse(int nurseId, int patientId, String status) async {
-    Response response = await dio.put('https://medimed.runasp.net/api/Patients/$patientId/update-nurse/$nurseId?status=$status',
-    );
+    Response response = await dio.put('https://medimed.runasp.net/api/Patients/$patientId/update-nurse/$nurseId?status=$status',);
     if (response.statusCode == 200) {
-      return PatientModel(Model: response.data);
+      return;
     } else {
       throw Exception(response.statusMessage);
     }

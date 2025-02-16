@@ -50,7 +50,7 @@ class PatientProvider extends ChangeNotifier {
   // Get Nurse Patients
   Future<void> getPatientsNurse(int id) async {
     try {
-      _patientsModel = await PatientServices.getNurses(id);
+      _nurseModel = await PatientServices.getNurses(id);
       notifyListeners();
     } catch (e) {
       print("Error fetching nurses: $e");

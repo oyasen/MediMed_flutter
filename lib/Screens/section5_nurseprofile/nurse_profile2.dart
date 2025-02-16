@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:medimed/Screens/section5_nurseprofile/Requests.dart';
+import 'package:medimed/Screens/section5_nurseprofile/success_book_page.dart';
 import 'package:medimed/Widgets/custom_bottomnavigationbar.dart';
+import 'package:medimed/provider/nurseprovider.dart';
 import 'package:medimed/provider/patientprovider.dart';
 import 'package:provider/provider.dart';
 
@@ -28,10 +30,10 @@ class _AppointmentBookingState extends State<AppointmentBooking> {
     '''6:00AM - 9:00AM''',
   ];
 
-  final TextEditingController _statusController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<NurseProvider>(context,listen: false);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -98,29 +100,19 @@ class _AppointmentBookingState extends State<AppointmentBooking> {
                 'Patient Details',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 23),
               ),
-              TextField(
-                controller: _statusController,
-                decoration: const InputDecoration(
-                  labelText: 'Status',
-                ),
-              ),
+
               const SizedBox(height: 20),
               MaterialButton(
                 onPressed: () async {
-                  int nurseId = widget.nurseData['id'];
-                  int patientId = widget.patientData;
-                  String status = _statusController.text.trim();
 
-                  if (status.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Status cannot be empty")),
-                    );
-                    return;
-                  }
+                  int nurseId = widget.nurseData['id'];
+                  await provider.getNurseById(nurseId);
+                  int patientId = widget.patientData;
+
 
                   try {
                     await Provider.of<PatientProvider>(context, listen: false)
-                        .addPatientsNurses(nurseId, patientId, status);
+                        .addPatientsNurses(nurseId, patientId, "processing");
 
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text("Nurse assigned successfully!")),
@@ -128,7 +120,7 @@ class _AppointmentBookingState extends State<AppointmentBooking> {
 
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => RequestsPage(patientData: patientId,)),
+                      MaterialPageRoute(builder: (context) => SuccessBookPage(status: "Processing", nurseName: provider.nurseGetModel!.Model["fullName"])),
                     );
                   } catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(

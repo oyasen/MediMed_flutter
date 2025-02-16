@@ -51,20 +51,28 @@ class NotificationsPage extends StatelessWidget {
                 ),
                 child: Consumer<NurseProvider>(
                   builder: (context, value, child) {
-                    if (value.nurseModel == null) {
-                      value.getNursePatients(id!);
+                    value.getNursePatients(id!);
+                    if (value.patientsModel == null) {
+
                       return const Center(child: CircularProgressIndicator());
                     }
-
-                    if (value.nurseModel!.Model.isEmpty) {
+                    var patients = [];
+                    for (var i = 0 ; i < value.patientsModel!.Model.length ; i++)
+                      {
+                        if(value.patientsModel!.Model[i]["status"] == "processing")
+                          {
+                            patients.add(value.patientsModel!.Model[i]);
+                          }
+                      }
+                    if (patients.isEmpty) {
                       return const Center(child: Text("No notifications available."));
                     }
 
                     return ListView.builder(
                       padding: const EdgeInsets.symmetric(vertical: 10),
-                      itemCount: value.nurseModel!.Model.length,
+                      itemCount: patients.length,
                       itemBuilder: (context, index) {
-                        var nurse = value.nurseModel!.Model[index];
+                        var nurse = patients[index];
                         var patientData = nurse['patient'];
 
                         return GestureDetector(

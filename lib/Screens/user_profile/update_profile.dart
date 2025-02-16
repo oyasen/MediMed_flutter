@@ -43,52 +43,54 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         title: Text('Profile', style: TextStyle(color: Color(0xFF00BFFF))),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: CircleAvatar(
-                radius: 60,
-                backgroundImage: NetworkImage(widget.patient.Model['idCard'] ?? 'https://via.placeholder.com/150'),
-              ),
-            ),
-            SizedBox(height: 20),
-            buildTextField("Full Name", nameController),
-            buildTextField("Phone Number", phoneController, isNumber: true),
-            buildTextField("Email", emailController),
-            buildTextField("Date Of Birth", dobController),
-            SizedBox(height: 40),
-            Center(
-              child: ElevatedButton(
-                onPressed: () async {
-                  await patientProvider.updatePatient(
-                    id: widget.patient.Model['id'] ?? 0, // Ensure this exists
-                    fullname: nameController.text,
-                    url: widget.patient.Model['idCard'] ?? '',
-                    email: emailController.text,
-                    pass: widget.patient.Model['password'] ?? '',
-                    contact: int.tryParse(phoneController.text) ?? 0,
-                    date: dobController.text,
-                    gender: widget.patient.Model['gender'] ?? 'Other',
-                    location: widget.patient.Model['location'] ?? 'Unknown',
-                  );
-
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Profile updated successfully!'))
-                  );
-
-                  Navigator.pop(context);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF00BFFF),
-                  padding: EdgeInsets.symmetric(horizontal: 100, vertical: 15),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: CircleAvatar(
+                  radius: 60,
+                  backgroundImage: NetworkImage(widget.patient.Model['idCard'] ?? 'https://via.placeholder.com/150'),
                 ),
-                child: Text('Update Profile', style: TextStyle(color: Colors.white)),
               ),
-            ),
-          ],
+              SizedBox(height: 20),
+              buildTextField("Full Name", nameController),
+              buildTextField("Phone Number", phoneController, isNumber: true),
+              buildTextField("Email", emailController),
+              buildTextField("Date Of Birth", dobController),
+              SizedBox(height: 40),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () async {
+                    await patientProvider.updatePatient(
+                      id: widget.patient.Model['id'] ?? 0, // Ensure this exists
+                      fullname: nameController.text,
+                      url: widget.patient.Model['idCard'] ?? '',
+                      email: emailController.text,
+                      pass: widget.patient.Model['password'] ?? '',
+                      contact: int.tryParse(phoneController.text) ?? 0,
+                      date: dobController.text,
+                      gender: widget.patient.Model['gender'] ?? 'Other',
+                      location: widget.patient.Model['location'] ?? 'Unknown',
+                    );
+        
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Profile updated successfully!'))
+                    );
+        
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFF00BFFF),
+                    padding: EdgeInsets.symmetric(horizontal: 100, vertical: 15),
+                  ),
+                  child: Text('Update Profile', style: TextStyle(color: Colors.white)),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
