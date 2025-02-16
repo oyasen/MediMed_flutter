@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:medimed/Models/nurseadd.dart';
 import 'package:medimed/Models/nursemodel.dart';
 import 'package:medimed/Models/nursesmodel.dart';
-import 'package:medimed/Models/patientmodel.dart';
 import 'package:medimed/Models/patientsmodel.dart';
 
 class NurseServices

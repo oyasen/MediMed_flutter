@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:medimed/Screens/Buttons.dart';
 import 'package:provider/provider.dart';
-import 'package:medimed/Screens/user_profile/Notifications.dart';
 import 'package:medimed/Screens/user_profile/setting.dart';
 import 'package:medimed/Screens/user_profile/update_profile.dart';
-import '../../Nurses/favorite.dart';
 import '../../provider/patientprovider.dart';
 import '../section4_payment/page2.dart';
 

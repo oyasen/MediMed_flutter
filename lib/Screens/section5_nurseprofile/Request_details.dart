@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:medimed/Models/nursesmodel.dart';
 import 'package:medimed/Screens/section4_payment/page2.dart';
 import 'package:medimed/provider/patientprovider.dart';
 import 'package:provider/provider.dart';

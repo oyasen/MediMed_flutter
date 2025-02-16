@@ -6,7 +6,7 @@ import '../../provider/patientprovider.dart';
 class UpdateProfilePage extends StatefulWidget {
   final PatientModel patient;
 
-  UpdateProfilePage({super.key, required this.patient});
+  const UpdateProfilePage({super.key, required this.patient});
 
   @override
   _UpdateProfilePageState createState() => _UpdateProfilePageState();
