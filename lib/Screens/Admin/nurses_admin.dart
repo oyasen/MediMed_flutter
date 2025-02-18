@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medimed/Models/nursemodel.dart';
 import 'package:medimed/Models/nursesmodel.dart';
+import 'package:medimed/Screens/Admin/nurse_details.dart';
 import 'package:medimed/provider/adminprovider.dart';
 import 'package:provider/provider.dart';
 
@@ -128,41 +129,47 @@ class NurseCard extends StatelessWidget {
                   backgroundImage: NetworkImage(nurse["idCard"]),
                 ),
                 SizedBox(width: 12),
-                Container(
-                  width: 230,
-                  height: 80,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 10),
-                    child: Column(
-
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          nurse["fullName"],
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                        Text(nurse["email"], style: TextStyle(color: Colors.black)),
-                        Text(nurse["contact"], style: TextStyle(color: Colors.black)),
-                      ],
+                Expanded(
+                  flex: 100,
+                  child: Container(
+                    height: 80,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Column(
+                  
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            nurse["fullName"],
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          Text(nurse["email"], style: TextStyle(color: Colors.black)),
+                          Text(nurse["contact"], style: TextStyle(color: Colors.black)),
+                        ],
+                      ),
                     ),
                   ),
                 ),
                 Spacer(),
+                SizedBox(width: 10),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 70),
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    width: 75,
+                    padding: EdgeInsets.symmetric(vertical: 5),
                     decoration: BoxDecoration(
                       color: statusColor,
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Text(
-                      statusText,
-                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,fontSize: 12),
+                    child: Center(
+                      child: Text(
+                        statusText,
+                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,fontSize: 12),
+                      ),
                     ),
                   ),
                 ),
@@ -174,7 +181,9 @@ class NurseCard extends StatelessWidget {
                 backgroundColor: Colors.blue,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
               ),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => NurseDetails(nurse: nurse,),));
+              },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
