@@ -23,6 +23,7 @@ class HomeScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         title: Row(
+          mainAxisSize: MainAxisSize.min, // Prevents excessive space usage
           children: [
             Consumer<PatientProvider>(
               builder: (context, provider, child) {
@@ -37,19 +38,26 @@ class HomeScreen extends StatelessWidget {
               },
             ),
             SizedBox(width: 10),
-            Consumer<PatientProvider>(
-              builder: (context, provider, child) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Hi, Welcome Back', style: TextStyle(fontSize: 12, color: Colors.grey)),
-                    Text(
-                      provider.patientModel?.Model["fullName"] ?? 'User',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                );
-              },
+            Expanded( // Prevents overflow
+              child: Consumer<PatientProvider>(
+                builder: (context, provider, child) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Hi, Welcome Back',
+                        style: TextStyle(fontSize: 12, color: Colors.grey),
+                        overflow: TextOverflow.ellipsis, // Prevents text overflow
+                      ),
+                      Text(
+                        provider.patientModel?.Model["fullName"] ?? 'User',
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        overflow: TextOverflow.ellipsis, // Prevents text overflow
+                      ),
+                    ],
+                  );
+                },
+              ),
             ),
           ],
         ),
@@ -60,7 +68,7 @@ class HomeScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => RequestsPage(patientData: patientProvider.patientAddModel!.id)
+                  builder: (context) => RequestsPage(patientData: patientProvider.patientAddModel!.id),
                 ),
               );
             },

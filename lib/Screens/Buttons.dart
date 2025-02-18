@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:medimed/Screens/section1/signup.dart';
 import 'package:medimed/Screens/section1/signup_nurse.dart';
 
+import 'Admin/login_admin.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -80,6 +82,29 @@ class ButtonPage extends StatelessWidget {
                         child: Center(
                           child: Text(
                             "Patient",
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20,),
+                    MaterialButton(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => LoginAdmin(),));
+                      },
+                      color: Colors.red.shade800,
+                      elevation: 5,
+                      padding: EdgeInsets.zero,
+                      child: SizedBox(
+                        width: 150,
+                        height: 60,
+                        child: Center(
+                          child: Text(
+                            "Admin",
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 22,

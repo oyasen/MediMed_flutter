@@ -78,16 +78,27 @@ class _NurseProfileScreen1State extends State<NurseProfileScreen1> {
               const SizedBox(height: 20),
               CalendarCarousel<Event>(
                 onDayPressed: (DateTime date, List<Event> events) {
-                  setState(() {
-                    _selectedDate = date;
-                  });
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => AppointmentBooking(nurseData: widget.nurseData, patientData: widget.patientData,),
-                    ),
-                  );
+                  if (date.isBefore(DateTime.now().subtract(Duration(days: 1)))) {
+                    // Show a warning if the user selects a past date
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("You cannot select a past date!"),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  } else {
+                    setState(() {
+                      _selectedDate = date;
+                    });
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AppointmentBooking(nurseData: widget.nurseData, patientData: widget.patientData),
+                      ),
+                    );
+                  }
                 },
+
                 selectedDayButtonColor: Colors.blue,
                 selectedDayBorderColor: Colors.blue,
                 selectedDayTextStyle: const TextStyle(color: Colors.white),

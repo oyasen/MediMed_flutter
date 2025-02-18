@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:medimed/Models/nursemodel.dart';
-import 'package:medimed/Models/nursesmodel.dart';
 import 'package:medimed/Screens/Admin/nurse_details.dart';
 import 'package:medimed/provider/adminprovider.dart';
 import 'package:provider/provider.dart';
@@ -101,8 +99,14 @@ class NurseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var adminProv = Provider.of<Adminprovider>(context, listen: false);
     Color statusColor;
-    String statusText = nurse["approved"] == "Processing" ? "New User": nurse["approved"] == "Accepted"?"Done":"Rejected";
+    String statusText = nurse["approved"] == "Processing"
+        ? "New User"
+        : nurse["approved"] == "Accepted"
+        ? "Done"
+        : "Rejected";
+
     if (statusText == "New User") {
       statusColor = Colors.green;
     } else if (statusText == "Done") {
@@ -116,13 +120,11 @@ class NurseCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       elevation: 4,
-
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Column(
           children: [
             Row(
-
               children: [
                 CircleAvatar(
                   radius: 30,
@@ -140,7 +142,6 @@ class NurseCard extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.only(left: 10),
                       child: Column(
-                  
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
@@ -168,7 +169,7 @@ class NurseCard extends StatelessWidget {
                     child: Center(
                       child: Text(
                         statusText,
-                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,fontSize: 12),
+                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
                       ),
                     ),
                   ),
@@ -181,13 +182,19 @@ class NurseCard extends StatelessWidget {
                 backgroundColor: Colors.blue,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
               ),
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => NurseDetails(nurse: nurse,),));
+              onPressed: () async {
+                var nurseDetails = await adminProv.getNurseById(nurse['id']); // Await the response
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NurseDetails(nurse: nurseDetails),
+                  ),
+                );
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Details",style: TextStyle(color: Colors.white,fontSize: 15),),
+                  Text("Details", style: TextStyle(color: Colors.white, fontSize: 15)),
                 ],
               ),
             ),
@@ -197,6 +204,7 @@ class NurseCard extends StatelessWidget {
     );
   }
 }
+
 
 class BottomNavBar extends StatelessWidget {
   @override
