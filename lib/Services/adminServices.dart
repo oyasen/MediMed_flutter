@@ -29,5 +29,13 @@ class Adminservices
       throw Exception(response.statusMessage);
     }
   }
-
+  static updatePatient(int patientId, bool approved, String? message) async {
+    Response response = await dio.put('https://medimed.runasp.net/api/Admins/UpdatePatient/$patientId?approved=$approved&message=$message',
+    );
+    if (response.statusCode == 200) {
+      return;
+    } else {
+      throw Exception(response.statusMessage);
+    }
+  }
 }
