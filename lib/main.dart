@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => UploadProvider(),),
         ChangeNotifierProvider(create: (context) => NurseProvider(),),
         ChangeNotifierProvider(create: (context) => PatientProvider(),),
-        ChangeNotifierProvider(create: (context) => Adminprovider(),)
+        ChangeNotifierProvider(create: (context) => Adminprovider(),),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

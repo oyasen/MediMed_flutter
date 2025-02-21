@@ -2,20 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:medimed/provider/adminprovider.dart';
 import 'package:provider/provider.dart';
 
-class NurseDetails extends StatelessWidget {
-  final Map nurse;
+class PatientDetails extends StatelessWidget {
+  final Map patient;
   final TextEditingController message = TextEditingController();
 
-  NurseDetails({required this.nurse});
+  PatientDetails({required this.patient});
 
   @override
   Widget build(BuildContext context) {
-    var adminprovider = Provider.of<Adminprovider>(context);
+    var adminProvider = Provider.of<Adminprovider>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: Text("Nurse Details"),
+        title: Text("Patient Details"),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -27,29 +27,23 @@ class NurseDetails extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 30,
-                    backgroundImage: NetworkImage(nurse["idCard"] ?? ''),
+                    backgroundImage: NetworkImage(patient["ProfileP"] ?? ''),
                   ),
                   SizedBox(width: 10),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      buildInfoRow('Full Name :', nurse["fullName"]),
-                      buildInfoRow('Email :', nurse["email"]),
-                      buildInfoRow('Birth Of Date :', nurse["dateOfBirth"]),
-                      buildInfoRow('Phone :', nurse["contact"]),
-                      buildInfoRow('Specialization :', nurse["specialaization"]),
-                      buildInfoRow('Gender :', nurse["gender"]),
-                      buildInfoRow('Location :', nurse["location"]),
+                      buildInfoRow('Full Name :', patient["fullName"]),
+                      buildInfoRow('Email :', patient["email"]),
+                      buildInfoRow('Birth Of Date :', patient["dateOfBirth"]),
+                      buildInfoRow('Phone :', patient["contact"]),
+                      buildInfoRow('Gender :', patient["gender"]),
                     ],
                   ),
                 ],
               ),
               SizedBox(height: 20),
-              buildDocumentSection('Professional Practice License', nurse["professionalPracticeLicense"]),
-              buildDocumentSection('Graduation Certificate', nurse["graduationCertificate"]),
-              buildDocumentSection('Clinical Report And Identification', nurse["criminalRecordAndIdentification"]),
-              buildDocumentSection('ID Card', nurse["idCard"]),
-              buildDocumentSection('Picture', nurse["personalPicture"]),
+              buildDocumentSection('ID Card', patient["idCard"]),
               SizedBox(height: 20),
               Text(
                 'Add Comments (Optional):',
@@ -76,15 +70,12 @@ class NurseDetails extends StatelessWidget {
                       padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                     ),
                     onPressed: () async {
-                      await adminprovider.updateNurse(
-                        nurseId: nurse["id"],
+                      await adminProvider.updatePatient(
+                        patientId: patient["id"],
                         approved: true,
                         message: message.text,
                       );
-
-                      print("Update successful, refreshing...");
-
-                      await adminprovider.getAllNurses(); // Refresh nurses before popping
+                      adminProvider.getAllPatients();
                       if (context.mounted) {
                         Navigator.pop(context, true); // Pass `true` as a result to indicate data changed
                       }
@@ -103,20 +94,16 @@ class NurseDetails extends StatelessWidget {
                       padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                     ),
                     onPressed: () async {
-                      await adminprovider.updateNurse(
-                        nurseId: nurse["id"],
+                      await adminProvider.updatePatient(
                         approved: false,
                         message: message.text,
+                        patientId: patient["id"],
                       );
-
-                      print("Update successful, refreshing...");
-
-                      await adminprovider.getAllNurses(); // Refresh nurses before popping
+                      adminProvider.getAllPatients();
                       if (context.mounted) {
                         Navigator.pop(context, true); // Pass `true` as a result to indicate data changed
                       }
                     },
-
                     child: Text(
                       'Reject',
                       style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
@@ -170,5 +157,4 @@ class NurseDetails extends StatelessWidget {
       ],
     );
   }
-
 }

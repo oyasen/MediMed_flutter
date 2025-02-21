@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:medimed/Models/nursemodel.dart';
 import 'package:medimed/Models/patientAdd.dart';
 import 'package:medimed/Models/patientmodel.dart';
+import 'package:medimed/Models/patientsmodel.dart';
 
 class PatientServices
 {
@@ -53,7 +54,7 @@ class PatientServices
   static getAll() async {
     Response response = await dio.get('https://medimed.runasp.net/api/Patients');
     if (response.statusCode == 200) {
-      return PatientModel.fromJson(response.data);
+      return PatientsModel.fromJson(response.data);
     } else {
       throw Exception(response.statusMessage);
     }
