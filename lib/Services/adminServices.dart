@@ -1,8 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:medimed/Models/nurseadd.dart';
-import 'package:medimed/Models/nursemodel.dart';
-import 'package:medimed/Models/nursesmodel.dart';
-import 'package:medimed/Models/patientsmodel.dart';
 
 class Adminservices
 {
@@ -29,13 +26,24 @@ class Adminservices
       throw Exception(response.statusMessage);
     }
   }
-  static updatePatient(int patientId, bool approved, String? message) async {
-    Response response = await dio.put('https://medimed.runasp.net/api/Admins/UpdatePatient/$patientId?approved=$approved&message=$message',
-    );
-    if (response.statusCode == 200) {
-      return;
-    } else {
-      throw Exception(response.statusMessage);
+  static Future<void> updatePatient(int patientId, bool approved, String? message) async {
+    try {
+      Response response = await dio.put(
+        'https://medimed.runasp.net/api/Admins/UpdatePatient/$patientId?approved=${approved ? 'true' : 'false'}&message=$message',
+      );
+
+      print("Response Status Code: ${response.statusCode}");
+      print("Response Data: ${response.data}");
+
+      if (response.statusCode == 200 || response.statusCode == 202) {
+        print("Patient update successful.");
+      } else {
+        throw Exception("Unexpected response: ${response.statusCode} - ${response.statusMessage}");
+      }
+    } catch (e) {
+      print("Error updating patient: $e");
+      throw Exception("An error occurred while updating the patient.");
     }
   }
+
 }

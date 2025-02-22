@@ -5,6 +5,8 @@ import 'package:medimed/provider/adminprovider.dart';
 import 'package:provider/provider.dart';
 
 class SchedulePage extends StatelessWidget {
+  const SchedulePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     var adminprovider = Provider.of<Adminprovider>(context);
@@ -39,8 +41,8 @@ class SchedulePage extends StatelessWidget {
           MaterialButton(onPressed: (){
             Navigator.push(context, MaterialPageRoute(builder: (context) => PatientsPage(),));
           },
-            child: Text('Patients'),
             color: Colors.blueAccent,
+            child: Text('Patients'),
           ),
         ],
       ),
@@ -49,6 +51,8 @@ class SchedulePage extends StatelessWidget {
   }
 }
 class BottomNavBar extends StatelessWidget {
+  const BottomNavBar({super.key});
+
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
@@ -66,7 +70,7 @@ class BottomNavBar extends StatelessWidget {
 class NurseCard extends StatelessWidget {
   final Map nurse;
   final int index;
-  NurseCard({required this.nurse, required this.index});
+  const NurseCard({super.key, required this.nurse, required this.index});
 
   @override
   Widget build(BuildContext context) {

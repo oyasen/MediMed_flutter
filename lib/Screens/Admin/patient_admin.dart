@@ -53,6 +53,8 @@ class _PatientsPageState extends State<PatientsPage> {
 
 
 class BottomNavBar extends StatelessWidget {
+  const BottomNavBar({super.key});
+
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
@@ -71,7 +73,7 @@ class NurseCard extends StatelessWidget {
   final Map nurse;
   final int index;
 
-  NurseCard({required this.nurse, required this.index});
+  const NurseCard({super.key, required this.nurse, required this.index});
 
   @override
   Widget build(BuildContext context) {
@@ -153,7 +155,7 @@ class NurseCard extends StatelessWidget {
                 );
 
                 if (result == true) { // If update happened
-                  adminProv.getAllNurses(); // Refresh nurse list
+                  adminProv.getAllPatients(); // Refresh nurse list
                 }
               },
 
@@ -170,7 +172,7 @@ class NurseCard extends StatelessWidget {
 class PatientCard extends StatelessWidget {
   final Map patient;
 
-  PatientCard({required this.patient});
+  const PatientCard({super.key, required this.patient});
 
   @override
   Widget build(BuildContext context) {

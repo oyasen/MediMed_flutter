@@ -6,7 +6,7 @@ class PatientDetails extends StatelessWidget {
   final Map patient;
   final TextEditingController message = TextEditingController();
 
-  PatientDetails({required this.patient});
+  PatientDetails({super.key, required this.patient});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class PatientDetails extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 30,
-                    backgroundImage: NetworkImage(patient["ProfileP"] ?? ''),
+                    backgroundImage: NetworkImage(patient["personalPicture"] ?? ''),
                   ),
                   SizedBox(width: 10),
                   Column(
@@ -70,14 +70,23 @@ class PatientDetails extends StatelessWidget {
                       padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                     ),
                     onPressed: () async {
-                      await adminProvider.updatePatient(
-                        patientId: patient["id"],
-                        approved: true,
-                        message: message.text,
-                      );
-                      adminProvider.getAllPatients();
-                      if (context.mounted) {
-                        Navigator.pop(context, true); // Pass `true` as a result to indicate data changed
+                      try {
+                        await adminProvider.updatePatient(
+                          patientId: patient["id"],
+                          approved: true,
+                          message: message.text,
+                        );
+                        await adminProvider.getAllPatients();
+
+                        if (!context.mounted) return; // Prevent pop if widget is disposed
+                        Navigator.pop(context, true);
+                      } catch (e) {
+                        print("Error updating patient: $e");
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Failed to update patient")),
+                          );
+                        }
                       }
                     },
                     child: Text(
@@ -94,14 +103,23 @@ class PatientDetails extends StatelessWidget {
                       padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                     ),
                     onPressed: () async {
-                      await adminProvider.updatePatient(
-                        approved: false,
-                        message: message.text,
-                        patientId: patient["id"],
-                      );
-                      adminProvider.getAllPatients();
-                      if (context.mounted) {
-                        Navigator.pop(context, true); // Pass `true` as a result to indicate data changed
+                      try {
+                        await adminProvider.updatePatient(
+                          patientId: patient["id"],
+                          approved: false,
+                          message: message.text,
+                        );
+                        await adminProvider.getAllPatients();
+
+                        if (!context.mounted) return; // Prevent pop if widget is disposed
+                        Navigator.pop(context, true);
+                      } catch (e) {
+                        print("Error updating patient: $e");
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Failed to update patient")),
+                          );
+                        }
                       }
                     },
                     child: Text(

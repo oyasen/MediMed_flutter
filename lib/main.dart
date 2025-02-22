@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
-import 'package:medimed/Screens/Admin/login_admin.dart';
 import 'package:medimed/Screens/Buttons.dart';
 import 'package:medimed/provider/adminprovider.dart';
 import 'package:medimed/provider/imageprovider.dart';

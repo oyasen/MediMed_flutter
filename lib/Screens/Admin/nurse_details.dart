@@ -6,7 +6,7 @@ class NurseDetails extends StatelessWidget {
   final Map nurse;
   final TextEditingController message = TextEditingController();
 
-  NurseDetails({required this.nurse});
+  NurseDetails({super.key, required this.nurse});
 
   @override
   Widget build(BuildContext context) {
