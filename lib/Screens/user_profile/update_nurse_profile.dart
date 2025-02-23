@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:medimed/Models/nursesmodel.dart';
+import 'package:medimed/provider/imageprovider.dart';
 import 'package:medimed/provider/nurseprovider.dart';
 import 'package:provider/provider.dart';
 import '../../Models/patientmodel.dart';
@@ -21,6 +24,11 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile> {
   late TextEditingController dobController;
   late TextEditingController passController;
   late String gender;
+  File? idCard;
+  File? prof;
+  File? grad;
+  File? crim;
+  File? pfp;
   @override
   void initState() {
     super.initState();
@@ -37,6 +45,7 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile> {
 
   @override
   Widget build(BuildContext context) {
+    var imageprovider = Provider.of<UploadProvider>(context, listen: false);
     final patientProvider = Provider.of<NurseProvider>(context, listen: false);
 
     return Scaffold(

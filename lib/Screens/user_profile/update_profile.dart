@@ -73,7 +73,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                       contact: int.tryParse(phoneController.text) ?? 0,
                       date: dobController.text,
                       gender: widget.patient.Model['gender'] ?? 'Other',
-                      location: widget.patient.Model['location'] ?? 'Unknown',
+                      pfp: widget.patient.Model['location'] ?? 'Unknown',
                     );
         
                     ScaffoldMessenger.of(context).showSnackBar(

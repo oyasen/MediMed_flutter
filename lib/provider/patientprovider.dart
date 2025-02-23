@@ -25,15 +25,17 @@ class PatientProvider extends ChangeNotifier {
     required String contact,
     required String date,
     required String gender,
+    required String pfp,
   }) async {
     _patientAddModel = await PatientServices.signup(
       fullName: fullName,
       email: email,
-      pass: pass,
-      url: url,
+      password: pass,
+      idCard: url,
       contact: contact,
-      date: date,
+      dob: date,
       gender: gender,
+      pfp: pfp
     );
     notifyListeners();
   }
@@ -87,7 +89,7 @@ class PatientProvider extends ChangeNotifier {
     required int contact,
     required String date,
     required String gender,
-    required String location,
+    required String pfp,
   }) async {
     try {
       await PatientServices.update(
@@ -99,7 +101,7 @@ class PatientProvider extends ChangeNotifier {
         contact: contact,
         dateOfBirth: date, // Changed 'date' to 'dateOfBirth' for clarity
         gender: gender,
-        location: location,
+        pfp: pfp,
       );
 
       notifyListeners();
