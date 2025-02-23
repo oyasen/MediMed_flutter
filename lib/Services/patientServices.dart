@@ -119,7 +119,7 @@ class PatientServices
     required String gender,
     required int contact,
     required String imageUrl,
-    required String location,
+    required String pfp,
   }) async {
     try {
       Response response = await dio.put( // ✅ Changed from POST to PUT
@@ -132,7 +132,7 @@ class PatientServices
           "gender": gender,
           "contact": contact,
           "idCard": imageUrl,
-          "location": location
+          "personalPicture": pfp
         },
         options: Options(headers: {
           "Content-Type": "application/json", // ✅ Ensure JSON format
