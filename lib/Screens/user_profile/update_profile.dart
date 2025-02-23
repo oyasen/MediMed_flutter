@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:medimed/provider/imageprovider.dart';
 import 'package:provider/provider.dart';
 import '../../Models/patientmodel.dart';
 import '../../provider/patientprovider.dart';
@@ -17,7 +20,9 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
   late TextEditingController phoneController;
   late TextEditingController emailController;
   late TextEditingController dobController;
-
+  late String gender;
+  File? idCard;
+  File? pfp;
   @override
   void initState() {
     super.initState();
@@ -29,12 +34,24 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
     phoneController = TextEditingController(text: data['contact']?.toString() ?? '');
     emailController = TextEditingController(text: data['email'] ?? '');
     dobController = TextEditingController(text: data['dateOfBirth'] ?? '');
+    gender = data['gender'];
+    final imageprovider = Provider.of<UploadProvider>(context, listen: false);
+    imageprovider.networkImageToFile(widget.patient.Model["idCard"]).then((_) {
+      setState(() {
+        idCard = imageprovider.selectedImage;
+      });
+    });
+    imageprovider.networkImageToFile(widget.patient.Model["personalPicture"]).then((_) {
+      setState(() {
+        pfp = imageprovider.selectedImage;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final patientProvider = Provider.of<PatientProvider>(context, listen: false);
-
+    var imageprovider = Provider.of<UploadProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: Color(0xFFF5F9FF),
       appBar: AppBar(
@@ -60,20 +77,196 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
               buildTextField("Phone Number", phoneController, isNumber: true),
               buildTextField("Email", emailController),
               buildTextField("Date Of Birth", dobController),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text("Gender", style: TextStyle(fontSize: 16)),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: RadioListTile<String>(
+                            selected: gender == "Male",
+                            title: const Text("Male"),
+                            value: "Male",
+                            groupValue: gender,
+                            onChanged: (value) {
+                              setState(() {
+                                gender = value!;
+                              });
+                            },
+                          ),
+                        ),
+                        Expanded(
+                          child: RadioListTile<String>(
+                            selected: gender == "Female",
+                            title: const Text("Female"),
+                            value: "Female",
+                            groupValue: gender,
+                            onChanged: (value) {
+                              setState(() {
+                                gender = value!;
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("ID Card", style: TextStyle(fontSize: 16)),
+                    Row(
+                      children: [
+                        ElevatedButton(
+                          onPressed: () async {
+                            File? selectedImage = await imageprovider.showOptions(context);
+                            if (selectedImage != null) {
+                              setState(() {
+                                idCard = selectedImage;
+                              });
+                            }
+                          },
+                          child: Text("Pick Image"),
+                        ),
+                        Visibility(
+                          visible: idCard != null,
+                          child: Row(
+                            children: [
+                              TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    idCard = null;
+                                  });
+                                },
+                                child: const Icon(Icons.delete, color: Colors.red),
+                              ),
+                              if (idCard != null)
+                                Center(
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10), // Rounded corners
+                                    child: Image.file(
+                                      idCard!,
+                                      width: 50, // Adjust size as needed
+                                      height: 50,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Personal Picture", style: TextStyle(fontSize: 16)),
+                    Row(
+                      children: [
+                        ElevatedButton(
+                          onPressed: () async {
+                            File? selectedImage = await imageprovider.showOptions(context);
+                            if (selectedImage != null) {
+                              setState(() {
+                                pfp = selectedImage;
+                              });
+                            }
+                          },
+                          child: Text("Pick Image"),
+                        ),
+                        Visibility(
+                          visible: pfp != null,
+                          child: Row(
+                            children: [
+                              TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    pfp = null;
+                                  });
+                                },
+                                child: const Icon(Icons.delete, color: Colors.red),
+                              ),
+                              if (pfp != null)
+                                Center(
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10), // Rounded corners
+                                    child: Image.file(
+                                      pfp!,
+                                      width: 50, // Adjust size as needed
+                                      height: 50,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
               SizedBox(height: 40),
               Center(
                 child: ElevatedButton(
                   onPressed: () async {
+                    if (idCard == null) {
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(
+                          SnackBar(content: Text(
+                              "Please select an ID Card image"))
+                      );
+                      return;
+                    }
+                    if (pfp == null) {
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(
+                          SnackBar(content: Text(
+                              "Please select an Personal Picture image"))
+                      );
+                      return;
+                    }
+
+                    final imageUrl = await imageprovider
+                        .uploadImageToCloudinary(idCard);
+                    final pfpUrl = await imageprovider
+                        .uploadImageToCloudinary(pfp);
+
+                    if (imageUrl == null || pfpUrl  == null) {
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(
+                        SnackBar(content: Text(
+                            "Image upload failed. Try again.")),
+                      );
+                      return;
+                    }
                     await patientProvider.updatePatient(
                       id: widget.patient.Model['id'] ?? 0, // Ensure this exists
                       fullname: nameController.text,
-                      url: widget.patient.Model['idCard'] ?? '',
-                      email: emailController.text,
-                      pass: widget.patient.Model['password'] ?? '',
-                      contact: int.tryParse(phoneController.text) ?? 0,
                       date: dobController.text,
-                      gender: widget.patient.Model['gender'] ?? 'Other',
-                      pfp: widget.patient.Model['location'] ?? 'Unknown',
+                      email: emailController.text,
+                      contact: phoneController.text,
+                      url: widget.patient.Model['idCard'] ?? '',
+                      pass: widget.patient.Model['password'] ?? '',
+                      gender: gender,
+                      pfp: pfpUrl,
                     );
         
                     ScaffoldMessenger.of(context).showSnackBar(

@@ -1,12 +1,14 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 
 class UploadProvider extends ChangeNotifier {
   final picker = ImagePicker();
   File? _selectedImage;
-
   File? get selectedImage => _selectedImage;
 
   Future<File?> _pickImage(ImageSource source) async {
@@ -45,7 +47,7 @@ class UploadProvider extends ChangeNotifier {
   }
 
   Future<String?> uploadImageToCloudinary(File? image) async {
-    if (image == null) return null; // Prevent null reference
+    if (image == null) return null;
 
     try {
       String cloudName = "dia0n1hla";
@@ -70,6 +72,24 @@ class UploadProvider extends ChangeNotifier {
       }
     } catch (e) {
       print("Error uploading: $e");
+      return null;
+    }
+  }
+
+  Future<File?> networkImageToFile(String imageUrl) async {
+    try {
+      final response = await http.get(Uri.parse(imageUrl));
+      if (response.statusCode == 200) {
+        final dir = await getTemporaryDirectory();
+        final file = File('${dir.path}/downloaded_image.png');
+        await file.writeAsBytes(response.bodyBytes);
+        return file;
+      } else {
+        print("Failed to download image");
+        return null;
+      }
+    } catch (e) {
+      print("Error converting network image to file: $e");
       return null;
     }
   }

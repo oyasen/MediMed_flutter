@@ -47,6 +47,8 @@ dependencies:
   flutter_polyline_points:
   google_maps_flutter:
   location:
+  http:
+  path_provider:
 dev_dependencies:
   flutter_test:
     sdk: flutter

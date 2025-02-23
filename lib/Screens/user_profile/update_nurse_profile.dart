@@ -5,8 +5,6 @@ import 'package:medimed/Models/nursesmodel.dart';
 import 'package:medimed/provider/imageprovider.dart';
 import 'package:medimed/provider/nurseprovider.dart';
 import 'package:provider/provider.dart';
-import '../../Models/patientmodel.dart';
-import '../../provider/patientprovider.dart';
 
 class UpdateNurseProfile extends StatefulWidget {
   final Nursegetmodel patient;
@@ -29,6 +27,11 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile> {
   File? grad;
   File? crim;
   File? pfp;
+  File? idCardOld;
+  File? profOld;
+  File? gradOld;
+  File? crimOld;
+  File? pfpOld;
   @override
   void initState() {
     super.initState();
@@ -41,6 +44,38 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile> {
     emailController = TextEditingController(text: data['email'] ?? '');
     dobController = TextEditingController(text: data['dateOfBirth'] ?? '');
     gender = data['gender'];
+    final imageprovider = Provider.of<UploadProvider>(context, listen: false);
+    imageprovider.networkImageToFile(widget.patient.Model["idCard"]).then((_) {
+      setState(() {
+        idCard = imageprovider.selectedImage;
+        idCardOld = imageprovider.selectedImage;
+      });
+    });
+    imageprovider.networkImageToFile(widget.patient.Model["personalPicture"]).then((_) {
+      setState(() {
+        pfp = imageprovider.selectedImage;
+        pfpOld = imageprovider.selectedImage;
+      });
+    });
+    imageprovider.networkImageToFile(widget.patient.Model['professionalPracticeLicense']).then((_) {
+      setState(() {
+        prof = imageprovider.selectedImage;
+        profOld = imageprovider.selectedImage;
+      });
+    });
+    imageprovider.networkImageToFile(widget.patient.Model["graduationCertificate"]).then((_) {
+      setState(() {
+        grad = imageprovider.selectedImage;
+        gradOld = imageprovider.selectedImage;
+      });
+    });
+    imageprovider.networkImageToFile(widget.patient.Model["criminalRecordAndIdentification"]).then((_) {
+      setState(() {
+        crim = imageprovider.selectedImage;
+        crimOld = imageprovider.selectedImage;
+      });
+    });
+
   }
 
   @override
@@ -111,60 +146,146 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile> {
                   ],
                 ),
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text("ID Card", style: TextStyle(fontSize: 16)),
-                  Row(
-                    children: [
-                      ElevatedButton(
-                        onPressed: () async {
-                          File? selectedImage = await imageprovider.showOptions(context);
-                          if (selectedImage != null) {
-                            setState(() {
-                              idCard = selectedImage;
-                            });
-                          }
-                        },
-                        child: const Text("Pick Image"),
-                      ),
-                      Visibility(
-                        visible: idCard != null,
-                        child: Row(
-                          children: [
-                            TextButton(
-                              onPressed: () {
-                                setState(() {
-                                  idCard = null;
-                                });
-                              },
-                              child: const Icon(Icons.delete, color: Colors.red),
-                            ),
-                            if (idCard != null)
-                              Center(
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(10), // Rounded corners
-                                  child: Image.file(
-                                    idCard!,
-                                    width: 50, // Adjust size as needed
-                                    height: 50,
-                                    fit: BoxFit.cover,
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("ID Card", style: TextStyle(fontSize: 16)),
+                    Row(
+                      children: [
+                        ElevatedButton(
+                          onPressed: () async {
+                            File? selectedImage = await imageprovider.showOptions(context);
+                            if (selectedImage != null) {
+                              setState(() {
+                                idCard = selectedImage;
+                              });
+                            }
+                          },
+                          child: Text("Pick Image"),
+                        ),
+                        Visibility(
+                          visible: idCard != null,
+                          child: Row(
+                            children: [
+                              TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    idCard = null;
+                                  });
+                                },
+                                child: const Icon(Icons.delete, color: Colors.red),
+                              ),
+                              if (idCard != null)
+                                Center(
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10), // Rounded corners
+                                    child: Image.file(
+                                      idCard!,
+                                      width: 50, // Adjust size as needed
+                                      height: 50,
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 ),
-                              ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
 
-                ],
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Personal Picture", style: TextStyle(fontSize: 16)),
+                    Row(
+                      children: [
+                        ElevatedButton(
+                          onPressed: () async {
+                            File? selectedImage = await imageprovider.showOptions(context);
+                            if (selectedImage != null) {
+                              setState(() {
+                                pfp = selectedImage;
+                              });
+                            }
+                          },
+                          child: Text("Pick Image"),
+                        ),
+                        Visibility(
+                          visible: pfp != null,
+                          child: Row(
+                            children: [
+                              TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    pfp = null;
+                                  });
+                                },
+                                child: const Icon(Icons.delete, color: Colors.red),
+                              ),
+                              if (pfp != null)
+                                Center(
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10), // Rounded corners
+                                    child: Image.file(
+                                      pfp!,
+                                      width: 50, // Adjust size as needed
+                                      height: 50,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+
+                  ],
+                ),
               ),
               SizedBox(height: 40),
               Center(
                 child: ElevatedButton(
                   onPressed: () async {
+                    if (idCard == null) {
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(
+                          SnackBar(content: Text(
+                              "Please select an ID Card image"))
+                      );
+                      return;
+                    }
+                    if (pfp == null) {
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(
+                          SnackBar(content: Text(
+                              "Please select an Personal Picture image"))
+                      );
+                      return;
+                    }
+
+                    final idUrl = await imageprovider
+                        .uploadImageToCloudinary(idCard);
+                    final pfpUrl = await imageprovider
+                        .uploadImageToCloudinary(pfp);
+
+                    if (idUrl == null || pfpUrl  == null) {
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(
+                        SnackBar(content: Text(
+                            "Image upload failed. Try again.")),
+                      );
+                      return;
+                    }
                     await patientProvider.updateNurse(
                       id: widget.patient.Model['id'] ?? 0, // Ensure this exists
                       fullName: nameController.text,

@@ -86,7 +86,7 @@ class PatientProvider extends ChangeNotifier {
     required String url,
     required String email,
     required String pass,
-    required int contact,
+    required String contact,
     required String date,
     required String gender,
     required String pfp,

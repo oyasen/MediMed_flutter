@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medimed/Models/nursesmodel.dart';
-import 'package:medimed/Models/patientmodel.dart';
 import 'package:medimed/Screens/user_profile/update_nurse_profile.dart';
-import 'package:medimed/Screens/user_profile/update_profile.dart';
-import 'package:medimed/provider/nurseprovider.dart';
-import 'package:provider/provider.dart';
 
 class InfoPageNurse extends StatelessWidget {
   Nursegetmodel patient;

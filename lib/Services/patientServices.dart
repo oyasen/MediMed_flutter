@@ -117,7 +117,7 @@ class PatientServices
     required String password,
     required String dateOfBirth,
     required String gender,
-    required int contact,
+    required String contact,
     required String imageUrl,
     required String pfp,
   }) async {
