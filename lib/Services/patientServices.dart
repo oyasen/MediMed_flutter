@@ -10,13 +10,14 @@ class PatientServices
   static signup({required String fullName,required String email,required String pass,required String url,required String contact,required  String date,required String gender}) async {
     Response response = await dio.post('https://medimed.runasp.net/api/Patients',
         data:  {
-          "fullName": fullName,
-          "email": email,
-          "password": pass,
-          "dateOfBirth": date,
-          "gender": gender,
-          "contact": contact,
-          "idCard": url
+          "fullName": "string",
+          "email": "user@example.com",
+          "password": "snsWiSVFarskzbH6grz5%t9dgO@Hbgy%2$CSmpCbPYb@3KEzPsOYR5yE$DZ2",
+          "dateOfBirth": "2025-02-23",
+          "gender": "string",
+          "contact": "201010042391",
+          "idCard": "https://res.cloudinary.com/dia0n1hla/image/upload/v1739549684/Photos/yqsc4dwqmexzbhedti07.jpg",
+          "personalPicture": "https://res.cloudinary.com/dia0n1hla/image/upload/v1739549684/Photos/yqsc4dwqmexzbhedti07.jpg"
         }
     );
     if (response.statusCode == 200) {

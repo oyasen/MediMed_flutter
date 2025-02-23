@@ -7,18 +7,37 @@ import 'package:medimed/Models/patientsmodel.dart';
 class NurseServices
 {
   static Dio dio = Dio();
-  static signup({required String fullName,required String email,required String pass,required String contact,required String grad,required String criminalRec,required String idCard,required String prof, required String spec}) async {
+  static signup({
+    required int id,
+    required String fullName,
+    required String email,
+    required String password,
+    required String contact,
+    required String dob,
+    required String gender,
+    required String spec,
+    required String location,
+    required String prof,
+    required String grad,
+    required String idCard,
+    required String pfp,
+    required String crim,
+  }) async {
     Response response = await dio.post('https://medimed.runasp.net/api/Nurses',
         data:  {
           "fullName": fullName,
           "email": email,
-          "password": pass,
+          "password": password,
           "contact": contact,
-          "specialaization" : spec,
+          "dateOfBirth": dob,
+          "gender": gender,
+          "specialaization": spec,
+          "location": location,
           "professionalPracticeLicense": prof,
           "graduationCertificate": grad,
           "idCard": idCard,
-          "criminalRecordAndIdentification": criminalRec,
+          "personalPicture": pfp,
+          "criminalRecordAndIdentification": crim,
         }
     );
     if (response.statusCode == 200) {
@@ -73,21 +92,38 @@ class NurseServices
       throw Exception(response.statusMessage);
     }
   }
-  static update(int id, String firstName, String license, String diploma, String criminalRec, String address, String location, String lastName, String url, String email, int contact, String pass) async {
+  static update({
+    required int id,
+    required String fullName,
+    required String email,
+    required String password,
+    required String contact,
+    required String dob,
+    required String gender,
+    required String spec,
+    required String location,
+    required String prof,
+    required String grad,
+    required String idCard,
+    required String pfp,
+    required String crim,
+}) async {
     Response response = await dio.post('https://medimed.runasp.net/api/Nurses/$id',
         data:  {
-          "firstName": firstName,
-          "lastName": lastName,
+          "fullName": fullName,
           "email": email,
-          "password": pass,
-          "licenseNumber": license,
+          "password": password,
           "contact": contact,
-          "professionalPracticeLicense": license,
-          "graduationCertificate": diploma,
-          "idCard": url,
-          "criminalRecordAndIdentification": criminalRec,
-          "address": address,
-          "location": location
+          "dateOfBirth": dob,
+          "gender": gender,
+          "specialaization": spec,
+          "location": location,
+          "professionalPracticeLicense": prof,
+          "graduationCertificate": grad,
+          "idCard": idCard,
+          "personalPicture": pfp,
+          "criminalRecordAndIdentification": crim,
+          "approved": "Processing"
         }
     );
     if (response.statusCode == 200) {

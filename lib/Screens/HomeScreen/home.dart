@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:medimed/Screens/HomeScreen/info_page.dart';
 import 'package:medimed/Screens/section5_nurseprofile/Requests.dart';
 import 'package:medimed/Screens/section5_nurseprofile/nurser_profile.dart';
 import 'package:medimed/provider/nurseprovider.dart';
@@ -11,158 +12,168 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var patientProvider = Provider.of<PatientProvider>(context, listen: false);
+    var patientProvider = Provider.of<PatientProvider>(context);
+    patientProvider.getPatientById(patientProvider.patientAddModel!.id);
+    var patient = patientProvider.patientModel;
+    if(patient == null)
+      {
+        return Scaffold(body: Center(child: CircularProgressIndicator(),));
+      }
 
-
-      patientProvider.getPatientById(patientProvider.patientAddModel!.id);
-
-
-    return Scaffold(
-      backgroundColor: Color(0xFFF5F9FF),
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: Row(
-          mainAxisSize: MainAxisSize.min, // Prevents excessive space usage
-          children: [
-            Consumer<PatientProvider>(
-              builder: (context, provider, child) {
-                return CircleAvatar(
-                  backgroundImage: provider.patientModel?.Model["idCard"] != null
-                      ? NetworkImage(provider.patientModel!.Model["idCard"])
-                      : null,
-                  child: provider.patientModel?.Model["idCard"] == null
-                      ? Icon(Icons.person, color: Colors.grey)
-                      : null,
-                );
-              },
+    if(patient.Model["approved"] != "Accepted")
+      {
+        return InfoPage(patient: patient);
+      }
+    else
+      {
+        return Scaffold(
+          backgroundColor: Color(0xFFF5F9FF),
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            elevation: 0,
+            title: Row(
+              mainAxisSize: MainAxisSize.min, // Prevents excessive space usage
+              children: [
+                Consumer<PatientProvider>(
+                  builder: (context, provider, child) {
+                    return CircleAvatar(
+                      backgroundImage: provider.patientModel?.Model["idCard"] != null
+                          ? NetworkImage(provider.patientModel!.Model["idCard"])
+                          : null,
+                      child: provider.patientModel?.Model["idCard"] == null
+                          ? Icon(Icons.person, color: Colors.grey)
+                          : null,
+                    );
+                  },
+                ),
+                SizedBox(width: 10),
+                Expanded( // Prevents overflow
+                  child: Consumer<PatientProvider>(
+                    builder: (context, provider, child) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Hi, Welcome Back',
+                            style: TextStyle(fontSize: 12, color: Colors.grey),
+                            overflow: TextOverflow.ellipsis, // Prevents text overflow
+                          ),
+                          Text(
+                            provider.patientModel?.Model["fullName"] ?? 'User',
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            overflow: TextOverflow.ellipsis, // Prevents text overflow
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
-            SizedBox(width: 10),
-            Expanded( // Prevents overflow
-              child: Consumer<PatientProvider>(
-                builder: (context, provider, child) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Hi, Welcome Back',
-                        style: TextStyle(fontSize: 12, color: Colors.grey),
-                        overflow: TextOverflow.ellipsis, // Prevents text overflow
-                      ),
-                      Text(
-                        provider.patientModel?.Model["fullName"] ?? 'User',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                        overflow: TextOverflow.ellipsis, // Prevents text overflow
-                      ),
-                    ],
+            actions: [
+              IconButton(
+                icon: Icon(Icons.notifications),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RequestsPage(patientData: patientProvider.patientAddModel!.id),
+                    ),
                   );
                 },
               ),
-            ),
-          ],
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.notifications),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => RequestsPage(patientData: patientProvider.patientAddModel!.id),
-                ),
-              );
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.settings),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProfilePage(
-                    imageUrl: patientProvider.patientModel?.Model["idCard"] ?? '',
-                  ),
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Search...',
-                      prefixIcon: Icon(Icons.search, color: Colors.grey),
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide.none,
+              IconButton(
+                icon: Icon(Icons.settings),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProfilePage(
+                        imageUrl: patientProvider.patientModel?.Model["idCard"] ?? '',
                       ),
                     ),
-                  ),
-                ),
-                SizedBox(width: 10),
-              ],
-            ),
-            SizedBox(height: 20),
-            GridView.count(
-              shrinkWrap: true,
-              crossAxisCount: 4,
-              children: [
-                CategoryIcon(title: 'Dentistry', imageUrl: 'https://cdn-icons-png.flaticon.com/512/2947/2947853.png'),
-                CategoryIcon(title: 'Cardiology', imageUrl: 'https://cdn-icons-png.flaticon.com/512/2966/2966327.png'),
-                CategoryIcon(title: 'Pulmonary', imageUrl: 'https://cdn-icons-png.flaticon.com/512/1052/1052860.png'),
-                CategoryIcon(title: 'General', imageUrl: 'https://cdn-icons-png.flaticon.com/512/2921/2921822.png'),
-              ],
-            ),
-            SizedBox(height: 20),
-            Expanded(
-              child: Consumer<NurseProvider>(
-                builder: (context, value, child) {
-                  if (value.nurseModel == null) {
-                    value.getAllNurses();
-                    return const Center(child: CircularProgressIndicator());
-                  } else {
-                    return ListView.builder(
-                      itemCount: value.nurseModel?.Model.length ?? 0,
-                      itemBuilder: (context, index) {
-                        var nurse = value.nurseModel?.Model[index]; // Get nurse data
-
-                        return DoctorCard(
-                          name: nurse['fullName'] ?? 'Nurse Name',
-                          specialty: nurse['specialaization'] ?? 'Specialization',
-                          rating: nurse['rating']?.toDouble() ?? 5.0,
-                          imageUrl: nurse['idCard'] ?? '',
-                          nurseData: nurse,
-                          patientData: patientProvider.patientAddModel!.id, // Pass the actual nurse data
-                        );
-                      },
-                    );
-                  }
+                  );
                 },
               ),
-            )
-          ],
-        ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white,
-        selectedItemColor: Color(0xFF0299C6),
-        unselectedItemColor: Colors.grey,
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
-        ],
-      ),
-    );
+            ],
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        decoration: InputDecoration(
+                          hintText: 'Search...',
+                          prefixIcon: Icon(Icons.search, color: Colors.grey),
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                  ],
+                ),
+                SizedBox(height: 20),
+                GridView.count(
+                  shrinkWrap: true,
+                  crossAxisCount: 4,
+                  children: [
+                    CategoryIcon(title: 'Dentistry', imageUrl: 'https://cdn-icons-png.flaticon.com/512/2947/2947853.png'),
+                    CategoryIcon(title: 'Cardiology', imageUrl: 'https://cdn-icons-png.flaticon.com/512/2966/2966327.png'),
+                    CategoryIcon(title: 'Pulmonary', imageUrl: 'https://cdn-icons-png.flaticon.com/512/1052/1052860.png'),
+                    CategoryIcon(title: 'General', imageUrl: 'https://cdn-icons-png.flaticon.com/512/2921/2921822.png'),
+                  ],
+                ),
+                SizedBox(height: 20),
+                Expanded(
+                  child: Consumer<NurseProvider>(
+                    builder: (context, value, child) {
+                      if (value.nurseModel == null) {
+                        value.getAllNurses();
+                        return const Center(child: CircularProgressIndicator());
+                      } else {
+                        return ListView.builder(
+                          itemCount: value.nurseModel?.Model.length ?? 0,
+                          itemBuilder: (context, index) {
+                            var nurse = value.nurseModel?.Model[index]; // Get nurse data
+
+                            return DoctorCard(
+                              name: nurse['fullName'] ?? 'Nurse Name',
+                              specialty: nurse['specialaization'] ?? 'Specialization',
+                              rating: nurse['rating']?.toDouble() ?? 5.0,
+                              imageUrl: nurse['idCard'] ?? '',
+                              nurseData: nurse,
+                              patientData: patientProvider.patientAddModel!.id, // Pass the actual nurse data
+                            );
+                          },
+                        );
+                      }
+                    },
+                  ),
+                )
+              ],
+            ),
+          ),
+          bottomNavigationBar: BottomNavigationBar(
+            backgroundColor: Colors.white,
+            selectedItemColor: Color(0xFF0299C6),
+            unselectedItemColor: Colors.grey,
+            items: [
+              BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+              BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+              BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
+            ],
+          ),
+        );
+      }
+
   }
 }
 

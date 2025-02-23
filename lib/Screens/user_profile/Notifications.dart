@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:medimed/Screens/HomeScreen/info_page.dart';
+import 'package:medimed/Screens/user_profile/info_page_nurse.dart';
 import 'package:medimed/provider/nurseprovider.dart';
+import 'package:medimed/provider/patientprovider.dart';
 import 'package:provider/provider.dart';
 
 import 'details.dart';
@@ -11,6 +14,18 @@ class NotificationsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var nurseProvider = Provider.of<NurseProvider>(context);
+    nurseProvider.getNurseById(nurseProvider.nurseAddModel!.id);
+    var nurse = nurseProvider.nurseGetModel;
+    if(nurse == null)
+    {
+      return Scaffold(body: Center(child: CircularProgressIndicator(),));
+    }
+
+    if(nurse.Model["approved"] != "Accepted")
+    {
+      return InfoPageNurse(patient: nurse);
+    }
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(

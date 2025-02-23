@@ -29,6 +29,7 @@ class _SignupState extends State<SignupNurse> {
   File? prof;
   File? grad;
   File? crim;
+  File? pfp;
   final formKey = GlobalKey<FormState>();
 
   @override
@@ -250,6 +251,56 @@ class _SignupState extends State<SignupNurse> {
                                 ),
                                 const SizedBox(height: 10),
 
+                              ],
+                            ),
+                            const SizedBox(height: 5),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text("Personal Picture", style: TextStyle(fontSize: 16)),
+                                Row(
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: () async {
+                                        File? selectedImage = await imageprovider.showOptions(context);
+                                        if (selectedImage != null) {
+                                          setState(() {
+                                            pfp = selectedImage;
+                                          });
+                                        }
+                                      },
+                                      child: const Text("Pick Image"),
+                                    ),
+                                    Visibility(
+                                      visible: pfp != null,
+                                      child: Row(
+                                        children: [
+                                          TextButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                pfp = null;
+                                              });
+                                            },
+                                            child: const Icon(Icons.delete, color: Colors.red),
+                                          ),
+                                          if (pfp != null)
+                                            Center(
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.circular(10), // Rounded corners
+                                                child: Image.file(
+                                                  pfp!,
+                                                  width: 50, // Adjust size as needed
+                                                  height: 50,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
                               ],
                             ),
                             const SizedBox(height: 5),
