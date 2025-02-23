@@ -20,15 +20,19 @@ class NurseProvider extends ChangeNotifier {
   Future<void> addNurse({
     required String fullName,
     required String email,
-    required String pass,
+    required String password,
     required String contact,
-    required String diploma,
-    required String criminalRec,
-    required String idCard,
-    required String prof,
+    required String dob,
+    required String gender,
     required String spec,
+    required String location,
+    required String prof,
+    required String grad,
+    required String idCard,
+    required String pfp,
+    required String crim,
   }) async {
-    _nurseAddModel = await NurseServices.signup(fullName: fullName, email: email, pass: pass, contact: contact, grad: diploma, criminalRec: criminalRec, idCard: idCard, prof: prof, spec : spec);
+    _nurseAddModel = await NurseServices.signup(fullName: fullName, email: email, password: password, contact: contact, grad: grad, crim: crim, idCard: idCard, prof: prof, spec : spec,dob: dob,gender: gender,location: location,pfp: pfp);
     notifyListeners();
   }
 

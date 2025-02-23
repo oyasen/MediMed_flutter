@@ -8,7 +8,6 @@ class NurseServices
 {
   static Dio dio = Dio();
   static signup({
-    required int id,
     required String fullName,
     required String email,
     required String password,

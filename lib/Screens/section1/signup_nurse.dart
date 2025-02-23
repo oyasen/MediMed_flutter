@@ -501,44 +501,44 @@ class _SignupState extends State<SignupNurse> {
                                     );
                                     return;
                                   }
-                                  else {
-                                    if (idCard == null) {
+
+                                  if (idCard == null) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                           SnackBar(content: Text(
                                               "Please select an ID Card image"))
                                       );
                                       return;
-                                    }
-                                    if (prof == null) {
+                                  }
+                                  if (prof == null) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                           SnackBar(content: Text(
-                                              "Please select an Professional Practice License image"))
-                                      );
+                                              "Please select an Professional Practice License image")));
                                       return;
-                                    }
-                                    if (grad == null) {
+                                  }
+                                  if (grad == null) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                           SnackBar(content: Text(
                                               "Please select an Graduation Certificate image"))
                                       );
                                       return;
-                                    }
-                                    if (crim == null) {
+                                  }
+                                  if (crim == null) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                           SnackBar(content: Text(
                                               "Please select an Criminal Record And Identification image"))
                                       );
                                       return;
-                                    }
+                                  }
 
                                     final idCardUrl = await imageprovider.uploadImageToCloudinary(idCard);
                                     final profUrl = await imageprovider.uploadImageToCloudinary(prof);
                                     final gradUrl = await imageprovider.uploadImageToCloudinary(grad);
                                     final crimUrl = await imageprovider.uploadImageToCloudinary(crim);
+                                    final pfpUrl = await imageprovider.uploadImageToCloudinary(pfp);
                                     if (idCardUrl == null) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
@@ -571,7 +571,30 @@ class _SignupState extends State<SignupNurse> {
                                       );
                                       return;
                                     }
-                                    await nurseProvider.addNurse(fullName: fullName.text, email: email.text, pass: password.text, contact: contact.text, diploma: gradUrl, criminalRec: crimUrl, idCard: idCardUrl, prof: profUrl, spec: spec.text);
+                                  if (pfpUrl == null) {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(
+                                      SnackBar(content: Text(
+                                          "Image upload failed. Try again.")),
+                                    );
+                                    return;
+                                  }
+                                    await nurseProvider.addNurse(
+                                        fullName: fullName.text,
+                                        email: email.text,
+                                        password: password.text,
+                                        contact: contact.text,
+                                        grad: gradUrl,
+                                        crim: crimUrl,
+                                        idCard: idCardUrl,
+                                        prof: profUrl,
+                                        spec: spec.text,
+                                        location: "",
+                                        gender: gender!,
+                                        dob: dob.text,
+                                        pfp: pfpUrl
+
+                                    );
                                     if(nurseProvider.nurseAddModel?.id != 0) {
                                       Navigator.push(
                                         context,
@@ -581,7 +604,7 @@ class _SignupState extends State<SignupNurse> {
                                     }
                                   }
                                 }
-                              },
+                              ,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xff8761ea),
                               ),

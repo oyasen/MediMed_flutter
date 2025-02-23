@@ -23,6 +23,7 @@ class _SignupState extends State<Signup> {
   TextEditingController contact = TextEditingController();
   String? gender;
   File? idCard;
+  File? pfp;
   final formKey = GlobalKey<FormState>();
 
   @override
@@ -238,6 +239,59 @@ class _SignupState extends State<Signup> {
                                 ],
                               ),
                             ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("Personal Picture", style: TextStyle(fontSize: 16)),
+                                  Row(
+                                    children: [
+                                      ElevatedButton(
+                                        onPressed: () async {
+                                          File? selectedImage = await imageprovider.showOptions(context);
+                                          if (selectedImage != null) {
+                                            setState(() {
+                                              pfp = selectedImage;
+                                            });
+                                          }
+                                        },
+                                        child: Text("Pick Image"),
+                                      ),
+                                      Visibility(
+                                        visible: pfp != null,
+                                        child: Row(
+                                          children: [
+                                            TextButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  pfp = null;
+                                                });
+                                              },
+                                              child: const Icon(Icons.delete, color: Colors.red),
+                                            ),
+                                            if (pfp != null)
+                                              Center(
+                                                child: ClipRRect(
+                                                  borderRadius: BorderRadius.circular(10), // Rounded corners
+                                                  child: Image.file(
+                                                    pfp!,
+                                                    width: 50, // Adjust size as needed
+                                                    height: 50,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 10),
+
+                                ],
+                              ),
+                            ),
                             const SizedBox(height: 10),
                             const Column(
                               children: [
@@ -292,32 +346,44 @@ class _SignupState extends State<Signup> {
                                       );
                                       return;
                                     }
+                                    if (pfp == null) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                          SnackBar(content: Text(
+                                              "Please select an Personal Picture image"))
+                                      );
+                                      return;
+                                    }
 
                                     final imageUrl = await imageprovider
                                         .uploadImageToCloudinary(idCard);
+                                    final pfpUrl = await imageprovider
+                                        .uploadImageToCloudinary(pfp);
 
-                                    if (imageUrl != null) {
-                                      await patientProvider.addPatient(
-                                          fullName: fullName.text,
-                                          url: imageUrl,
-                                          email: email.text,
-                                          pass: password.text,
-                                          contact: contact.text,
-                                          date: dob.text,
-                                          gender: gender!,
-                                      );
-                                      if(patientProvider.patientAddModel?.id != 0) {
-                                        Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => Signin()),
-                                      );
-                                      }
-                                    } else {
+                                    if (imageUrl == null || pfpUrl  == null) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                         SnackBar(content: Text(
                                             "Image upload failed. Try again.")),
+                                      );
+                                      return;
+                                    }
+
+                                    await patientProvider.addPatient(
+                                        fullName: fullName.text,
+                                        url: imageUrl,
+                                        email: email.text,
+                                        pass: password.text,
+                                        contact: contact.text,
+                                        date: dob.text,
+                                        gender: gender!,
+                                        pfp: pfpUrl
+                                    );
+                                    if(patientProvider.patientAddModel?.id != 0) {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => Signin()),
                                       );
                                     }
                                   }
