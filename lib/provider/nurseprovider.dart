@@ -63,8 +63,6 @@ class NurseProvider extends ChangeNotifier {
     _nurseAddModel = await NurseServices.login(email, pass);
     notifyListeners();
   }
-
-  // Update Nurse
   Future<void> updateNurse({
     required int id,
     required String fullName,
@@ -81,20 +79,21 @@ class NurseProvider extends ChangeNotifier {
     required String pfp,
     required String crim,
   }) async {
-    await NurseServices.update(id: id,
-        fullName: fullName,
-        email: email,
-        password: password,
-        contact: contact,
-        dob: dob,
-        gender: gender,
-        spec: spec,
-        location: location,
-        prof: prof,
-        grad: grad,
-        idCard: idCard,
-        pfp: pfp,
-        crim: crim
+    await NurseServices.update(
+      id: id,
+      fullName: fullName,
+      email: email,
+      password: password,
+      contact: contact,
+      dob: dob,
+      gender: gender,
+      spec: spec,
+      location: location,
+      prof: prof,
+      grad: grad,
+      idCard: idCard,
+      pfp: pfp,
+      crim: crim,
     );
     notifyListeners();
   }

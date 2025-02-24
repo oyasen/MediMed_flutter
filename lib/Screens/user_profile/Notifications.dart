@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:medimed/Screens/HomeScreen/info_page.dart';
 import 'package:medimed/Screens/user_profile/info_page_nurse.dart';
 import 'package:medimed/provider/nurseprovider.dart';
-import 'package:medimed/provider/patientprovider.dart';
 import 'package:provider/provider.dart';
 
 import 'details.dart';
@@ -74,7 +72,7 @@ class NotificationsPage extends StatelessWidget {
                     var patients = [];
                     for (var i = 0 ; i < value.patientsModel!.Model.length ; i++)
                       {
-                        if(value.patientsModel!.Model[i]["status"] == "processing")
+                        if(value.patientsModel!.Model[i]["status"] == "Processing")
                           {
                             patients.add(value.patientsModel!.Model[i]);
                           }

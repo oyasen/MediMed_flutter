@@ -21,6 +21,8 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile> {
   late TextEditingController emailController;
   late TextEditingController dobController;
   late TextEditingController passController;
+  late TextEditingController locCont;
+  late TextEditingController SpecCont;
   late String gender;
   File? idCard;
   File? prof;
@@ -32,6 +34,7 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile> {
   File? gradOld;
   File? crimOld;
   File? pfpOld;
+
   @override
   void initState() {
     super.initState();
@@ -43,7 +46,11 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile> {
     phoneController = TextEditingController(text: data['contact']?.toString() ?? '');
     emailController = TextEditingController(text: data['email'] ?? '');
     dobController = TextEditingController(text: data['dateOfBirth'] ?? '');
+    locCont = TextEditingController(text: data['location'] ?? ''); // Initialize locCont
+    SpecCont = TextEditingController(text: data['specialaization'] ?? '');
+    passController = TextEditingController(text: data['password'] ?? ''); // Initialize passController
     gender = data['gender'];
+
     final imageprovider = Provider.of<UploadProvider>(context, listen: false);
     imageprovider.networkImageToFile(widget.patient.Model["idCard"]).then((_) {
       setState(() {
@@ -75,7 +82,6 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile> {
         crimOld = imageprovider.selectedImage;
       });
     });
-
   }
 
   @override
@@ -109,6 +115,8 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile> {
               buildTextField("Email", emailController),
               buildTextField("Date Of Birth", dobController),
               buildTextField("Password", passController),
+              buildTextField("Location", locCont),
+              buildTextField("Specialization", SpecCont),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Column(
@@ -146,167 +154,107 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile> {
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("ID Card", style: TextStyle(fontSize: 16)),
-                    Row(
-                      children: [
-                        ElevatedButton(
-                          onPressed: () async {
-                            File? selectedImage = await imageprovider.showOptions(context);
-                            if (selectedImage != null) {
-                              setState(() {
-                                idCard = selectedImage;
-                              });
-                            }
-                          },
-                          child: Text("Pick Image"),
-                        ),
-                        Visibility(
-                          visible: idCard != null,
-                          child: Row(
-                            children: [
-                              TextButton(
-                                onPressed: () {
-                                  setState(() {
-                                    idCard = null;
-                                  });
-                                },
-                                child: const Icon(Icons.delete, color: Colors.red),
-                              ),
-                              if (idCard != null)
-                                Center(
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(10), // Rounded corners
-                                    child: Image.file(
-                                      idCard!,
-                                      width: 50, // Adjust size as needed
-                                      height: 50,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Personal Picture", style: TextStyle(fontSize: 16)),
-                    Row(
-                      children: [
-                        ElevatedButton(
-                          onPressed: () async {
-                            File? selectedImage = await imageprovider.showOptions(context);
-                            if (selectedImage != null) {
-                              setState(() {
-                                pfp = selectedImage;
-                              });
-                            }
-                          },
-                          child: Text("Pick Image"),
-                        ),
-                        Visibility(
-                          visible: pfp != null,
-                          child: Row(
-                            children: [
-                              TextButton(
-                                onPressed: () {
-                                  setState(() {
-                                    pfp = null;
-                                  });
-                                },
-                                child: const Icon(Icons.delete, color: Colors.red),
-                              ),
-                              if (pfp != null)
-                                Center(
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(10), // Rounded corners
-                                    child: Image.file(
-                                      pfp!,
-                                      width: 50, // Adjust size as needed
-                                      height: 50,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-
-                  ],
-                ),
-              ),
+              // ID Card Image Selector
+              buildImageSelector("ID Card", idCard, (File? image) {
+                setState(() {
+                  idCard = image;
+                });
+              }),
+              // Personal Picture Image Selector
+              buildImageSelector("Personal Picture", pfp, (File? image) {
+                setState(() {
+                  pfp = image;
+                });
+              }),
+              // Professional Practice License Image Selector
+              buildImageSelector("Professional Practice License", prof, (File? image) {
+                setState(() {
+                  prof = image;
+                });
+              }),
+              // Graduation Certificate Image Selector
+              buildImageSelector("Graduation Certificate", grad, (File? image) {
+                setState(() {
+                  grad = image;
+                });
+              }),
+              // Criminal Record and Identification Image Selector
+              buildImageSelector("Criminal Record and Identification", crim, (File? image) {
+                setState(() {
+                  crim = image;
+                });
+              }),
               SizedBox(height: 40),
               Center(
                 child: ElevatedButton(
                   onPressed: () async {
                     if (idCard == null) {
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(
-                          SnackBar(content: Text(
-                              "Please select an ID Card image"))
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Please select an ID Card image")),
                       );
                       return;
                     }
                     if (pfp == null) {
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(
-                          SnackBar(content: Text(
-                              "Please select an Personal Picture image"))
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Please select a Personal Picture image")),
+                      );
+                      return;
+                    }
+                    if (prof == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Please select a Professional Practice License image")),
+                      );
+                      return;
+                    }
+                    if (grad == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Please select a Graduation Certificate image")),
+                      );
+                      return;
+                    }
+                    if (crim == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Please select a Criminal Record and Identification image")),
                       );
                       return;
                     }
 
-                    final idUrl = await imageprovider
-                        .uploadImageToCloudinary(idCard);
-                    final pfpUrl = await imageprovider
-                        .uploadImageToCloudinary(pfp);
+                    final idUrl = await imageprovider.uploadImageToCloudinary(idCard);
+                    final pfpUrl = await imageprovider.uploadImageToCloudinary(pfp);
+                    final profUrl = await imageprovider.uploadImageToCloudinary(prof);
+                    final gradUrl = await imageprovider.uploadImageToCloudinary(grad);
+                    final crimUrl = await imageprovider.uploadImageToCloudinary(crim);
 
-                    if (idUrl == null || pfpUrl  == null) {
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(
-                        SnackBar(content: Text(
-                            "Image upload failed. Try again.")),
+                    if (idUrl == null || pfpUrl == null || profUrl == null || gradUrl == null || crimUrl == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Image upload failed. Try again.")),
                       );
                       return;
                     }
+                    print('Gender: $gender');
+                    print('Location: ${locCont.text}');
+                    print('Personal Picture URL: $pfpUrl');
                     await patientProvider.updateNurse(
-                      id: widget.patient.Model['id'] ?? 0, // Ensure this exists
+                      id: widget.patient.Model['id'] ?? 0,
                       fullName: nameController.text,
-                      idCard: widget.patient.Model['idCard'] ?? '',
+                      idCard: idUrl,
                       email: emailController.text,
                       password: passController.text,
                       contact: phoneController.text,
-                      dob : dobController.text,
+                      dob: dobController.text,
                       gender: gender,
-                      location: widget.patient.Model['location'] ?? 'Unknown',
-                      crim: widget.patient.Model['criminalRecordAndIdentification'] ?? 'Unknown',
-                      spec: widget.patient.Model['specialaization'] ?? 'Unknown',
-                      grad: widget.patient.Model['graduationCertificate'] ?? 'Unknown',
-                      prof: widget.patient.Model['professionalPracticeLicense'] ?? 'Unknown',
-                      pfp: widget.patient.Model['personalPicture'] ?? 'Unknown',
+                      location: locCont.text,
+                      crim: crimUrl,
+                      spec: SpecCont.text,
+                      grad: gradUrl,
+                      prof: profUrl,
+                      pfp: pfpUrl,
                     );
-        
+
                     ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Profile updated successfully!'))
+                      SnackBar(content: Text('Profile updated successfully!')),
                     );
-        
+
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
@@ -340,6 +288,57 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile> {
         ),
         SizedBox(height: 20),
       ],
+    );
+  }
+
+  Widget buildImageSelector(String label, File? image, Function(File?) onImageSelected) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: TextStyle(fontSize: 16)),
+          Row(
+            children: [
+              ElevatedButton(
+                onPressed: () async {
+                  File? selectedImage = await Provider.of<UploadProvider>(context, listen: false).showOptions(context);
+                  if (selectedImage != null) {
+                    onImageSelected(selectedImage);
+                  }
+                },
+                child: Text("Pick Image"),
+              ),
+              Visibility(
+                visible: image != null,
+                child: Row(
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        onImageSelected(null);
+                      },
+                      child: const Icon(Icons.delete, color: Colors.red),
+                    ),
+                    if (image != null)
+                      Center(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.file(
+                            image,
+                            width: 50,
+                            height: 50,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+        ],
+      ),
     );
   }
 }

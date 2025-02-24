@@ -132,7 +132,9 @@ class PatientServices
           "gender": gender,
           "contact": contact,
           "idCard": imageUrl,
-          "personalPicture": pfp
+          "personalPicture": pfp,
+          "approved" : "Processing",
+          "message" : ""
         },
         options: Options(headers: {
           "Content-Type": "application/json", // ✅ Ensure JSON format
@@ -141,7 +143,7 @@ class PatientServices
         }),
       );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 202) {
         print("Patient updated successfully.");
       } else {
         throw Exception("Failed to update patient: ${response.statusMessage}");
