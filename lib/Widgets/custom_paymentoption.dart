@@ -6,12 +6,13 @@ class PaymentOption extends StatefulWidget {
   final IconData icon;
   final String title;
   final bool isChecked;
-
-  const PaymentOption({
+  final nurse;
+  final price;
+  PaymentOption({
     super.key,
     required this.icon,
     required this.title,
-    required this.isChecked,
+    required this.isChecked, required this.price, this.nurse,
   });
 
   @override
@@ -60,6 +61,8 @@ class _PaymentOptionState extends State<PaymentOption> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => PaymentPage3(
+                        price: widget.price,
+                        nurse: widget.nurse,
                       ),
                     ));
               });

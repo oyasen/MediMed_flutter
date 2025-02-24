@@ -14,6 +14,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var patientProvider = Provider.of<PatientProvider>(context);
     patientProvider.getPatientById(patientProvider.patientAddModel!.id);
+    patientProvider.getPatientsNurse(patientProvider.patientAddModel!.id);
     var patient = patientProvider.patientModel;
     if(patient == null)
       {
@@ -138,7 +139,15 @@ class HomeScreen extends StatelessWidget {
                       if (value.nurseModel == null) {
                         value.getAllNurses();
                         return const Center(child: CircularProgressIndicator());
-                      } else {
+                      }
+                      else {
+                        for(var nurse in value.nurseModel!.Model)
+                          {
+                            if(nurse["approved"] != "Accepted")
+                              {
+                                value.nurseModel!.Model.remove(nurse);
+                              }
+                          }
                         return ListView.builder(
                           itemCount: value.nurseModel?.Model.length ?? 0,
                           itemBuilder: (context, index) {

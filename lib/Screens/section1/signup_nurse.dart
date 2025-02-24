@@ -23,6 +23,7 @@ class _SignupState extends State<SignupNurse> {
   TextEditingController dob = TextEditingController();
   TextEditingController contact = TextEditingController();
   TextEditingController spec = TextEditingController();
+  TextEditingController loc = TextEditingController();
 
   String? gender;
   File? idCard;
@@ -162,6 +163,17 @@ class _SignupState extends State<SignupNurse> {
                               validator: (text) {
                                 if (text == null || text.trim().isEmpty) {
                                   return 'Please enter Specialization';
+                                }
+                                return null;
+                              },
+                            ),
+                            CustomFormField(
+                              label: "Location",
+                              keyboardType: TextInputType.name,
+                              controller: loc,
+                              validator: (text) {
+                                if (text == null || text.trim().isEmpty) {
+                                  return 'Please enter Location';
                                 }
                                 return null;
                               },
@@ -589,7 +601,7 @@ class _SignupState extends State<SignupNurse> {
                                         idCard: idCardUrl,
                                         prof: profUrl,
                                         spec: spec.text,
-                                        location: "",
+                                        location: loc.text,
                                         gender: gender!,
                                         dob: dob.text,
                                         pfp: pfpUrl

@@ -81,7 +81,7 @@ class ProfilePage extends StatelessWidget {
                     buildMenuItem(Icons.payment, "Payment Method", () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => PaymentPage2()),
+                        MaterialPageRoute(builder: (context) => PaymentPage2(price: 0,)),
                       );
                     }),
                     buildMenuItem(Icons.settings, "Settings", () {

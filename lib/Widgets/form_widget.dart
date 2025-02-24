@@ -9,7 +9,7 @@ class CustomFormField extends StatelessWidget {
   final TextEditingController controller;
   final bool obsecure;
   final Validator? validator;
-
+  final value;
   const CustomFormField({
     super.key,
     required this.label,
@@ -17,12 +17,13 @@ class CustomFormField extends StatelessWidget {
     this.icon,
     required this.controller,
     this.obsecure = false,
-    this.validator,
+    this.validator, this.value,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+
       validator: validator,
       keyboardType: keyboardType,
       controller: controller,
@@ -30,6 +31,7 @@ class CustomFormField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: label,
         suffixIcon: icon,
+        hintText: value
       ),
     );
   }

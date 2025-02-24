@@ -43,8 +43,8 @@ class BookingPage extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _buildButton('Accept', Colors.blue,context,nurse["id"],book["patientId"]),
-                  _buildButton('Delete', Colors.red,context,nurse["id"],book["patientId"]),
+                  _buildButton('Accept', Colors.blue,context,nurse["id"],book["patientId"],book["price"]),
+                  _buildButton('Delete', Colors.red,context,nurse["id"],book["patientId"],book["price"]),
                 ],
               ),
             ],
@@ -87,19 +87,22 @@ class BookingPage extends StatelessWidget {
     );
   }
 
-  Widget _buildButton(String text, Color color,BuildContext context,nurseId , patientId) {
+  Widget _buildButton(String text, Color color,BuildContext context,nurseId , patientId, price) {
     var provider = Provider.of<PatientProvider>(context, listen: false);
     return ElevatedButton(
       onPressed: () async{
-        if(text == "Accepted")
+        if(text == "Accept")
           {
-            await provider.updateNursePatient(nurseId: nurseId, patientId:patientId, status: "Accept");
+            await provider.updateNursePatient(nurseId: nurseId, patientId:patientId, status: "Accepted");
             await provider.getPatientsNurse(nurseId);
-            Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentPage2(),));
+
+
+            Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentPage2(price: price,nurse: nurse,),));
           }
         else
           {
             await provider.deletePatientNurse(nurseId: nurseId, patientId: patientId);
+            await provider.getPatientsNurse(nurseId);
             Navigator.pop(context);
           }
       },

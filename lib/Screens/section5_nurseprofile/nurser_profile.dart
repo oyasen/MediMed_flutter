@@ -55,13 +55,13 @@ class _NurseProfileScreen1State extends State<NurseProfileScreen1> {
                       ),
                       SizedBox(height: 10),
                       Text(
-                        widget.nurseData['name'] ?? 'Nurse Name',
+                        widget.nurseData['fullName'] ?? 'Nurse Name',
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Text(widget.nurseData['specialization'] ?? 'Specialization'),
+                      Text(widget.nurseData['specialaization'] ?? 'Specialization'),
                       Text('${widget.nurseData['experienceYears'] ?? '0'} years of experience'),
                       Row(
                         children: [

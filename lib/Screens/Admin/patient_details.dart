@@ -45,6 +45,8 @@ class PatientDetails extends StatelessWidget {
               SizedBox(height: 20),
               buildDocumentSection('ID Card', patient["idCard"]),
               SizedBox(height: 20),
+              buildDocumentSection('Personal Picture', patient["personalPicture"]),
+              SizedBox(height: 20),
               Text(
                 'Add Comments (Optional):',
                 style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),

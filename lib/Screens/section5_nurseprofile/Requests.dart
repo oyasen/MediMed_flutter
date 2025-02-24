@@ -39,30 +39,34 @@ class _RequestsPageState extends State<RequestsPage> {
         iconTheme: const IconThemeData(color: Colors.blue),
       ),
       body: Consumer<PatientProvider>(
-        builder: (context, patientProvider, child){
+        builder: (context, patientProvider, child) {
+          final nurseList = patientProvider.nurseModel?.Model ?? [];
+
           if (patientProvider.nurseModel == null) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (patientProvider.nurseModel!.Model.isEmpty) {
+          if (nurseList.isEmpty) {
             return const Center(child: Text("No nurses found"));
           }
 
           return Padding(
             padding: const EdgeInsets.all(10.0),
             child: ListView.builder(
-              itemCount: patientProvider.nurseModel!.Model.length,
+              itemCount: nurseList.length,
               itemBuilder: (context, index) {
-                final nurse = patientProvider.nurseModel!.Model[index];
-                if(nurse["status"] == "Completed") {
+                final nurse = nurseList[index];
+
+                if (nurse["status"] == "Completed") {
                   return GestureDetector(
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              BookingPage(nurse: nurse["nurse"],
-                                book: nurse,), // Replace with actual page
+                          builder: (context) => BookingPage(
+                            nurse: nurse["nurse"],
+                            book: nurse,
+                          ),
                         ),
                       );
 
@@ -81,14 +85,14 @@ class _RequestsPageState extends State<RequestsPage> {
                       ),
                       child: ListTile(
                         leading: CircleAvatar(
-                          backgroundImage: nurse['nurse']['idCard'] != null
+                          backgroundImage: nurse['nurse']['idCard'] != null &&
+                              nurse['nurse']['idCard'].isNotEmpty
                               ? NetworkImage(nurse['nurse']['idCard'])
                               : const AssetImage('assets/nurse_placeholder.png')
                           as ImageProvider,
                         ),
                         title: Text(
                           nurse['nurse']['fullName'] ?? 'Unknown',
-                          // Nurse name from API
                           style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
@@ -98,9 +102,9 @@ class _RequestsPageState extends State<RequestsPage> {
                     ),
                   );
                 }
-                return null;
-              },
 
+                return const SizedBox.shrink();
+              },
             ),
           );
         },

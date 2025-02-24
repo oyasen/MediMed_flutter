@@ -111,7 +111,7 @@ class _AppointmentBookingState extends State<AppointmentBooking> {
 
                   try {
                     await Provider.of<PatientProvider>(context, listen: false)
-                        .addPatientsNurses(nurseId, patientId, "processing");
+                        .addPatientsNurses(nurseId, patientId, "Processing");
 
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text("Nurse assigned successfully!")),

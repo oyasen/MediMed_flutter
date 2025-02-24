@@ -69,17 +69,7 @@ class NotificationsPage extends StatelessWidget {
 
                       return const Center(child: CircularProgressIndicator());
                     }
-                    var patients = [];
-                    for (var i = 0 ; i < value.patientsModel!.Model.length ; i++)
-                      {
-                        if(value.patientsModel!.Model[i]["status"] == "Processing")
-                          {
-                            patients.add(value.patientsModel!.Model[i]);
-                          }
-                      }
-                    if (patients.isEmpty) {
-                      return const Center(child: Text("No notifications available."));
-                    }
+                    var patients = value.patientsModel!.Model;
 
                     return ListView.builder(
                       padding: const EdgeInsets.symmetric(vertical: 10),

@@ -3,7 +3,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../Widgets/custom_paymentoption.dart';
 
 class PaymentPage2 extends StatefulWidget {
-  const PaymentPage2({super.key});
+  final price;
+  final nurse;
+  PaymentPage2({super.key, required this.price, this.nurse});
 
   @override
   State<PaymentPage2> createState() => _PaymentPage2State();
@@ -37,6 +39,8 @@ class _PaymentPage2State extends State<PaymentPage2> {
               icon: FontAwesomeIcons.creditCard,
               title: 'Add New Card',
               isChecked: isChecked,
+              price: widget.price,
+              nurse: widget.nurse,
             ),
             const SizedBox(height: 24),
             const Text(
@@ -48,12 +52,14 @@ class _PaymentPage2State extends State<PaymentPage2> {
               icon: Icons.payment,
               title: 'Insta Pay',
               isChecked: isChecked,
+              price: widget.price,
             ),
             const SizedBox(height: 8),
             PaymentOption(
               icon: Icons.attach_money,
               title: 'Vodafone Cash',
               isChecked: isChecked,
+              price: widget.price,
             ),
           ],
         ),

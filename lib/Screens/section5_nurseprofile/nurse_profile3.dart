@@ -66,7 +66,7 @@ class AppointmentDetailsScreen extends StatelessWidget {
               height: 30,
             ),
             MaterialButton(onPressed: () {
-             Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentPage2(),));
+             Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentPage2(price: 0,),));
             },
               color: Color(0xFF0299C6),
               child: Text("Payment", style: TextStyle(fontSize: 20 , fontWeight: FontWeight.bold) ,),

@@ -25,22 +25,40 @@ abstract class PaymentManager{
     );
   }
 
-  static Future<String> _getClientSecret(String amount,String currency)async{
-    Dio dio=Dio();
-    var response= await dio.post(
-      'https://api.stripe.com/v1/payment_intents',
-      options: Options(
-        headers: {
-          'Authorization': 'Bearer ${ApiKeys.secretKey}',
-          'Content-Type': 'application/x-www-form-urlencoded'
+  static Future<String> _getClientSecret(String amount, String currency) async {
+    Dio dio = Dio();
+
+    // Ensure amount is an integer and respects Stripe's minimum limit
+    int finalAmount = int.parse(amount) * 100; // Convert EGP to piastres
+
+    if (finalAmount < 5000) { // ~ 50 cents (USD equivalent)
+      throw Exception("Minimum payment amount must be at least 50 EGP.");
+    }
+
+    try {
+      var response = await dio.post(
+        'https://api.stripe.com/v1/payment_intents',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer ${ApiKeys.secretKey}',
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+        ),
+        data: {
+          'amount': finalAmount,
+          'currency': currency.toLowerCase(),
+          'payment_method_types[]': 'card',
         },
-      ),
-      data: {
-        'amount': amount,
-        'currency': currency,
-      },
-    );
-    return response.data["client_secret"];
+      );
+
+      print("🟢 Stripe Response: ${response.data}");
+      return response.data["client_secret"];
+    } on DioException catch (e) {
+      print("🔴 Stripe API Error: ${e.response?.data}");
+      throw Exception("Stripe API error: ${e.response?.data}");
+    }
   }
+
+
 
 }

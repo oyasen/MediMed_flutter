@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class PaymentPage4 extends StatelessWidget {
-  const PaymentPage4({super.key});
+  final nurse;
+  PaymentPage4({super.key,this.nurse});
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +50,7 @@ class PaymentPage4 extends StatelessWidget {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Column(
+                child: Column(
                   children: [
                     Padding(
                       padding: EdgeInsets.only(left: 50.0),
@@ -64,7 +65,7 @@ class PaymentPage4 extends StatelessWidget {
                       height: 20,
                     ),
                     Text(
-                      'N. Olivia Turner, M.D.',
+                      "${nurse["fullName"]??"Nurse name"}",
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
