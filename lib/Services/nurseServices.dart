@@ -71,7 +71,7 @@ class NurseServices
   }
   static getPatients(int nurseId) async {
     Response response = await dio.get('https://medimed.runasp.net/api/Nurses/$nurseId/patients');
-    print("Response Data: ${response.data}"); // Debugging
+
     if (response.statusCode == 200) {
       return PatientsModel.fromJson(response.data);
     } else {

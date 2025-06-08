@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:medimed/Screens/Patient/HomeScreen/home.dart';
+import 'package:medimed/Screens/Patient/section1/forget_pass.dart';
+import 'package:medimed/Screens/Patient/section1/signup.dart';
 import 'package:provider/provider.dart';
-import 'package:medimed/provider/adminprovider.dart';
+import '../../../provider/patientprovider.dart'; // Make sure to import this
+ // Adjust this path as needed
 
-import 'nurses_admin.dart';
-
-class LoginAdmin extends StatefulWidget {
-  const LoginAdmin({super.key});
+class Signin extends StatefulWidget {
+  const Signin({super.key});
 
   @override
-  State<LoginAdmin> createState() => _LoginAdminState();
+  State<Signin> createState() => _SignInPageState();
 }
 
-class _LoginAdminState extends State<LoginAdmin> {
+class _SignInPageState extends State<Signin> {
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
   bool _isPasswordVisible = false;
 
   @override
@@ -26,8 +28,6 @@ class _LoginAdminState extends State<LoginAdmin> {
 
   @override
   Widget build(BuildContext context) {
-    final adminProvider = Provider.of<Adminprovider>(context, listen: false);
-
     return Scaffold(
       backgroundColor: const Color(0xFFF5F7FA),
       appBar: AppBar(
@@ -53,6 +53,7 @@ class _LoginAdminState extends State<LoginAdmin> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Header Section
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(24),
@@ -112,25 +113,29 @@ class _LoginAdminState extends State<LoginAdmin> {
                   ],
                 ),
               ),
+
               const SizedBox(height: 32),
-              Form(
-                key: _formKey,
-                child: Container(
-                  padding: const EdgeInsets.all(24.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16.0),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 10,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
+
+              // Account Access Section
+              Container(
+                padding: const EdgeInsets.all(24.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Form(
+                  key: formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Account Access Header
                       Row(
                         children: [
                           Container(
@@ -156,7 +161,9 @@ class _LoginAdminState extends State<LoginAdmin> {
                           ),
                         ],
                       ),
+
                       const SizedBox(height: 24),
+
                       const Text(
                         'Email Address',
                         style: TextStyle(
@@ -178,17 +185,33 @@ class _LoginAdminState extends State<LoginAdmin> {
                         child: TextFormField(
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
-                          validator: (value) => value!.isEmpty ? 'Enter your email' : null,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Email is required';
+                            }
+                            if (!value.contains('@')) {
+                              return 'Enter a valid email';
+                            }
+                            return null;
+                          },
                           decoration: const InputDecoration(
                             hintText: 'Enter your email',
                             hintStyle: TextStyle(color: Colors.black38),
-                            prefixIcon: Icon(Icons.email_outlined, color: Color(0xFF6B73FF)),
+                            prefixIcon: Icon(
+                              Icons.email_outlined,
+                              color: Color(0xFF6B73FF),
+                            ),
                             border: InputBorder.none,
-                            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 16,
+                            ),
                           ),
                         ),
                       ),
+
                       const SizedBox(height: 20),
+
                       const Text(
                         'Password',
                         style: TextStyle(
@@ -210,11 +233,22 @@ class _LoginAdminState extends State<LoginAdmin> {
                         child: TextFormField(
                           controller: _passwordController,
                           obscureText: !_isPasswordVisible,
-                          validator: (value) => value!.isEmpty ? 'Enter your password' : null,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Password is required';
+                            }
+                            if (value.length < 6) {
+                              return 'Password must be at least 6 characters';
+                            }
+                            return null;
+                          },
                           decoration: InputDecoration(
                             hintText: 'Enter your password',
                             hintStyle: const TextStyle(color: Colors.black38),
-                            prefixIcon: const Icon(Icons.lock_outline, color: Color(0xFF6B73FF)),
+                            prefixIcon: const Icon(
+                              Icons.lock_outline,
+                              color: Color(0xFF6B73FF),
+                            ),
                             suffixIcon: IconButton(
                               icon: Icon(
                                 _isPasswordVisible
@@ -229,30 +263,60 @@ class _LoginAdminState extends State<LoginAdmin> {
                               },
                             ),
                             border: InputBorder.none,
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 16,
+                            ),
                           ),
                         ),
                       ),
+
+                      const SizedBox(height: 16),
+
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => ForgetPass()),
+                            );
+                          },
+                          child: const Text(
+                            'Forgot Password?',
+                            style: TextStyle(
+                              color: Color(0xFF6B73FF),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ),
+
                       const SizedBox(height: 24),
+
                       SizedBox(
                         width: double.infinity,
                         height: 50,
                         child: ElevatedButton(
                           onPressed: () async {
-                            if (_formKey.currentState!.validate()) {
-                              await adminProvider.loginAdmin(
+                            if (formKey.currentState!.validate()) {
+                              final patientProvider = Provider.of<PatientProvider>(context, listen: false);
+                              await patientProvider.loginPatient(
                                 _emailController.text,
                                 _passwordController.text,
                               );
-                              if (adminProvider.adminAddModel?.id == 0) {
+
+                              if (patientProvider.patientAddModel?.id == 0) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text("Please check your email and password")),
+                                  const SnackBar(content: Text("Please check your E-mail and Password")),
                                 );
                                 return;
                               }
-                              Navigator.push(
+
+                              Navigator.pushReplacement(
                                 context,
-                                MaterialPageRoute(builder: (context) => SchedulePage()),
+                                MaterialPageRoute(builder: (context) => HomeScreen()),
                               );
                             }
                           },
@@ -266,14 +330,27 @@ class _LoginAdminState extends State<LoginAdmin> {
                           child: const Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.login, color: Colors.white, size: 20),
+                              Icon(
+                                Icons.login,
+                                color: Colors.white,
+                                size: 20,
+                              ),
                               SizedBox(width: 8),
-                              Text('Sign In', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
+                              Text(
+                                'Sign In',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
                             ],
                           ),
                         ),
                       ),
+
                       const SizedBox(height: 20),
+
                       Container(
                         padding: const EdgeInsets.all(16.0),
                         decoration: BoxDecoration(
@@ -283,12 +360,20 @@ class _LoginAdminState extends State<LoginAdmin> {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Icon(Icons.info_outline, color: Color(0xFF6B73FF), size: 16),
+                            const Icon(
+                              Icons.info_outline,
+                              color: Color(0xFF6B73FF),
+                              size: 16,
+                            ),
                             const SizedBox(width: 12),
                             const Expanded(
                               child: Text(
                                 'By signing in, you agree to our Terms & Conditions and Privacy Policy. Your health data is secure and protected.',
-                                style: TextStyle(fontSize: 12, color: Colors.black54, height: 1.4),
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.black54,
+                                  height: 1.4,
+                                ),
                               ),
                             ),
                           ],
@@ -298,7 +383,37 @@ class _LoginAdminState extends State<LoginAdmin> {
                   ),
                 ),
               ),
+
               const SizedBox(height: 24),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "Don't have an account? ",
+                    style: TextStyle(
+                      color: Colors.black54,
+                      fontSize: 14,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Signup()),
+                      );
+                    },
+                    child: const Text(
+                      'Sign Up',
+                      style: TextStyle(
+                        color: Color(0xFF6B73FF),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),

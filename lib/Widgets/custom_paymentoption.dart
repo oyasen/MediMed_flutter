@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:medimed/Screens/section4_payment/page3.dart';
+import 'package:medimed/Screens/Patient/section4_payment/page3.dart';
 // import 'package:medimed/Screens/section4_payment/page3.dart';
 
 class PaymentOption extends StatefulWidget {
@@ -8,7 +8,7 @@ class PaymentOption extends StatefulWidget {
   final bool isChecked;
   final nurse;
   final price;
-  PaymentOption({
+  const PaymentOption({
     super.key,
     required this.icon,
     required this.title,
