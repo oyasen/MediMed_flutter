@@ -100,12 +100,11 @@ class NurseProvider extends ChangeNotifier {
 
   // Update Nurse Patient
   Future<void> updateNursePatient({
-    required int nurseId,
-    required int patientId,
+    required int Id,
     required int price,
     required String status,
   }) async {
-    await NurseServices.updatePatient(nurseId, patientId, price, status);
+    await NurseServices.updatePatient(Id, price, status);
     notifyListeners();
   }
 

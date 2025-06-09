@@ -155,8 +155,11 @@ class NurseServices
       throw Exception(response.statusMessage);
     }
   }
-  static updatePatient(int nurseId, int patientId, int price, String status) async {
-    Response response = await dio.put('https://medimed.runasp.net/api/Nurses/$nurseId/update-patient/$patientId?newPrice=$price&status=$status',
+  static updatePatient(int Id, int price, String status) async {
+    print(Id);
+    print(price);
+    print(status);
+    Response response = await dio.put('https://medimed.runasp.net/api/Nurses/update-patient/$Id?newPrice=$price&status=$status',
     );
     if (response.statusCode == 200) {
       return;

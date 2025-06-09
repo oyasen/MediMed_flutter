@@ -7,7 +7,7 @@ import 'package:medimed/provider/nurseprovider.dart';
 import 'package:medimed/provider/patientprovider.dart';
 import 'package:provider/provider.dart';
 import 'Payment Method/stripe_keys.dart';
-
+import 'package:medimed/Screens/Nurse/NurseHome.dart';
 void main() {
   Stripe.publishableKey=ApiKeys.publishableKey;
   runApp(const MyApp());
@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: ButtonPage(),
+        home: NurseHome(id: 6,),
       ),
     );
   }
