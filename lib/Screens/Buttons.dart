@@ -125,7 +125,7 @@ class _ButtonPageState extends State<ButtonPage>
                               child: Padding(
                                 padding: const EdgeInsets.all(20.0),
                                 child: Image.asset(
-                                  'assets/logoo.png',
+                                  'assets/img.png',//كانت معموله logoo.png
                                   fit: BoxFit.contain,
                                 ),
                               ),
