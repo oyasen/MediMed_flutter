@@ -34,8 +34,8 @@ class PatientServices
       throw Exception(response.statusMessage);
     }
   }
-  static book(int nurseId, int patientId, String status) async {
-    Response response = await dio.post('https://medimed.runasp.net/api/Patients/$patientId/assign-nurse/$nurseId?status=$status',
+  static book(int nurseId, int patientId, String status, String description) async {
+    Response response = await dio.post('https://medimed.runasp.net/api/Patients/$patientId/assign-nurse/$nurseId?status=$status&description=$description',
     );
     if (response.statusCode == 200) {
       return Patientadd.fromJson(response.data);

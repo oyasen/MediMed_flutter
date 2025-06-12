@@ -18,10 +18,14 @@ class AppointmentBooking extends StatefulWidget {
 class _AppointmentBookingState extends State<AppointmentBooking> with TickerProviderStateMixin {
   int _selectedIndex = -1;
   bool _isLoading = false;
+  bool _hasDescription = false; // Add this state variable
   late AnimationController _fadeController;
   late AnimationController _slideController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
+
+  // Description controller
+  final TextEditingController _descriptionController = TextEditingController();
 
   List<Map<String, dynamic>> availableTimeSlots = [
     {'time': '9:00AM - 12:00PM', 'period': 'Morning', 'icon': Icons.wb_sunny},
@@ -54,14 +58,29 @@ class _AppointmentBookingState extends State<AppointmentBooking> with TickerProv
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _slideController, curve: Curves.easeOutBack));
 
+    // Add listener to description controller
+    _descriptionController.addListener(_onDescriptionChanged);
+
     _fadeController.forward();
     _slideController.forward();
+  }
+
+  // Add this method to handle description changes
+  void _onDescriptionChanged() {
+    final hasText = _descriptionController.text.trim().isNotEmpty;
+    if (hasText != _hasDescription) {
+      setState(() {
+        _hasDescription = hasText;
+      });
+    }
   }
 
   @override
   void dispose() {
     _fadeController.dispose();
     _slideController.dispose();
+    _descriptionController.removeListener(_onDescriptionChanged); // Remove listener
+    _descriptionController.dispose();
     super.dispose();
   }
 
@@ -125,16 +144,6 @@ class _AppointmentBookingState extends State<AppointmentBooking> with TickerProv
                           ],
                         ),
                       ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: IconButton(
-                          icon: const Icon(Icons.calendar_today, color: Colors.white),
-                          onPressed: () {},
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -169,8 +178,8 @@ class _AppointmentBookingState extends State<AppointmentBooking> with TickerProv
 
                             const SizedBox(height: 30),
 
-                            // Patient Details Section
-                            _buildPatientDetailsSection(),
+                            // Description Section
+                            _buildDescriptionSection(),
 
                             const SizedBox(height: 30),
 
@@ -189,42 +198,7 @@ class _AppointmentBookingState extends State<AppointmentBooking> with TickerProv
           ),
         ),
       ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(25),
-            topRight: Radius.circular(25),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 20,
-              offset: const Offset(0, -5),
-            ),
-          ],
-        ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildNavItem(
-                  icon: Icons.home_outlined,
-                  label: 'Home',
-                  isSelected: true,
-                ),
-                _buildNavItem(
-                  icon: Icons.person_outline,
-                  label: 'Profile',
-                  isSelected: false,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+
     );
   }
 
@@ -428,7 +402,7 @@ class _AppointmentBookingState extends State<AppointmentBooking> with TickerProv
     );
   }
 
-  Widget _buildPatientDetailsSection() {
+  Widget _buildDescriptionSection() {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -444,16 +418,18 @@ class _AppointmentBookingState extends State<AppointmentBooking> with TickerProv
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.blue[100],
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF667eea), Color(0xFF764ba2)],
+                  ),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Icon(Icons.person, color: Colors.blue[600], size: 20),
+                child: const Icon(Icons.description, color: Colors.white, size: 20),
               ),
               const SizedBox(width: 10),
               const Text(
-                'Patient Information',
+                'Describe Your Needs',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 22,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF2D3748),
                 ),
@@ -461,29 +437,40 @@ class _AppointmentBookingState extends State<AppointmentBooking> with TickerProv
             ],
           ),
           const SizedBox(height: 15),
-          Container(
-            padding: const EdgeInsets.all(15),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.grey[200]!, width: 1),
-            ),
-            child: Row(
-              children: [
-                Icon(Icons.badge, color: Colors.grey[600], size: 18),
-                const SizedBox(width: 10),
-                Text(
-                  'Patient ID: ${widget.patientData}',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[700],
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
+          Text(
+            'Please provide details about the care you need',
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey[600],
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 20),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(15),
+              border: Border.all(color: Colors.grey[300]!, width: 1),
+            ),
+            child: TextField(
+              controller: _descriptionController,
+              maxLines: 5,
+              minLines: 3,
+              decoration: InputDecoration(
+                hintText: 'Describe the type of care needed, medical conditions, specific requirements, or any other relevant information...',
+                hintStyle: TextStyle(
+                  color: Colors.grey[500],
+                  fontSize: 14,
+                ),
+                border: InputBorder.none,
+                contentPadding: const EdgeInsets.all(16),
+              ),
+              style: const TextStyle(
+                fontSize: 15,
+                color: Color(0xFF2D3748),
+              ),
+            ),
+          ),
+          const SizedBox(height: 15),
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
@@ -496,7 +483,7 @@ class _AppointmentBookingState extends State<AppointmentBooking> with TickerProv
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
-                    'Your appointment will be confirmed shortly after booking.',
+                    'This information helps the nurse prepare for your appointment and provide better care.',
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.blue[700],
@@ -512,18 +499,21 @@ class _AppointmentBookingState extends State<AppointmentBooking> with TickerProv
   }
 
   Widget _buildBookButton(NurseProvider provider) {
+    // Use the state variable instead of checking the controller directly
+    bool canBook = _selectedIndex != -1 && _hasDescription;
+
     return Container(
       width: double.infinity,
       height: 60,
       decoration: BoxDecoration(
-        gradient: _selectedIndex != -1
+        gradient: canBook
             ? const LinearGradient(
           colors: [Color(0xFF667eea), Color(0xFF764ba2)],
         )
             : null,
-        color: _selectedIndex == -1 ? Colors.grey[300] : null,
+        color: !canBook ? Colors.grey[300] : null,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: _selectedIndex != -1
+        boxShadow: canBook
             ? [
           BoxShadow(
             color: Colors.blue.withOpacity(0.3),
@@ -536,7 +526,7 @@ class _AppointmentBookingState extends State<AppointmentBooking> with TickerProv
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: _selectedIndex == -1 || _isLoading ? null : () => _bookAppointment(provider),
+          onTap: !canBook || _isLoading ? null : () => _bookAppointment(provider),
           borderRadius: BorderRadius.circular(20),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -556,14 +546,14 @@ class _AppointmentBookingState extends State<AppointmentBooking> with TickerProv
               children: [
                 Icon(
                   Icons.calendar_month,
-                  color: _selectedIndex != -1 ? Colors.white : Colors.grey[600],
+                  color: canBook ? Colors.white : Colors.grey[600],
                   size: 24,
                 ),
                 const SizedBox(width: 10),
                 Text(
-                  _selectedIndex == -1 ? 'Select Time Slot' : 'Book Appointment',
+                  !canBook ? 'Complete Required Fields' : 'Book Appointment',
                   style: TextStyle(
-                    color: _selectedIndex != -1 ? Colors.white : Colors.grey[600],
+                    color: canBook ? Colors.white : Colors.grey[600],
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -585,9 +575,10 @@ class _AppointmentBookingState extends State<AppointmentBooking> with TickerProv
       int nurseId = widget.nurseData['id'];
       await provider.getNurseById(nurseId);
       int patientId = widget.patientData;
+      String description = _descriptionController.text.trim();
 
       await Provider.of<PatientProvider>(context, listen: false)
-          .addPatientsNurses(nurseId, patientId, "Processing");
+          .addPatientsNurses(nurseId, patientId, "Processing", description);
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -620,7 +611,7 @@ class _AppointmentBookingState extends State<AppointmentBooking> with TickerProv
             children: [
               const Icon(Icons.error, color: Colors.white),
               const SizedBox(width: 10),
-              Expanded(child: Text("Error: ${e.toString()}")),
+              Expanded(child: Text("Error: you are already in contact with this nurse.")),
             ],
           ),
           backgroundColor: Colors.red[600],

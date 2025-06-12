@@ -41,8 +41,8 @@ class PatientProvider extends ChangeNotifier {
     );
     notifyListeners();
   }
-  addPatientsNurses(int nurseId, int patientId, String status) async {
-    await PatientServices.book(nurseId, patientId, status);
+  addPatientsNurses(int nurseId, int patientId, String status, String description) async {
+    await PatientServices.book(nurseId, patientId, status, description);
     notifyListeners();
   }
   // Get Nurse by ID

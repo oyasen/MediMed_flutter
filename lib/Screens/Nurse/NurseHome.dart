@@ -558,8 +558,7 @@ class _NurseHomeState extends State<NurseHome> with TickerProviderStateMixin {
               context,
               PageRouteBuilder(
                 pageBuilder: (context, animation, secondaryAnimation) => PatientDetailsPage(
-                  nurseId: nurse['id'],
-                  patientData: patientData,
+                    patientNurseData: nurse,
                 ),
                 transitionsBuilder: (context, animation, secondaryAnimation, child) {
                   return SlideTransition(

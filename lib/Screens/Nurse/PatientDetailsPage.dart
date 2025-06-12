@@ -4,13 +4,11 @@ import 'package:medimed/provider/nurseprovider.dart';
 import 'success_page.dart';
 
 class PatientDetailsPage extends StatefulWidget {
-  final int nurseId;
-  final Map<String, dynamic> patientData;
+  final Map<String, dynamic> patientNurseData;
 
   const PatientDetailsPage({
     super.key,
-    required this.nurseId,
-    required this.patientData,
+    required this.patientNurseData,
   });
 
   @override
@@ -22,6 +20,29 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
   final TextEditingController _notesController = TextEditingController();
   final String _status = "Pending";
   bool _isLoading = false;
+
+  // Helper to calculate age from date of birth string (expects 'yyyy-MM-dd' or DateTime)
+  String _calculateAge(dynamic dob) {
+    if (dob == null) return "Not specified";
+    DateTime? date;
+    if (dob is DateTime) {
+      date = dob;
+    } else if (dob is String) {
+      try {
+        date = DateTime.parse(dob);
+      } catch (_) {
+        return "Invalid date";
+      }
+    } else {
+      return "Invalid date";
+    }
+    final today = DateTime.now();
+    int age = today.year - date.year;
+    if (today.month < date.month || (today.month == date.month && today.day < date.day)) {
+      age--;
+    }
+    return age > 0 ? age.toString() : "Not specified";
+  }
 
   Future<void> _updateStatus(String newStatus) async {
     if (newStatus != "Declined" && _priceController.text.isEmpty) {
@@ -40,7 +61,7 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
       int price = newStatus == "Declined" ? 0 : int.parse(_priceController.text);
 
       await Provider.of<NurseProvider>(context, listen: false).updateNursePatient(
-        Id: widget.nurseId,
+        Id: widget.patientNurseData["id"],
         price: price,
         status: newStatus,
       );
@@ -49,9 +70,9 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
         context,
         MaterialPageRoute(
           builder: (context) => SuccessPage(
-            nurseId: widget.nurseId,
+            nurseId: widget.patientNurseData["id"],
             status: newStatus,
-            patientName: widget.patientData['fullName'] ?? "Unknown",
+            patientName: widget.patientNurseData['patient']['fullName'] ?? "Unknown",
             price: price,
           ),
         ),
@@ -70,6 +91,11 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Handle age: Calculate from dateOfBirth if available, else fallback to age/int/str
+    final ageValue = widget.patientNurseData['patient']['dateOfBirth'] != null
+        ? _calculateAge(widget.patientNurseData['patient']['dateOfBirth'])
+        : (widget.patientNurseData['patient']['age']?.toString() ?? "Not specified");
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
@@ -113,21 +139,25 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
                     "Patient Information",
                     Icons.person,
                     [
-                      _buildDetailRow("Full Name", widget.patientData['fullName'] ?? "Unknown"),
-                      _buildDetailRow("Age", widget.patientData['age']?.toString() ?? "Not specified"),
-                      _buildDetailRow("Gender", widget.patientData['gender'] ?? "Not specified"),
+                      _buildDetailRow("Full Name", widget.patientNurseData['patient']['fullName'] ?? "Unknown"),
+                      _buildDetailRow("Age", ageValue),
+                      _buildDetailRow("Gender", widget.patientNurseData['patient']['gender'] ?? "Not specified"),
                     ],
                   ),
 
                   const SizedBox(height: 20),
 
-                  // Medical Details Card
+                  // Medical Details Card (only description)
                   _buildInfoCard(
                     "Medical Details",
                     Icons.medical_services,
                     [
-                      _buildDetailRow("Medical Condition", widget.patientData['medicalCondition'] ?? "Not specified"),
-                      _buildDetailRow("Severity", widget.patientData['severity'] ?? "Moderate"),
+                      _buildDetailRow(
+                        "Description",
+                        widget.patientNurseData['description'] ??
+                            widget.patientNurseData['patient']['medicalCondition'] ?? // for backward compatibility
+                            "Not specified",
+                      ),
                     ],
                   ),
 
@@ -186,9 +216,9 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
                           ),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(12),
-                            child: widget.patientData['idCard'] != null
+                            child: widget.patientNurseData['patient']['idCard'] != null
                                 ? Image.network(
-                              widget.patientData['idCard'],
+                              widget.patientNurseData['patient']['idCard'],
                               fit: BoxFit.cover,
                               loadingBuilder: (context, child, loadingProgress) {
                                 if (loadingProgress == null) return child;
