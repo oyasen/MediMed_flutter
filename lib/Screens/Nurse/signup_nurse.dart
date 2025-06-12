@@ -74,493 +74,493 @@ class _SignupState extends State<SignupNurse> {
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header Section
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
-                  ),
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF667EEA).withOpacity(0.3),
-                      blurRadius: 20,
-                      offset: const Offset(0, 10),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const Icon(
-                            Icons.medical_services,
-                            color: Colors.white,
-                            size: 28,
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        const Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Join Our Medical Team',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                'Create your professional healthcare profile',
-                                style: TextStyle(
-                                  color: Colors.white70,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 24),
-
-              // Progress Indicator
-
-
-
-
-              // Form Container
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.08),
-                      blurRadius: 25,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
-                ),
-                child: Padding(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Header Section
+                Container(
+                  width: double.infinity,
                   padding: const EdgeInsets.all(24),
-                  child: Form(
-                    key: formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Personal Information Section
-                        _buildSectionHeader('Personal Information', Icons.person_outline),
-                        const SizedBox(height: 20),
-
-                        _buildElegantFormField(
-                          label: "Full Name",
-                          controller: fullName,
-                          icon: Icons.person_outline,
-                          keyboardType: TextInputType.name,
-                          validator: (text) {
-                            if (text == null || text.trim().isEmpty) {
-                              return 'Please enter your full name';
-                            }
-                            return null;
-                          },
-                        ),
-
-                        _buildElegantFormField(
-                          label: "Email Address",
-                          controller: email,
-                          icon: Icons.email_outlined,
-                          keyboardType: TextInputType.emailAddress,
-                          validator: (text) {
-                            if (text == null || text.trim().isEmpty) {
-                              return 'Please enter your email';
-                            }
-                            if (!isValidEmail(text)) {
-                              return 'Please enter a valid email address';
-                            }
-                            return null;
-                          },
-                        ),
-
-                        Row(
-                          children: [
-                            Expanded(
-                              child: _buildElegantFormField(
-                                label: "Password",
-                                controller: password,
-                                icon: Icons.lock_outline,
-                                obscureText: true,
-                                validator: (text) {
-                                  if (text == null || text.trim().isEmpty) {
-                                    return 'Please enter password';
-                                  }
-                                  if (!isValidPass(text)) {
-                                    return 'Password format incorrect';
-                                  }
-                                  return null;
-                                },
-                              ),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF667EEA).withOpacity(0.3),
+                        blurRadius: 20,
+                        offset: const Offset(0, 10),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: _buildElegantFormField(
-                                label: "Confirm Password",
-                                controller: confirmPass,
-                                icon: Icons.lock_outline,
-                                obscureText: true,
-                                validator: (text) {
-                                  if (text == null || text.trim().isEmpty) {
-                                    return 'Please confirm password';
-                                  }
-                                  if (password.text != text) {
-                                    return 'Passwords do not match';
-                                  }
-                                  return null;
-                                },
-                              ),
+                            child: const Icon(
+                              Icons.medical_services,
+                              color: Colors.white,
+                              size: 28,
                             ),
-                          ],
-                        ),
-
-                        Row(
-                          children: [
-                            Expanded(
-                              child: _buildElegantFormField(
-                                label: "Date of Birth",
-                                controller: dob,
-                                icon: Icons.calendar_today_outlined,
-                                keyboardType: TextInputType.datetime,
-                                validator: (text) {
-                                  if (text == null || text.trim().isEmpty) {
-                                    return 'Please enter date of birth';
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: _buildElegantFormField(
-                                label: "Phone Number",
-                                controller: contact,
-                                icon: Icons.phone_outlined,
-                                keyboardType: TextInputType.phone,
-                                validator: (text) {
-                                  if (text == null || text.trim().isEmpty) {
-                                    return 'Please enter phone number';
-                                  }
-                                  if (!isValidContact(text)) {
-                                    return 'Invalid phone number';
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        // Gender Selection
-                        const SizedBox(height: 20),
-                        const Text(
-                          'Gender',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFF2D3748),
                           ),
-                        ),
-                        const SizedBox(height: 12),
-                        Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(color: const Color(0xFFE2E8F0)),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: _buildGenderOption('Male', Icons.male),
-                              ),
-                              Container(
-                                width: 1,
-                                height: 50,
-                                color: const Color(0xFFE2E8F0),
-                              ),
-                              Expanded(
-                                child: _buildGenderOption('Female', Icons.female),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        const SizedBox(height: 24),
-
-                        // Professional Information Section
-                        _buildSectionHeader('Professional Information', Icons.work_outline),
-                        const SizedBox(height: 20),
-
-                        _buildElegantFormField(
-                          label: "Specialization",
-                          controller: spec,
-                          icon: Icons.medical_services_outlined,
-                          validator: (text) {
-                            if (text == null || text.trim().isEmpty) {
-                              return 'Please enter your specialization';
-                            }
-                            return null;
-                          },
-                        ),
-
-                        _buildElegantFormField(
-                          label: "Practice Location",
-                          controller: loc,
-                          icon: Icons.location_on_outlined,
-                          validator: (text) {
-                            if (text == null || text.trim().isEmpty) {
-                              return 'Please enter practice location';
-                            }
-                            return null;
-                          },
-                        ),
-
-                        const SizedBox(height: 24),
-
-                        // Documents Section
-                        _buildSectionHeader('Required Documents', Icons.folder_outlined),
-                        const SizedBox(height: 20),
-
-                        _buildDocumentUpload(
-                          title: 'Profile Picture',
-                          description: 'Upload a professional headshot',
-                          icon: Icons.person,
-                          file: pfp,
-                          onTap: () async {
-                            File? selectedImage = await imageprovider.showOptions(context);
-                            if (selectedImage != null) {
-                              setState(() {
-                                pfp = selectedImage;
-                              });
-                            }
-                          },
-                          onDelete: () {
-                            setState(() {
-                              pfp = null;
-                            });
-                          },
-                          isRequired: false,
-                        ),
-
-                        _buildDocumentUpload(
-                          title: 'National ID Card',
-                          description: 'Clear photo of your identification',
-                          icon: Icons.badge,
-                          file: idCard,
-                          onTap: () async {
-                            File? selectedImage = await imageprovider.showOptions(context);
-                            if (selectedImage != null) {
-                              setState(() {
-                                idCard = selectedImage;
-                              });
-                            }
-                          },
-                          onDelete: () {
-                            setState(() {
-                              idCard = null;
-                            });
-                          },
-                        ),
-
-                        _buildDocumentUpload(
-                          title: 'Professional License',
-                          description: 'Valid nursing practice license',
-                          icon: Icons.verified,
-                          file: prof,
-                          onTap: () async {
-                            File? selectedImage = await imageprovider.showOptions(context);
-                            if (selectedImage != null) {
-                              setState(() {
-                                prof = selectedImage;
-                              });
-                            }
-                          },
-                          onDelete: () {
-                            setState(() {
-                              prof = null;
-                            });
-                          },
-                        ),
-
-                        _buildDocumentUpload(
-                          title: 'Academic Certificate',
-                          description: 'Nursing degree or diploma',
-                          icon: Icons.school,
-                          file: grad,
-                          onTap: () async {
-                            File? selectedImage = await imageprovider.showOptions(context);
-                            if (selectedImage != null) {
-                              setState(() {
-                                grad = selectedImage;
-                              });
-                            }
-                          },
-                          onDelete: () {
-                            setState(() {
-                              grad = null;
-                            });
-                          },
-                        ),
-
-                        _buildDocumentUpload(
-                          title: 'Background Check',
-                          description: 'Criminal record clearance',
-                          icon: Icons.security,
-                          file: crim,
-                          onTap: () async {
-                            File? selectedImage = await imageprovider.showOptions(context);
-                            if (selectedImage != null) {
-                              setState(() {
-                                crim = selectedImage;
-                              });
-                            }
-                          },
-                          onDelete: () {
-                            setState(() {
-                              crim = null;
-                            });
-                          },
-                        ),
-
-                        const SizedBox(height: 32),
-
-                        // Terms and Conditions
-                        Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFF7FAFC),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: const Color(0xFFE2E8F0)),
-                          ),
-                          child: const Column(
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Icon(Icons.info_outline, size: 20, color: Color(0xFF667EEA)),
-                                  SizedBox(width: 12),
-                                  Expanded(
-                                    child: Text(
-                                      'By creating an account, you agree to our Terms & Conditions and Privacy Policy. Your information will be verified for professional healthcare standards.',
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        color: Color(0xFF4A5568),
-                                        height: 1.4,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        const SizedBox(height: 32),
-
-                        // Submit Button
-                        SizedBox(
-                          width: double.infinity,
-                          height: 56,
-                          child: ElevatedButton(
-                            onPressed: () => _handleSubmit(imageprovider, nurseProvider),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF667EEA),
-                              foregroundColor: Colors.white,
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              shadowColor: const Color(0xFF667EEA).withOpacity(0.3),
-                            ),
-                            child: const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                          const SizedBox(width: 16),
+                          const Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Icon(Icons.how_to_reg, size: 20),
-                                SizedBox(width: 8),
                                 Text(
-                                  'Complete Registration',
+                                  'Join Our Medical Team',
                                   style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  'Create your professional healthcare profile',
+                                  style: TextStyle(
+                                    color: Colors.white70,
+                                    fontSize: 14,
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                        ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
 
-                        const SizedBox(height: 24),
+                const SizedBox(height: 24),
 
-                        // Sign In Link
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Already have an account? ',
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                                fontSize: 14,
-                              ),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => const SignInPage()),
-                                );
-                              },
-                              style: TextButton.styleFrom(
-                                padding: EdgeInsets.zero,
-                                minimumSize: Size.zero,
-                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              ),
-                              child: const Text(
-                                'Sign In',
-                                style: TextStyle(
-                                  color: Color(0xFF667EEA),
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
+                // Form Container
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.08),
+                        blurRadius: 25,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Form(
+                      key: formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Personal Information Section
+                          _buildSectionHeader('Personal Information', Icons.person_outline),
+                          const SizedBox(height: 20),
+
+                          _buildElegantFormField(
+                            label: "Full Name",
+                            controller: fullName,
+                            icon: Icons.person_outline,
+                            keyboardType: TextInputType.name,
+                            validator: (text) {
+                              if (text == null || text.trim().isEmpty) {
+                                return 'Please enter your full name';
+                              }
+                              return null;
+                            },
+                          ),
+
+                          _buildElegantFormField(
+                            label: "Email Address",
+                            controller: email,
+                            icon: Icons.email_outlined,
+                            keyboardType: TextInputType.emailAddress,
+                            validator: (text) {
+                              if (text == null || text.trim().isEmpty) {
+                                return 'Please enter your email';
+                              }
+                              if (!isValidEmail(text)) {
+                                return 'Please enter a valid email address';
+                              }
+                              return null;
+                            },
+                          ),
+
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _buildElegantFormField(
+                                  label: "Password",
+                                  controller: password,
+                                  icon: Icons.lock_outline,
+                                  obscureText: true,
+                                  validator: (text) {
+                                    if (text == null || text.trim().isEmpty) {
+                                      return 'Please enter password';
+                                    }
+                                    if (!isValidPass(text)) {
+                                      return 'Password format incorrect';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: _buildElegantFormField(
+                                  label: "Confirm Password",
+                                  controller: confirmPass,
+                                  icon: Icons.lock_outline,
+                                  obscureText: true,
+                                  validator: (text) {
+                                    if (text == null || text.trim().isEmpty) {
+                                      return 'Please confirm password';
+                                    }
+                                    if (password.text != text) {
+                                      return 'Passwords do not match';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _buildElegantFormField(
+                                  label: "Date of Birth",
+                                  controller: dob,
+                                  icon: Icons.calendar_today_outlined,
+                                  keyboardType: TextInputType.datetime,
+                                  validator: (text) {
+                                    if (text == null || text.trim().isEmpty) {
+                                      return 'Please enter date of birth';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: _buildElegantFormField(
+                                  label: "Phone Number",
+                                  controller: contact,
+                                  icon: Icons.phone_outlined,
+                                  keyboardType: TextInputType.phone,
+                                  validator: (text) {
+                                    if (text == null || text.trim().isEmpty) {
+                                      return 'Please enter phone number';
+                                    }
+                                    if (!isValidContact(text)) {
+                                      return 'Invalid phone number';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          // Gender Selection
+                          const SizedBox(height: 20),
+                          const Text(
+                            'Gender',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF2D3748),
                             ),
-                          ],
-                        ),
-                      ],
+                          ),
+                          const SizedBox(height: 12),
+                          Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(color: const Color(0xFFE2E8F0)),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: _buildGenderOption('Male', Icons.male),
+                                ),
+                                Container(
+                                  width: 1,
+                                  height: 50,
+                                  color: const Color(0xFFE2E8F0),
+                                ),
+                                Expanded(
+                                  child: _buildGenderOption('Female', Icons.female),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          const SizedBox(height: 24),
+
+                          // Professional Information Section
+                          _buildSectionHeader('Professional Information', Icons.work_outline),
+                          const SizedBox(height: 20),
+
+                          _buildElegantFormField(
+                            label: "Specialization",
+                            controller: spec,
+                            icon: Icons.medical_services_outlined,
+                            validator: (text) {
+                              if (text == null || text.trim().isEmpty) {
+                                return 'Please enter your specialization';
+                              }
+                              return null;
+                            },
+                          ),
+
+                          _buildElegantFormField(
+                            label: "Practice Location",
+                            controller: loc,
+                            icon: Icons.location_on_outlined,
+                            validator: (text) {
+                              if (text == null || text.trim().isEmpty) {
+                                return 'Please enter practice location';
+                              }
+                              return null;
+                            },
+                          ),
+
+                          const SizedBox(height: 24),
+
+                          // Documents Section
+                          _buildSectionHeader('Required Documents', Icons.folder_outlined),
+                          const SizedBox(height: 20),
+
+                          _buildDocumentUpload(
+                            title: 'Profile Picture',
+                            description: 'Upload a professional headshot',
+                            icon: Icons.person,
+                            file: pfp,
+                            onTap: () async {
+                              File? selectedImage = await imageprovider.showOptions(context);
+                              if (selectedImage != null) {
+                                setState(() {
+                                  pfp = selectedImage;
+                                });
+                              }
+                            },
+                            onDelete: () {
+                              setState(() {
+                                pfp = null;
+                              });
+                            },
+                            isRequired: false,
+                          ),
+
+                          _buildDocumentUpload(
+                            title: 'National ID Card',
+                            description: 'Clear photo of your identification',
+                            icon: Icons.badge,
+                            file: idCard,
+                            onTap: () async {
+                              File? selectedImage = await imageprovider.showOptions(context);
+                              if (selectedImage != null) {
+                                setState(() {
+                                  idCard = selectedImage;
+                                });
+                              }
+                            },
+                            onDelete: () {
+                              setState(() {
+                                idCard = null;
+                              });
+                            },
+                          ),
+
+                          _buildDocumentUpload(
+                            title: 'Professional License',
+                            description: 'Valid nursing practice license',
+                            icon: Icons.verified,
+                            file: prof,
+                            onTap: () async {
+                              File? selectedImage = await imageprovider.showOptions(context);
+                              if (selectedImage != null) {
+                                setState(() {
+                                  prof = selectedImage;
+                                });
+                              }
+                            },
+                            onDelete: () {
+                              setState(() {
+                                prof = null;
+                              });
+                            },
+                          ),
+
+                          _buildDocumentUpload(
+                            title: 'Academic Certificate',
+                            description: 'Nursing degree or diploma',
+                            icon: Icons.school,
+                            file: grad,
+                            onTap: () async {
+                              File? selectedImage = await imageprovider.showOptions(context);
+                              if (selectedImage != null) {
+                                setState(() {
+                                  grad = selectedImage;
+                                });
+                              }
+                            },
+                            onDelete: () {
+                              setState(() {
+                                grad = null;
+                              });
+                            },
+                          ),
+
+                          _buildDocumentUpload(
+                            title: 'Background Check',
+                            description: 'Criminal record clearance',
+                            icon: Icons.security,
+                            file: crim,
+                            onTap: () async {
+                              File? selectedImage = await imageprovider.showOptions(context);
+                              if (selectedImage != null) {
+                                setState(() {
+                                  crim = selectedImage;
+                                });
+                              }
+                            },
+                            onDelete: () {
+                              setState(() {
+                                crim = null;
+                              });
+                            },
+                          ),
+
+                          const SizedBox(height: 32),
+
+                          // Terms and Conditions
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF7FAFC),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: const Color(0xFFE2E8F0)),
+                            ),
+                            child: const Column(
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Icon(Icons.info_outline, size: 20, color: Color(0xFF667EEA)),
+                                    SizedBox(width: 12),
+                                    Expanded(
+                                      child: Text(
+                                        'By creating an account, you agree to our Terms & Conditions and Privacy Policy. Your information will be verified for professional healthcare standards.',
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          color: Color(0xFF4A5568),
+                                          height: 1.4,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          const SizedBox(height: 32),
+
+                          // Submit Button
+                          SizedBox(
+                            width: double.infinity,
+                            height: 56,
+                            child: ElevatedButton(
+                              onPressed: () => _handleSubmit(imageprovider, nurseProvider),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF667EEA),
+                                foregroundColor: Colors.white,
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                shadowColor: const Color(0xFF667EEA).withOpacity(0.3),
+                              ),
+                              child: const Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.how_to_reg, size: 20),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    'Complete Registration',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 24),
+
+                          // Sign In Link
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Already have an account? ',
+                                style: TextStyle(
+                                  color: Colors.grey[600],
+                                  fontSize: 14,
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => const SignInPage()),
+                                  );
+                                },
+                                style: TextButton.styleFrom(
+                                  padding: EdgeInsets.zero,
+                                  minimumSize: Size.zero,
+                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                ),
+                                child: const Text(
+                                  'Sign In',
+                                  style: TextStyle(
+                                    color: Color(0xFF667EEA),
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -749,89 +749,91 @@ class _SignupState extends State<SignupNurse> {
         borderRadius: BorderRadius.circular(12),
         color: file != null ? const Color(0xFF48BB78).withOpacity(0.05) : null,
       ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: file != null
-                  ? const Color(0xFF48BB78).withOpacity(0.1)
-                  : const Color(0xFF667EEA).withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: file != null
+                    ? const Color(0xFF48BB78).withOpacity(0.1)
+                    : const Color(0xFF667EEA).withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                file != null ? Icons.check_circle : icon,
+                color: file != null ? const Color(0xFF48BB78) : const Color(0xFF667EEA),
+                size: 24,
+              ),
             ),
-            child: Icon(
-              file != null ? Icons.check_circle : icon,
-              color: file != null ? const Color(0xFF48BB78) : const Color(0xFF667EEA),
-              size: 24,
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF2D3748),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          title,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF2D3748),
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                    ),
-                    if (isRequired) ...[
-                      const SizedBox(width: 4),
-                      const Text(
-                        '*',
-                        style: TextStyle(color: Colors.red, fontSize: 16),
-                      ),
+                      if (isRequired) ...[
+                        const SizedBox(width: 4),
+                        const Text(
+                          '*',
+                          style: TextStyle(color: Colors.red, fontSize: 16),
+                        ),
+                      ],
                     ],
-                  ],
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  file != null ? 'Document uploaded successfully' : description,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: file != null ? const Color(0xFF48BB78) : const Color(0xFF718096),
                   ),
-                ),
-              ],
-            ),
-          ),
-          if (file != null) ...[
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.file(
-                file,
-                width: 50,
-                height: 50,
-                fit: BoxFit.cover,
+                  const SizedBox(height: 2),
+                  Text(
+                    file != null ? 'Document uploaded successfully' : description,
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: file != null ? const Color(0xFF48BB78) : const Color(0xFF718096),
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                  ),
+                ],
               ),
             ),
-            const SizedBox(width: 12),
-            IconButton(
-              onPressed: onDelete,
-              icon: const Icon(Icons.delete_outline, color: Colors.red),
-            ),
-          ] else ...[
-            ElevatedButton.icon(
-              onPressed: onTap,
-              icon: const Icon(Icons.upload_file, size: 18),
-              label: const Text('Upload'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF667EEA),
-                foregroundColor: Colors.white,
-                elevation: 0,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-            ),
+            const SizedBox(width: 16),
+            file != null
+                ? IconButton(
+                    onPressed: onDelete,
+                    icon: const Icon(Icons.delete_outline, color: Colors.red),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    visualDensity: VisualDensity.compact,
+                  )
+                : ElevatedButton(
+                    onPressed: onTap,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF667EEA),
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    child: const Text('Upload'),
+                  ),
           ],
-        ],
+        ),
       ),
     );
   }
@@ -940,5 +942,20 @@ class _SignupState extends State<SignupNurse> {
         ),
       );
     }
+  }
+
+  bool isValidEmail(String email) {
+    // Add your email validation logic here
+    return RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email);
+  }
+
+  bool isValidPass(String password) {
+    // Add your password validation logic here
+    return password.length >= 6;
+  }
+
+  bool isValidContact(String contact) {
+    // Add your contact validation logic here
+    return RegExp(r'^\+?[\d\s-]{10,}$').hasMatch(contact);
   }
 }

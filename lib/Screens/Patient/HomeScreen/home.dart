@@ -1,14 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:medimed/Screens/Patient/HomeScreen/info_page.dart';
 import 'package:medimed/Screens/Patient/user_profile/Notifications.dart';
 import 'package:medimed/Screens/Patient/section5_nurseprofile/nurser_profile.dart';
+import 'package:medimed/Screens/Patient/user_profile/setting.dart';
 import 'package:medimed/provider/nurseprovider.dart';
 import 'package:medimed/provider/patientprovider.dart';
 import 'package:provider/provider.dart';
+
 import '../user_profile/my_profile.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int _selectedIndex = 0;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,31 +81,35 @@ class HomeScreen extends StatelessWidget {
 
     if(patient.Model["approved"] != "Accepted") {
       return _buildPendingApprovalScreen(patient);
-    } else {
-      return Scaffold(
+    }
+
+    final List<Widget> _pages = [
+      // Home Page Content
+      Scaffold(
         backgroundColor: Color(0xFFF8FAFC),
-        body: CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              expandedHeight: 120,
-              floating: false,
-              pinned: true,
-              elevation: 0,
-              backgroundColor: Colors.transparent,
-              flexibleSpace: FlexibleSpaceBar(
-                background: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Color(0xFF0299C6),
-                        Color(0xFF00B4DB),
-                        Color(0xFF0090FF),
-                      ],
+        body: SafeArea(
+          child: CustomScrollView(
+            physics: BouncingScrollPhysics(),
+            slivers: [
+              SliverAppBar(
+                expandedHeight: 120,
+                floating: false,
+                pinned: true,
+                elevation: 0,
+                backgroundColor: Colors.transparent,
+                flexibleSpace: FlexibleSpaceBar(
+                  background: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Color(0xFF0299C6),
+                          Color(0xFF00B4DB),
+                          Color(0xFF0090FF),
+                        ],
+                      ),
                     ),
-                  ),
-                  child: SafeArea(
                     child: Padding(
                       padding: EdgeInsets.all(16),
                       child: Row(
@@ -175,9 +193,7 @@ class HomeScreen extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => ProfilePage(
-                                    imageUrl: patientProvider.patientModel?.Model["idCard"] ?? '',
-                                  ),
+                                  builder: (context) => const SettingsPage(),
                                 ),
                               );
                             },
@@ -188,189 +204,185 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
               ),
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Search Bar
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(25),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
-                            blurRadius: 15,
-                            spreadRadius: 2,
-                          ),
-                        ],
-                      ),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          hintText: 'Search for healthcare services...',
-                          hintStyle: TextStyle(color: Colors.grey[500]),
-                          prefixIcon: Container(
-                            margin: EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: Color(0xFF0299C6).withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(12),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Search Bar
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(25),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 15,
+                              spreadRadius: 2,
                             ),
-                            child: Icon(
-                              Icons.search_rounded,
-                              color: Color(0xFF0299C6),
-                              size: 20,
+                          ],
+                        ),
+                        child: TextField(
+                          decoration: InputDecoration(
+                            hintText: 'Search for healthcare services...',
+                            hintStyle: TextStyle(color: Colors.grey[500]),
+                            prefixIcon: Container(
+                              margin: EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: Color(0xFF0299C6).withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Icon(
+                                Icons.search_rounded,
+                                color: Color(0xFF0299C6),
+                                size: 20,
+                              ),
                             ),
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(25),
+                              borderSide: BorderSide.none,
+                            ),
+                            contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 20),
                           ),
-                          filled: true,
-                          fillColor: Colors.white,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25),
-                            borderSide: BorderSide.none,
-                          ),
-                          contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 20),
                         ),
                       ),
-                    ),
 
-                    SizedBox(height: 30),
+                      SizedBox(height: 30),
 
-                    // Categories Section
-                    Text(
-                      'Healthcare Categories',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF1A1A1A),
+                      // Categories Section
+                      Text(
+                        'Healthcare Categories',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF1A1A1A),
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 16),
+                      SizedBox(height: 16),
 
-                    Container(
-                      padding: EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
-                            blurRadius: 15,
-                            spreadRadius: 2,
-                          ),
-                        ],
+                      Container(
+                        padding: EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 15,
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Expanded(
+                              child: CategoryIcon(
+                                title: 'Dentistry',
+                                imageUrl: 'https://cdn-icons-png.flaticon.com/512/2947/2947853.png',
+                                color: Color(0xFF4CAF50),
+                              ),
+                            ),
+                            Expanded(
+                              child: CategoryIcon(
+                                title: 'Cardiology',
+                                imageUrl: 'https://cdn-icons-png.flaticon.com/512/2966/2966327.png',
+                                color: Color(0xFFE91E63),
+                              ),
+                            ),
+                            Expanded(
+                              child: CategoryIcon(
+                                title: 'Pulmonary',
+                                imageUrl: 'https://cdn-icons-png.flaticon.com/512/1052/1052860.png',
+                                color: Color(0xFF2196F3),
+                              ),
+                            ),
+                            Expanded(
+                              child: CategoryIcon(
+                                title: 'General',
+                                imageUrl: 'https://cdn-icons-png.flaticon.com/512/2921/2921822.png',
+                                color: Color(0xFFFF9800),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+                      SizedBox(height: 30),
+
+                      // Available Nurses Section
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(
-                            child: CategoryIcon(
-                              title: 'Dentistry',
-                              imageUrl: 'https://cdn-icons-png.flaticon.com/512/2947/2947853.png',
-                              color: Color(0xFF4CAF50),
+                          Text(
+                            'Available Nurses',
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF1A1A1A),
                             ),
                           ),
-                          Expanded(
-                            child: CategoryIcon(
-                              title: 'Cardiology',
-                              imageUrl: 'https://cdn-icons-png.flaticon.com/512/2966/2966327.png',
-                              color: Color(0xFFE91E63),
-                            ),
-                          ),
-                          Expanded(
-                            child: CategoryIcon(
-                              title: 'Pulmonary',
-                              imageUrl: 'https://cdn-icons-png.flaticon.com/512/1052/1052860.png',
-                              color: Color(0xFF2196F3),
-                            ),
-                          ),
-                          Expanded(
-                            child: CategoryIcon(
-                              title: 'General',
-                              imageUrl: 'https://cdn-icons-png.flaticon.com/512/2921/2921822.png',
-                              color: Color(0xFFFF9800),
+                          TextButton(
+                            onPressed: () {},
+                            child: Text(
+                              'View All',
+                              style: TextStyle(
+                                color: Color(0xFF0299C6),
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                         ],
                       ),
-                    ),
-
-                    SizedBox(height: 30),
-
-                    // Available Nurses Section
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Available Nurses',
-                          style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF1A1A1A),
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () {},
-                          child: Text(
-                            'View All',
-                            style: TextStyle(
-                              color: Color(0xFF0299C6),
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 16),
-                  ],
+                      SizedBox(height: 16),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
+              SliverPadding(
                 padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Consumer<NurseProvider>(
+                sliver: Consumer<NurseProvider>(
                   builder: (context, value, child) {
                     if (value.nurseModel == null) {
                       value.getAllNurses();
-                      return Container(
-                        height: 200,
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF0299C6)),
-                              ),
-                              SizedBox(height: 16),
-                              Text(
-                                'Loading available nurses...',
-                                style: TextStyle(
-                                  color: Colors.grey[600],
-                                  fontSize: 14,
+                      return SliverToBoxAdapter(
+                        child: Container(
+                          height: 200,
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF0299C6)),
                                 ),
-                              ),
-                            ],
+                                SizedBox(height: 16),
+                                Text(
+                                  'Loading available nurses...',
+                                  style: TextStyle(
+                                    color: Colors.grey[600],
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       );
                     } else {
-                      // Filter approved nurses
-                      for(var nurse in value.nurseModel!.Model) {
-                        if(nurse["approved"] != "Accepted") {
-                          value.nurseModel!.Model.remove(nurse);
-                        }
-                      }
-                      return Column(
-                        children: List.generate(
-                          value.nurseModel?.Model.length ?? 0,
-                              (index) {
-                            var nurse = value.nurseModel?.Model[index];
+                      final approvedNurses = value.nurseModel!.Model
+                          .where((nurse) => nurse["approved"] == "Accepted")
+                          .toList();
+                      return SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            var nurse = approvedNurses[index];
                             return Padding(
                               padding: EdgeInsets.only(bottom: 16),
                               child: DoctorCard(
                                 name: nurse['fullName'] ?? 'Nurse Name',
-                                specialty: nurse['specialaization'] ?? 'Specialization',
+                                specialty: nurse['speciality'] ?? 'Specialization',
                                 rating: nurse['rating']?.toDouble() ?? 5.0,
                                 imageUrl: nurse['idCard'] ?? '',
                                 nurseData: nurse,
@@ -378,55 +390,95 @@ class HomeScreen extends StatelessWidget {
                               ),
                             );
                           },
+                          childCount: approvedNurses.length,
                         ),
                       );
                     }
                   },
                 ),
               ),
+              SliverToBoxAdapter(
+                child: SizedBox(height: kBottomNavigationBarHeight + MediaQuery.of(context).padding.bottom),
+              ),
+            ],
+          ),
+        ),
+      ),
+      // Profile Page
+      ProfilePage(imageUrl: patient.Model["idCard"] ?? ''),
+    ];
+
+    return Scaffold(
+      body: _pages[_selectedIndex],
+      bottomNavigationBar: Container(
+        padding: EdgeInsets.only(top: 8, bottom: MediaQuery.of(context).viewPadding.bottom),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.07),
+              blurRadius: 15,
+              offset: Offset(0, -3),
             ),
-            SliverToBoxAdapter(child: SizedBox(height: 100)), // Bottom padding for navigation
           ],
         ),
-        bottomNavigationBar: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 20,
-                offset: Offset(0, -5),
-              ),
-            ],
+        child: BottomNavigationBar(
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          selectedItemColor: Color(0xFF0299C6),
+          unselectedItemColor: Colors.grey[400],
+          type: BottomNavigationBarType.fixed,
+          selectedFontSize: 12,
+          unselectedFontSize: 12,
+          selectedLabelStyle: TextStyle(
+            fontWeight: FontWeight.w600,
+            height: 1.5,
           ),
-          child: BottomNavigationBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            selectedItemColor: Color(0xFF0299C6),
-            unselectedItemColor: Colors.grey[400],
-            type: BottomNavigationBarType.fixed,
-            selectedLabelStyle: TextStyle(fontWeight: FontWeight.w600),
-            items: [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home_outlined),
-                activeIcon: Icon(Icons.home),
-                label: 'Home',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.person_outline),
-                activeIcon: Icon(Icons.person),
-                label: 'Profile',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.settings_outlined),
-                activeIcon: Icon(Icons.settings),
-                label: 'Settings',
-              ),
-            ],
+          unselectedLabelStyle: TextStyle(
+            fontWeight: FontWeight.w500,
+            height: 1.5,
           ),
+          items: [
+            BottomNavigationBarItem(
+              icon: Container(
+                padding: EdgeInsets.only(bottom: 4),
+                child: Icon(
+                  Icons.home_outlined,
+                  size: 24,
+                ),
+              ),
+              activeIcon: Container(
+                padding: EdgeInsets.only(bottom: 4),
+                child: Icon(
+                  Icons.home_rounded,
+                  size: 24,
+                ),
+              ),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Container(
+                padding: EdgeInsets.only(bottom: 4),
+                child: Icon(
+                  Icons.person_outline_rounded,
+                  size: 24,
+                ),
+              ),
+              activeIcon: Container(
+                padding: EdgeInsets.only(bottom: 4),
+                child: Icon(
+                  Icons.person_rounded,
+                  size: 24,
+                ),
+              ),
+              label: 'Profile',
+            ),
+          ],
         ),
-      );
-    }
+      ),
+    );
   }
 
   Widget _buildActionButton({required IconData icon, required VoidCallback onTap}) {

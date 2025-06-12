@@ -494,8 +494,10 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile> {
                 ),
                 const SizedBox(height: 12),
               ],
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                alignment: WrapAlignment.center,
                 children: [
                   ElevatedButton.icon(
                     onPressed: () async {
@@ -505,7 +507,10 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile> {
                       }
                     },
                     icon: Icon(icon, size: 18),
-                    label: Text(image == null ? "Pick Image" : "Change Image"),
+                    label: Text(
+                      image == null ? "Pick Image" : "Change Image",
+                      overflow: TextOverflow.ellipsis,
+                    ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF3B82F6),
                       foregroundColor: Colors.white,
@@ -515,8 +520,7 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile> {
                       elevation: 0,
                     ),
                   ),
-                  if (image != null) ...[
-                    const SizedBox(width: 12),
+                  if (image != null)
                     IconButton(
                       onPressed: () {
                         onImageSelected(null);
@@ -526,7 +530,6 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile> {
                         backgroundColor: const Color(0xFFEF4444).withOpacity(0.1),
                       ),
                     ),
-                  ],
                 ],
               ),
             ],
