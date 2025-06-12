@@ -297,59 +297,7 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
               ),
 
               // Support Section
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Support',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF1A1A1A),
-                      ),
-                    ),
-                    SizedBox(height: 16),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
-                            blurRadius: 15,
-                            spreadRadius: 2,
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          _buildEnhancedMenuItem(
-                            icon: Icons.help_outline_rounded,
-                            title: "Help & Support",
-                            subtitle: "FAQ and contact support",
-                            color: Color(0xFFFF9800),
-                            onTap: () {
-                              // Add help navigation
-                            },
-                          ),
-                          _buildDivider(),
-                          _buildEnhancedMenuItem(
-                            icon: Icons.info_outline_rounded,
-                            title: "About",
-                            subtitle: "App version and terms",
-                            color: Color(0xFF607D8B),
-                            onTap: () {
-                              // Add about navigation
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+
 
               // Logout Button
               Padding(
