@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medimed/Screens/Nurse/info_page_nurse.dart';
+import 'package:medimed/Screens/Nurse/update_nurse_profile.dart';
+import 'package:medimed/Screens/Nurse/nurse_settings.dart';
 import 'package:medimed/provider/nurseprovider.dart';
 import 'package:provider/provider.dart';
 import 'PatientDetailsPage.dart';
@@ -21,7 +23,7 @@ class _NurseHomeState extends State<NurseHome> with TickerProviderStateMixin {
 
   final List<Widget> _screens = [
     Container(), // Placeholder will be replaced with patient list
-    const Center(child: Text('Profile Screen', style: TextStyle(fontSize: 18))),
+    Container(), // Profile screen placeholder - will be handled in build method
     const Center(child: Text('Settings Screen', style: TextStyle(fontSize: 18))),
   ];
 
@@ -130,7 +132,11 @@ class _NurseHomeState extends State<NurseHome> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     var nurseProvider = Provider.of<NurseProvider>(context);
-    nurseProvider.getNurseById(widget.id!);
+    
+    // Get nurse data using getNurseById if not already loaded
+    if (nurseProvider.nurseGetModel == null) {
+      nurseProvider.getNurseById(widget.id!);
+    }
     var nurse = nurseProvider.nurseGetModel;
 
     if (nurse == null) {
@@ -171,6 +177,9 @@ class _NurseHomeState extends State<NurseHome> with TickerProviderStateMixin {
       return InfoPageNurse(patient: nurse);
     }
 
+    // Create the profile screen when needed
+    Widget profileScreen = UpdateNurseProfile(patient: nurse);
+
     return Scaffold(
       backgroundColor: Colors.grey[50],
       body: RefreshIndicator(
@@ -188,10 +197,12 @@ class _NurseHomeState extends State<NurseHome> with TickerProviderStateMixin {
                 opacity: _fadeAnimation,
                 child: _currentIndex == 0
                     ? _buildPatientList()
-                    : Padding(
-                  padding: _getResponsivePadding(context),
-                  child: _screens[_currentIndex],
-                ),
+                    : _currentIndex == 1
+                        ? profileScreen
+                        : Padding(
+                            padding: _getResponsivePadding(context),
+                            child: _screens[_currentIndex],
+                          ),
               ),
             ),
           ],
@@ -704,7 +715,32 @@ class _NurseHomeState extends State<NurseHome> with TickerProviderStateMixin {
     final isTabletOrDesktop = _isTablet(context);
 
     return GestureDetector(
-      onTap: () => setState(() => _currentIndex = index),
+      onTap: () {
+        if (index == 1) {
+          // Navigate to UpdateNurseProfile when profile tab is clicked
+          var nurseProvider = Provider.of<NurseProvider>(context, listen: false);
+          if (nurseProvider.nurseGetModel != null) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => UpdateNurseProfile(
+                  patient: nurseProvider.nurseGetModel!,
+                ),
+              ),
+            );
+          }
+        } else if (index == 2) {
+          // Navigate to NurseSettings when settings tab is clicked
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => NurseSettings(id: widget.id!),
+            ),
+          );
+        } else {
+          setState(() => _currentIndex = index);
+        }
+      },
       child: TweenAnimationBuilder<double>(
         tween: Tween(begin: 0.0, end: isActive ? 1.0 : 0.0),
         duration: const Duration(milliseconds: 200),
