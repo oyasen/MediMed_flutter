@@ -10,11 +10,13 @@ class PatientProvider extends ChangeNotifier {
   PatientModel? _patientModel;
   PatientsModel? _patientsModel;
   Nursemodel? _nurseModel;
+  Nursemodel? _patientsNurse;
 
   Patientadd? get patientAddModel => _patientAddModel;
   PatientModel? get patientModel => _patientModel;
   Nursemodel? get nurseModel => _nurseModel;
   PatientsModel? get patientsModel => _patientsModel;
+  Nursemodel? get patientsNurse => _patientsNurse;
 
   // Add Nurse
   Future<void> addPatient({
@@ -52,7 +54,7 @@ class PatientProvider extends ChangeNotifier {
   // Get Nurse Patients
   Future<void> getPatientsNurse(int id) async {
     try {
-      _nurseModel = await PatientServices.getNurses(id);
+      _patientsNurse = await PatientServices.getNurses(id);
       notifyListeners();
     } catch (e) {
       print("Error fetching nurses: $e");
@@ -123,7 +125,7 @@ class PatientProvider extends ChangeNotifier {
   }
 
   Future<void> deletePatient({required int id}) async {
-    await PatientServices.delete(id); // استدعاء دالة الحذف من الخدمة
+    await PatientServices.delete(id);
     notifyListeners();
   }
 

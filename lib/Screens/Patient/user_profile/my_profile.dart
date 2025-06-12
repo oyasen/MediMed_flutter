@@ -4,12 +4,13 @@ import 'package:provider/provider.dart';
 import 'package:medimed/Screens/Patient/user_profile/setting.dart';
 import 'package:medimed/Screens/Patient/user_profile/update_profile.dart';
 import '../../../provider/patientprovider.dart';
+import '../HomeScreen/home.dart';
 import '../section4_payment/page2.dart';
 
 class ProfilePage extends StatefulWidget {
   final String imageUrl;
-
-  const ProfilePage({super.key, required this.imageUrl});
+  int id;
+  ProfilePage({super.key, required this.imageUrl, required this.id});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -19,6 +20,8 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
   bool _showLogoutDialog = false;
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
+  bool _isLoading = true;
+  Future<void>? _loadProfileFuture;
 
   @override
   void initState() {
@@ -30,6 +33,22 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
+    _loadProfileFuture = _initializeProfile();
+  }
+
+  Future<void> _initializeProfile() async {
+    try {
+      final patientProvider = Provider.of<PatientProvider>(context, listen: false);
+      await patientProvider.getPatientById(widget.id);
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    } catch (e) {
+      print("Error loading profile: $e");
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
   }
 
   @override
@@ -53,341 +72,342 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
   Widget build(BuildContext context) {
     final patientProvider = Provider.of<PatientProvider>(context);
 
+    if (_isLoading) {
+      return _buildLoadingScreen();
+    }
+
+    final patient = patientProvider.patientModel;
+    if (patient == null) {
+      return _buildErrorScreen();
+    }
+
+    Map<dynamic, dynamic> data = patient.Model;
+    String name = data['fullName'] ?? 'Unknown';
+    String email = data['email'] ?? 'No email provided';
+
     return Scaffold(
       backgroundColor: Color(0xFFF8FAFC),
-      body: FutureBuilder(
-        future: patientProvider.getAllPatient(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return _buildLoadingScreen();
-          }
-
-          final patient = patientProvider.patientModel;
-          if (patient == null) {
-            return _buildErrorScreen();
-          }
-
-          Map<dynamic, dynamic> data = patient.Model;
-          String name = data['fullName'] ?? 'Unknown';
-          String email = data['email'] ?? 'No email provided';
-
-          return Stack(
+      body: Stack(
+        children: [
+          ListView(
+            physics: BouncingScrollPhysics(),
+            padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 32),
             children: [
-              CustomScrollView(
-                slivers: [
-                  // Custom App Bar with Profile Header
-                  SliverAppBar(
-                    expandedHeight: 280,
-                    floating: false,
-                    pinned: true,
-                    elevation: 0,
-                    backgroundColor: Colors.transparent,
-                    leading: Container(
-                      margin: EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.9),
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 10,
-                            spreadRadius: 1,
-                          ),
-                        ],
-                      ),
-                      child: IconButton(
-                        icon: Icon(Icons.arrow_back_ios_rounded, color: Color(0xFF0299C6)),
-                        onPressed: () => Navigator.pop(context),
-                      ),
-                    ),
-                    flexibleSpace: FlexibleSpaceBar(
-                      background: Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              Color(0xFF0299C6),
-                              Color(0xFF00B4DB),
-                              Color(0xFF0090FF),
-                            ],
-                          ),
-                        ),
-                        child: SafeArea(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SizedBox(height: 60),
-                              // Profile Avatar with enhanced design
-                              Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  gradient: LinearGradient(
-                                    colors: [Colors.white, Colors.white.withOpacity(0.8)],
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.2),
-                                      blurRadius: 20,
-                                      spreadRadius: 5,
-                                    ),
-                                  ],
-                                ),
-                                padding: EdgeInsets.all(6),
-                                child: CircleAvatar(
-                                  radius: 55,
-                                  backgroundImage: widget.imageUrl.isNotEmpty
-                                      ? NetworkImage(widget.imageUrl)
-                                      : null,
-                                  backgroundColor: Colors.white,
-                                  child: widget.imageUrl.isEmpty
-                                      ? Icon(Icons.person, size: 60, color: Color(0xFF0299C6))
-                                      : null,
-                                ),
-                              ),
-                              SizedBox(height: 16),
-                              // Name and Email
-                              Text(
-                                name,
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                email,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.white.withOpacity(0.9),
-                                ),
-                              ),
-                              SizedBox(height: 8),
-                              // Status Badge
-                              Container(
-                                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.2),
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: Colors.white.withOpacity(0.3)),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(Icons.verified_user, color: Colors.white, size: 16),
-                                    SizedBox(width: 4),
-                                    Text(
-                                      'Verified Patient',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
+              // Profile Header
+              Container(
+                height: 280,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xFF0299C6),
+                      Color(0xFF00B4DB),
+                      Color(0xFF0090FF),
+                    ],
                   ),
-
-                  // Menu Items
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Account Settings',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF1A1A1A),
-                            ),
+                ),
+                child: SafeArea(
+                  child: Stack(
+                    children: [
+                      // Back Button
+                      Positioned(
+                        top: 8,
+                        left: 8,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.9),
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 10,
+                                spreadRadius: 1,
+                              ),
+                            ],
                           ),
-                          SizedBox(height: 16),
-
-                          // Menu Items Container
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(20),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.05),
-                                  blurRadius: 15,
-                                  spreadRadius: 2,
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              children: [
-                                _buildEnhancedMenuItem(
-                                  icon: Icons.person_outline_rounded,
-                                  title: "Edit Profile",
-                                  subtitle: "Update your personal information",
-                                  color: Color(0xFF4CAF50),
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => UpdateProfilePage(patient: patient)
-                                      ),
-                                    );
-                                  },
-                                ),
-                                _buildDivider(),
-                                _buildEnhancedMenuItem(
-                                  icon: Icons.payment_rounded,
-                                  title: "Payment Methods",
-                                  subtitle: "Manage your payment options",
-                                  color: Color(0xFF2196F3),
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => PaymentPage2(price: 0)
-                                      ),
-                                    );
-                                  },
-                                ),
-                                _buildDivider(),
-                                _buildEnhancedMenuItem(
-                                  icon: Icons.settings_outlined,
-                                  title: "Settings",
-                                  subtitle: "App preferences and privacy",
-                                  color: Color(0xFF9C27B0),
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => SettingsPage()),
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
+                          child: IconButton(
+                            icon: Icon(Icons.arrow_back_ios_rounded, color: Color(0xFF0299C6)),
+                            onPressed: () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (context) => HomeScreen()),
+                              );
+                            },
                           ),
-
-                          SizedBox(height: 24),
-
-                          // Support Section
-                          Text(
-                            'Support',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF1A1A1A),
+                        ),
+                      ),
+                      // Profile Content
+                      Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(height: 20),
+                            Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: LinearGradient(
+                                  colors: [Colors.white, Colors.white.withOpacity(0.8)],
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.2),
+                                    blurRadius: 20,
+                                    spreadRadius: 5,
+                                  ),
+                                ],
+                              ),
+                              padding: EdgeInsets.all(6),
+                              child: CircleAvatar(
+                                radius: 55,
+                                backgroundImage: widget.imageUrl.isNotEmpty
+                                    ? NetworkImage(widget.imageUrl)
+                                    : null,
+                                backgroundColor: Colors.white,
+                                child: widget.imageUrl.isEmpty
+                                    ? Icon(Icons.person, size: 60, color: Color(0xFF0299C6))
+                                    : null,
+                              ),
                             ),
-                          ),
-                          SizedBox(height: 16),
-
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(20),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.05),
-                                  blurRadius: 15,
-                                  spreadRadius: 2,
-                                ),
-                              ],
+                            SizedBox(height: 16),
+                            Text(
+                              name,
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
                             ),
-                            child: Column(
-                              children: [
-                                _buildEnhancedMenuItem(
-                                  icon: Icons.help_outline_rounded,
-                                  title: "Help & Support",
-                                  subtitle: "FAQ and contact support",
-                                  color: Color(0xFFFF9800),
-                                  onTap: () {
-                                    // Add help navigation
-                                  },
-                                ),
-                                _buildDivider(),
-                                _buildEnhancedMenuItem(
-                                  icon: Icons.info_outline_rounded,
-                                  title: "About",
-                                  subtitle: "App version and terms",
-                                  color: Color(0xFF607D8B),
-                                  onTap: () {
-                                    // Add about navigation
-                                  },
-                                ),
-                              ],
+                            SizedBox(height: 4),
+                            Text(
+                              email,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.white.withOpacity(0.9),
+                              ),
                             ),
-                          ),
-
-                          SizedBox(height: 32),
-
-                          // Logout Button
-                          Container(
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.red.withOpacity(0.2),
-                                  blurRadius: 10,
-                                  spreadRadius: 1,
-                                ),
-                              ],
-                            ),
-                            child: ElevatedButton(
-                              onPressed: _toggleLogoutDialog,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xFFFF5252),
-                                foregroundColor: Colors.white,
-                                padding: EdgeInsets.symmetric(vertical: 16),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                elevation: 0,
+                            SizedBox(height: 8),
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: Colors.white.withOpacity(0.3)),
                               ),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Icon(Icons.logout_rounded, size: 20),
-                                  SizedBox(width: 8),
+                                  Icon(Icons.verified_user, color: Colors.white, size: 16),
+                                  SizedBox(width: 4),
                                   Text(
-                                    'Logout',
+                                    'Verified Patient',
                                     style: TextStyle(
-                                      fontSize: 16,
+                                      color: Colors.white,
+                                      fontSize: 12,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                          ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
 
-                          SizedBox(height: 40),
+              // Account Settings Section
+              Padding(
+                padding: EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Account Settings',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF1A1A1A),
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 15,
+                            spreadRadius: 2,
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          _buildEnhancedMenuItem(
+                            icon: Icons.person_outline_rounded,
+                            title: "Edit Profile",
+                            subtitle: "Update your personal information",
+                            color: Color(0xFF4CAF50),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => UpdateProfilePage(patient: patient)
+                                ),
+                              );
+                            },
+                          ),
+                          _buildDivider(),
+                          _buildEnhancedMenuItem(
+                            icon: Icons.payment_rounded,
+                            title: "Payment Methods",
+                            subtitle: "Manage your payment options",
+                            color: Color(0xFF2196F3),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => PaymentPage2(price: 0)
+                                ),
+                              );
+                            },
+                          ),
+                          _buildDivider(),
+                          _buildEnhancedMenuItem(
+                            icon: Icons.settings_outlined,
+                            title: "Settings",
+                            subtitle: "App preferences and privacy",
+                            color: Color(0xFF9C27B0),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => SettingsPage(id: widget.id,)),
+                              );
+                            },
+                          ),
                         ],
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
 
-              // Logout Dialog Overlay
-              if (_showLogoutDialog)
-                AnimatedBuilder(
-                  animation: _fadeAnimation,
-                  builder: (context, child) {
-                    return Opacity(
-                      opacity: _fadeAnimation.value,
-                      child: _buildLogoutDialog(),
-                    );
-                  },
+              // Support Section
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Support',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF1A1A1A),
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 15,
+                            spreadRadius: 2,
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          _buildEnhancedMenuItem(
+                            icon: Icons.help_outline_rounded,
+                            title: "Help & Support",
+                            subtitle: "FAQ and contact support",
+                            color: Color(0xFFFF9800),
+                            onTap: () {
+                              // Add help navigation
+                            },
+                          ),
+                          _buildDivider(),
+                          _buildEnhancedMenuItem(
+                            icon: Icons.info_outline_rounded,
+                            title: "About",
+                            subtitle: "App version and terms",
+                            color: Color(0xFF607D8B),
+                            onTap: () {
+                              // Add about navigation
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
+              ),
+
+              // Logout Button
+              Padding(
+                padding: EdgeInsets.all(20),
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.red.withOpacity(0.2),
+                        blurRadius: 10,
+                        spreadRadius: 1,
+                      ),
+                    ],
+                  ),
+                  child: ElevatedButton(
+                    onPressed: _toggleLogoutDialog,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFFFF5252),
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      elevation: 0,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.logout_rounded, size: 20),
+                        SizedBox(width: 8),
+                        Text(
+                          'Logout',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             ],
-          );
-        },
+          ),
+          // Logout Dialog Overlay
+          if (_showLogoutDialog)
+            AnimatedBuilder(
+              animation: _fadeAnimation,
+              builder: (context, child) {
+                return Opacity(
+                  opacity: _fadeAnimation.value,
+                  child: _buildLogoutDialog(),
+                );
+              },
+            ),
+        ],
       ),
     );
   }
@@ -396,9 +416,13 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFF0299C6), Color(0xFF00B4DB)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF0299C6),
+            Color(0xFF00B4DB),
+            Color(0xFF0090FF),
+          ],
         ),
       ),
       child: Center(
@@ -439,55 +463,48 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
   }
 
   Widget _buildErrorScreen() {
-    return Center(
-      child: Container(
-        margin: EdgeInsets.all(24),
-        padding: EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 20,
-              spreadRadius: 5,
-            ),
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF0299C6),
+            Color(0xFF00B4DB),
+            Color(0xFF0090FF),
           ],
         ),
+      ),
+      child: Center(
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              Icons.error_outline_rounded,
+              Icons.error_outline,
               size: 64,
-              color: Color(0xFFFF5252),
+              color: Colors.white,
             ),
             SizedBox(height: 16),
             Text(
-              "Failed to load profile",
+              'Failed to load profile',
               style: TextStyle(
+                color: Colors.white,
                 fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF1A1A1A),
+                fontWeight: FontWeight.w500,
               ),
             ),
-            SizedBox(height: 8),
-            Text(
-              "Please check your connection and try again",
-              style: TextStyle(
-                color: Colors.grey[600],
-                fontSize: 14,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 20),
+            SizedBox(height: 24),
             ElevatedButton(
               onPressed: () {
-                setState(() {});
+                setState(() {
+                  _isLoading = true;
+                  _loadProfileFuture = _initializeProfile();
+                });
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF0299C6),
-                foregroundColor: Colors.white,
+                backgroundColor: Colors.white,
+                foregroundColor: Color(0xFF0299C6),
+                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),

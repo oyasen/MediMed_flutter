@@ -180,7 +180,42 @@ class _NurseProfileScreen1State extends State<NurseProfileScreen1> with TickerPr
           ),
         ),
       ),
-      bottomNavigationBar: MyBottomNavigationBar(),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(25),
+            topRight: Radius.circular(25),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 20,
+              offset: const Offset(0, -5),
+            ),
+          ],
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildNavItem(
+                  icon: Icons.home_outlined,
+                  label: 'Home',
+                  isSelected: true,
+                ),
+                _buildNavItem(
+                  icon: Icons.person_outline,
+                  label: 'Profile',
+                  isSelected: false,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 
@@ -548,6 +583,39 @@ class _NurseProfileScreen1State extends State<NurseProfileScreen1> with TickerPr
       'July', 'August', 'September', 'October', 'November', 'December'
     ];
     return months[month - 1];
+  }
+
+  Widget _buildNavItem({
+    required IconData icon,
+    required String label,
+    required bool isSelected,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      decoration: BoxDecoration(
+        color: isSelected ? const Color(0xFF667eea).withOpacity(0.1) : Colors.transparent,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            color: isSelected ? const Color(0xFF667eea) : Colors.grey,
+            size: 24,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: TextStyle(
+              color: isSelected ? const Color(0xFF667eea) : Colors.grey,
+              fontSize: 12,
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
