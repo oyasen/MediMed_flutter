@@ -134,68 +134,70 @@ class PatientDetails extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(28.0),
-            child: Column(
-              children: [
-                // Profile Picture with enhanced styling
-                Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 15,
-                        offset: const Offset(0, 5),
-                      ),
-                    ],
-                  ),
-                  child: CircleAvatar(
-                    radius: 50,
-                    backgroundImage: patient["personalPicture"] != null &&
-                        patient["personalPicture"].toString().isNotEmpty
-                        ? NetworkImage(patient["personalPicture"])
-                        : null,
-                    backgroundColor: const Color(0xFFF3F0FF),
-                    child: patient["personalPicture"] == null ||
-                        patient["personalPicture"].toString().isEmpty
-                        ? const Icon(Icons.person, size: 50, color: Color(0xFF8B5CF6))
-                        : null,
-                  ),
-                ),
-
-                const SizedBox(height: 20),
-
-                // Patient Name
-                Text(
-                  patient["fullName"]?.toString() ?? "Unknown Patient",
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-
-                const SizedBox(height: 8),
-
-                // Patient Email
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    patient["email"]?.toString() ?? "No email provided",
-                    style: const TextStyle(
-                      fontSize: 14,
+            child: Center(
+              child: Column(
+                children: [
+                  // Profile Picture with enhanced styling
+                  Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
                       color: Colors.white,
-                      fontWeight: FontWeight.w500,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 15,
+                          offset: const Offset(0, 5),
+                        ),
+                      ],
+                    ),
+                    child: CircleAvatar(
+                      radius: 50,
+                      backgroundImage: patient["personalPicture"] != null &&
+                          patient["personalPicture"].toString().isNotEmpty
+                          ? NetworkImage(patient["personalPicture"])
+                          : null,
+                      backgroundColor: const Color(0xFFF3F0FF),
+                      child: patient["personalPicture"] == null ||
+                          patient["personalPicture"].toString().isEmpty
+                          ? const Icon(Icons.person, size: 50, color: Color(0xFF8B5CF6))
+                          : null,
                     ),
                   ),
-                ),
-              ],
+
+                  const SizedBox(height: 20),
+
+                  // Patient Name
+                  Text(
+                    patient["fullName"]?.toString() ?? "Unknown Patient",
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  // Patient Email
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      patient["email"]?.toString() ?? "No email provided",
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],

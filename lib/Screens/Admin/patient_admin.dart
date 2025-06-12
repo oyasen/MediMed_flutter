@@ -16,6 +16,12 @@ class _PatientsPageState extends State<PatientsPage> {
   String searchQuery = '';
   String selectedFilter = 'All';
 
+  // Pull-to-refresh function
+  Future<void> _refreshPatients() async {
+    final adminProvider = Provider.of<Adminprovider>(context, listen: false);
+    await adminProvider.getAllPatients();
+  }
+
   @override
   Widget build(BuildContext context) {
     var adminprovider = Provider.of<Adminprovider>(context);
@@ -43,22 +49,6 @@ class _PatientsPageState extends State<PatientsPage> {
           ),
         ),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Icon(Icons.refresh_rounded, color: Colors.white, size: 20),
-            ),
-            onPressed: () {
-              adminprovider.getAllPatients();
-            },
-          ),
-          const SizedBox(width: 8),
-        ],
       ),
       body: Column(
         children: [
@@ -167,97 +157,112 @@ class _PatientsPageState extends State<PatientsPage> {
             ),
           ),
 
-          // Patients List
+          // Patients List with RefreshIndicator
           Expanded(
-            child: Consumer<Adminprovider>(
-              builder: (context, value, child) {
-                var patients = adminprovider.patientsModel;
-                if (patients == null) {
-                  adminprovider.getAllPatients();
-                  return const Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CircularProgressIndicator(
-                          color: Color(0xFF7C4DFF),
-                          strokeWidth: 3,
-                        ),
-                        SizedBox(height: 16),
-                        Text(
-                          'Loading patients...',
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 16,
+            child: RefreshIndicator(
+              color: const Color(0xFF7C4DFF),
+              backgroundColor: Colors.white,
+              strokeWidth: 3,
+              displacement: 40,
+              onRefresh: _refreshPatients,
+              child: Consumer<Adminprovider>(
+                builder: (context, value, child) {
+                  var patients = adminprovider.patientsModel;
+                  if (patients == null) {
+                    adminprovider.getAllPatients();
+                    return const Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CircularProgressIndicator(
+                            color: Color(0xFF7C4DFF),
+                            strokeWidth: 3,
                           ),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-
-                // Filter patients based on search and filter
-                var filteredPatients = patients.Model.where((patient) {
-                  final matchesSearch = searchQuery.isEmpty ||
-                      patient["fullName"].toString().toLowerCase().contains(searchQuery.toLowerCase()) ||
-                      patient["email"].toString().toLowerCase().contains(searchQuery.toLowerCase());
-
-                  final matchesFilter = selectedFilter == 'All' ||
-                      _getStatusText(patient["approved"]) == selectedFilter;
-
-                  return matchesSearch && matchesFilter;
-                }).toList();
-
-                if (filteredPatients.isEmpty) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[100],
-                            borderRadius: BorderRadius.circular(20),
+                          SizedBox(height: 16),
+                          Text(
+                            'Loading patients...',
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 16,
+                            ),
                           ),
-                          child: Icon(
-                            Icons.search_off_rounded,
-                            size: 48,
-                            color: Colors.grey[400],
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'No patients found',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Try adjusting your search or filter criteria',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey[500],
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-
-                return ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: filteredPatients.length,
-                  itemBuilder: (context, index) {
-                    final originalIndex = patients.Model.indexOf(filteredPatients[index]);
-                    return PatientCard(
-                      patient: filteredPatients[index],
-                      index: originalIndex,
+                        ],
+                      ),
                     );
-                  },
-                );
-              },
+                  }
+
+                  // Filter patients based on search and filter
+                  var filteredPatients = patients.Model.where((patient) {
+                    final matchesSearch = searchQuery.isEmpty ||
+                        patient["fullName"].toString().toLowerCase().contains(searchQuery.toLowerCase()) ||
+                        patient["email"].toString().toLowerCase().contains(searchQuery.toLowerCase());
+
+                    final matchesFilter = selectedFilter == 'All' ||
+                        _getStatusText(patient["approved"]) == selectedFilter;
+
+                    return matchesSearch && matchesFilter;
+                  }).toList();
+
+                  if (filteredPatients.isEmpty) {
+                    return ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      children: [
+                        SizedBox(height: MediaQuery.of(context).size.height * 0.2),
+                        Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(20),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[100],
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Icon(
+                                  Icons.search_off_rounded,
+                                  size: 48,
+                                  color: Colors.grey[400],
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                'No patients found',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Pull down to refresh or try adjusting your search',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey[500],
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+
+                  return ListView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: const EdgeInsets.all(16),
+                    itemCount: filteredPatients.length,
+                    itemBuilder: (context, index) {
+                      final originalIndex = patients.Model.indexOf(filteredPatients[index]);
+                      return PatientCard(
+                        patient: filteredPatients[index],
+                        index: originalIndex,
+                      );
+                    },
+                  );
+                },
+              ),
             ),
           ),
         ],
@@ -318,7 +323,7 @@ class EnhancedBottomNavBar extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) =>  SchedulePage(),
+                builder: (context) => SchedulePage(),
               ),
             );
           }
@@ -441,12 +446,15 @@ class PatientCard extends StatelessWidget {
                         children: [
                           Icon(Icons.phone_outlined, size: 16, color: Colors.grey[500]),
                           const SizedBox(width: 6),
-                          Text(
-                            patient["contact"] ?? "No phone",
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey[600],
-                              fontWeight: FontWeight.w500,
+                          Expanded(
+                            child: Text(
+                              patient["contact"] ?? "No phone",
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[600],
+                                fontWeight: FontWeight.w500,
+                              ),
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],

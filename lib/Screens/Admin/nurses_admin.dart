@@ -26,6 +26,34 @@ class _SchedulePageState extends State<SchedulePage> {
     });
   }
 
+  // Pull to refresh function
+  Future<void> _onRefresh() async {
+    final adminProvider = Provider.of<Adminprovider>(context, listen: false);
+    await adminProvider.getAllNurses();
+
+    // Optional: Show a brief success message
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Row(
+            children: [
+              Icon(Icons.check_circle, color: Colors.white, size: 20),
+              SizedBox(width: 8),
+              Text('Nurses list refreshed successfully'),
+            ],
+          ),
+          backgroundColor: Colors.green[600],
+          duration: const Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.all(16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var adminProvider = Provider.of<Adminprovider>(context);
@@ -54,20 +82,12 @@ class _SchedulePageState extends State<SchedulePage> {
         ),
         centerTitle: true,
         actions: [
+          // Add refresh button in app bar as an alternative
           IconButton(
-            icon: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Icon(Icons.refresh_rounded, color: Colors.white, size: 20),
-            ),
-            onPressed: () {
-              adminProvider.getAllNurses();
-            },
+            onPressed: _onRefresh,
+            icon: const Icon(Icons.refresh_rounded, color: Colors.white),
+            tooltip: 'Refresh nurses list',
           ),
-          const SizedBox(width: 8),
         ],
       ),
       body: Column(
@@ -177,97 +197,120 @@ class _SchedulePageState extends State<SchedulePage> {
             ),
           ),
 
-          // Nurses List
+          // Nurses List with RefreshIndicator
           Expanded(
-            child: Consumer<Adminprovider>(
-              builder: (context, value, child) {
-                var nurses = adminProvider.nurseModel;
-                if (nurses == null) {
-                  adminProvider.getAllNurses();
-                  return const Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CircularProgressIndicator(
-                          color: Color(0xFF7C4DFF),
-                          strokeWidth: 3,
-                        ),
-                        SizedBox(height: 16),
-                        Text(
-                          'Loading nurses...',
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 16,
+            child: RefreshIndicator(
+              onRefresh: _onRefresh,
+              color: const Color(0xFF7C4DFF),
+              backgroundColor: Colors.white,
+              strokeWidth: 3.0,
+              displacement: 40.0,
+              child: Consumer<Adminprovider>(
+                builder: (context, value, child) {
+                  var nurses = adminProvider.nurseModel;
+                  if (nurses == null) {
+                    adminProvider.getAllNurses();
+                    return const Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CircularProgressIndicator(
+                            color: Color(0xFF7C4DFF),
+                            strokeWidth: 3,
                           ),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-
-                // Filter nurses based on search and filter
-                var filteredNurses = nurses.Model.where((nurse) {
-                  final matchesSearch = searchQuery.isEmpty ||
-                      nurse["fullName"].toString().toLowerCase().contains(searchQuery.toLowerCase()) ||
-                      nurse["email"].toString().toLowerCase().contains(searchQuery.toLowerCase());
-
-                  final matchesFilter = selectedFilter == 'All' ||
-                      _getStatusText(nurse["approved"]) == selectedFilter;
-
-                  return matchesSearch && matchesFilter;
-                }).toList();
-
-                if (filteredNurses.isEmpty) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[100],
-                            borderRadius: BorderRadius.circular(20),
+                          SizedBox(height: 16),
+                          Text(
+                            'Loading nurses...',
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 16,
+                            ),
                           ),
-                          child: Icon(
-                            Icons.search_off_rounded,
-                            size: 48,
-                            color: Colors.grey[400],
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'No nurses found',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Try adjusting your search or filter criteria',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey[500],
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-
-                return ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: filteredNurses.length,
-                  itemBuilder: (context, index) {
-                    final originalIndex = nurses.Model.indexOf(filteredNurses[index]);
-                    return NurseCard(
-                      nurse: filteredNurses[index],
-                      index: originalIndex,
+                        ],
+                      ),
                     );
-                  },
-                );
-              },
+                  }
+
+                  // Filter nurses based on search and filter
+                  var filteredNurses = nurses.Model.where((nurse) {
+                    final matchesSearch = searchQuery.isEmpty ||
+                        nurse["fullName"].toString().toLowerCase().contains(searchQuery.toLowerCase()) ||
+                        nurse["email"].toString().toLowerCase().contains(searchQuery.toLowerCase());
+
+                    final matchesFilter = selectedFilter == 'All' ||
+                        _getStatusText(nurse["approved"]) == selectedFilter;
+
+                    return matchesSearch && matchesFilter;
+                  }).toList();
+
+                  if (filteredNurses.isEmpty) {
+                    return CustomScrollView(
+                      slivers: [
+                        SliverFillRemaining(
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(20),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[100],
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Icon(
+                                    Icons.search_off_rounded,
+                                    size: 48,
+                                    color: Colors.grey[400],
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                Text(
+                                  'No nurses found',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Try adjusting your search or filter criteria',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey[500],
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                Text(
+                                  'Pull down to refresh',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey[400],
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+
+                  return ListView.builder(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: filteredNurses.length,
+                    physics: const AlwaysScrollableScrollPhysics(), // Ensures pull-to-refresh works even with few items
+                    itemBuilder: (context, index) {
+                      final originalIndex = nurses.Model.indexOf(filteredNurses[index]);
+                      return NurseCard(
+                        nurse: filteredNurses[index],
+                        index: originalIndex,
+                      );
+                    },
+                  );
+                },
+              ),
             ),
           ),
         ],
@@ -453,12 +496,15 @@ class NurseCard extends StatelessWidget {
                         children: [
                           Icon(Icons.phone_outlined, size: 16, color: Colors.grey[500]),
                           const SizedBox(width: 6),
-                          Text(
-                            nurse["contact"] ?? "No phone",
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey[600],
-                              fontWeight: FontWeight.w500,
+                          Expanded(
+                            child: Text(
+                              "${nurse["contact"] ?? "No phone"}",
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[600],
+                                fontWeight: FontWeight.w500,
+                              ),
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],
