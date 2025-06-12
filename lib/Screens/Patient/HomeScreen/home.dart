@@ -100,17 +100,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               position: _slideAnimation,
               child: CustomScrollView(
                 physics: BouncingScrollPhysics(),
-                slivers: [
+          slivers: [
                   // Custom App Bar
                   SliverToBoxAdapter(
                     child: Container(
                       margin: EdgeInsets.all(20),
                       padding: EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
                             Color(0xFF667eea),
                             Color(0xFF764ba2),
                           ],
@@ -128,17 +128,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       child: Row(
                         children: [
                           Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(color: Colors.white, width: 3),
-                              boxShadow: [
-                                BoxShadow(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: Colors.white, width: 3),
+                                  boxShadow: [
+                                    BoxShadow(
                                   color: Colors.black.withOpacity(0.15),
                                   blurRadius: 15,
-                                  spreadRadius: 2,
+                                      spreadRadius: 2,
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
                             child: Consumer<PatientProvider>(
                               builder: (context, provider, child) {
                                 final imageUrl = provider.patientModel?.Model["profileImage"] ?? '';
@@ -149,8 +149,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                   child: imageUrl.isEmpty
                                       ? Icon(Icons.person, color: Color(0xFF667eea), size: 38)
                                       : null,
-                                );
-                              },
+                              );
+                            },
                             ),
                           ),
                           SizedBox(width: 16),
@@ -203,43 +203,43 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             children: [
                               _buildModernActionButton(
                                 icon: Icons.notifications_none_rounded,
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => PatientNotificationsPage(
-                                          patientId: patientProvider.patientAddModel!.id
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                      builder: (context) => NotificationsPage(
+                                          id: patientProvider.patientAddModel!.id
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
                               SizedBox(height: 12),
                               _buildModernActionButton(
-                                icon: Icons.settings_outlined,
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
+                            icon: Icons.settings_outlined,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
                                       builder: (context) => SettingsPage(id: patientProvider.patientAddModel!.id),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ),
+                        ],
                     ),
                   ),
+                ),
 
                   // Quick Stats Cards
-                  SliverToBoxAdapter(
+            SliverToBoxAdapter(
                     child: Container(
                       height: 70,
                       margin: EdgeInsets.symmetric(horizontal: 20),
                       child: Row(
-                        children: [
+                  children: [
                           Expanded(
                             child: _buildStatCard(
                               title: 'Available',
@@ -266,7 +266,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
                   SliverToBoxAdapter(child: SizedBox(height: 32)),
 
-                  // Search Bar
+                    // Search Bar
                   SliverToBoxAdapter(
                     child: Container(
                       margin: EdgeInsets.symmetric(horizontal: 20),
@@ -334,29 +334,29 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Available Nurses',
-                                style: TextStyle(
+                      children: [
+                        Text(
+                          'Available Nurses',
+                          style: TextStyle(
                                   fontSize: 24,
-                                  fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.bold,
                                   color: Color(0xFF2D3748),
                                 ),
                               ),
                               Text(
                                 'Choose the best care for you',
-                                style: TextStyle(
+                            style: TextStyle(
                                   fontSize: 14,
                                   color: Colors.grey[600],
                                   fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
                           ),
+                        ),
+                      ],
+                    ),
                           Container(
                             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                             decoration: BoxDecoration(
@@ -365,16 +365,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             ),
                             child: Text(
                               'View All',
-                              style: TextStyle(
+                                style: TextStyle(
                                 color: Color(0xFF667eea),
                                 fontWeight: FontWeight.w600,
-                                fontSize: 14,
+                                  fontSize: 14,
                               ),
-                            ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
+                        ),
                   ),
 
                   SliverToBoxAdapter(child: SizedBox(height: 20)),
@@ -412,25 +412,25 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           delegate: SliverChildBuilderDelegate(
                             (context, index) {
                               final nurse = nurses[index];
-                              return Padding(
-                                padding: EdgeInsets.only(bottom: 16),
+                            return Padding(
+                              padding: EdgeInsets.only(bottom: 16),
                                 child: ModernNurseCard(
                                   name: nurse['fullName'] ?? 'Unknown',
                                   specialty: nurse['spec'] ?? 'General Nurse',
                                   rating: 4.5 + (index % 3) * 0.2,
                                   imageUrl: nurse['profileImage'] ?? '',
-                                  nurseData: nurse,
-                                  patientData: patientProvider.patientAddModel!.id,
+                                nurseData: nurse,
+                                patientData: patientProvider.patientAddModel!.id,
                                   isOnline: index % 3 == 0,
-                                ),
-                              );
-                            },
+                              ),
+                            );
+                          },
                             childCount: nurses.length,
-                          ),
-                        );
-                      },
-                    ),
-                  ),
+                        ),
+                      );
+                  },
+                ),
+              ),
 
                   SliverToBoxAdapter(child: SizedBox(height: 100)),
                 ],
@@ -459,16 +459,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         borderRadius: BorderRadius.circular(14),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Container(
+      child: Container(
             padding: EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.2),
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: Colors.white.withOpacity(0.3)),
-            ),
-            child: Icon(
-              icon,
-              color: Colors.white,
+          border: Border.all(color: Colors.white.withOpacity(0.3)),
+        ),
+        child: Icon(
+          icon,
+          color: Colors.white,
               size: 20,
             ),
           ),
@@ -486,7 +486,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
+        decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
@@ -498,17 +498,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
         ],
       ),
-      child: Column(
+            child: Column(
         mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+              children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Container(
+                Container(
                 padding: EdgeInsets.all(4),
-                decoration: BoxDecoration(
+                  decoration: BoxDecoration(
                   color: color.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(6),
                 ),
@@ -529,18 +529,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             ],
           ),
           SizedBox(height: 3),
-          Text(
+                Text(
             count,
-            style: TextStyle(
+                  style: TextStyle(
               fontSize: 14,
-              fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.bold,
               color: Color(0xFF2D3748),
-            ),
-          ),
+                  ),
+                ),
           SizedBox(height: 1),
-          Text(
+                Text(
             subtitle,
-            style: TextStyle(
+                  style: TextStyle(
               color: Colors.grey[500],
               fontSize: 8,
               fontWeight: FontWeight.w500,
@@ -556,21 +556,21 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return Container(
       margin: EdgeInsets.all(20),
       padding: EdgeInsets.symmetric(vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.white,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
         borderRadius: BorderRadius.circular(25),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 20,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 20,
             spreadRadius: 0,
             offset: Offset(0, 10),
-          ),
-        ],
-      ),
+                      ),
+                    ],
+                  ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
+                    children: [
           _buildNavItem(Icons.home_rounded, 'Home', 0),
           _buildNavItem(Icons.person_rounded, 'Profile', 1),
         ],
@@ -585,7 +585,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       child: AnimatedContainer(
         duration: Duration(milliseconds: 300),
         padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-        decoration: BoxDecoration(
+                        decoration: BoxDecoration(
           gradient: isSelected
               ? LinearGradient(colors: [Color(0xFF667eea), Color(0xFF764ba2)])
               : null,
@@ -593,23 +593,23 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
-          children: [
+                          children: [
             Icon(
               icon,
               color: isSelected ? Colors.white : Colors.grey[400],
               size: 22,
             ),
             if (isSelected) ...[
-              SizedBox(width: 8),
+                                SizedBox(width: 8),
               Text(
                 label,
-                style: TextStyle(
+                                    style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w600,
-                  fontSize: 14,
-                ),
-              ),
-            ],
+                                      fontSize: 14,
+                                  ),
+                                ),
+                              ],
           ],
         ),
       ),
@@ -636,8 +636,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       padding: EdgeInsets.all(40),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
+                  children: [
+                    Container(
             padding: EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: Colors.grey[100],
@@ -650,18 +650,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             ),
           ),
           SizedBox(height: 20),
-          Text(
+                            Text(
             'No nurses found',
-            style: TextStyle(
+                              style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
               color: Colors.grey[600],
             ),
           ),
           SizedBox(height: 8),
-          Text(
+                            Text(
             'Try adjusting your search criteria\nor check back later',
-            style: TextStyle(
+                              style: TextStyle(
               fontSize: 14,
               color: Colors.grey[500],
             ),
@@ -683,12 +683,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
         ),
         child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
                 padding: EdgeInsets.all(30),
-                decoration: BoxDecoration(
+              decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.9),
                   borderRadius: BorderRadius.circular(25),
                   boxShadow: [
@@ -705,9 +705,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 ),
               ),
               SizedBox(height: 30),
-              Text(
+            Text(
                 'Loading your healthcare dashboard...',
-                style: TextStyle(
+              style: TextStyle(
                   color: Colors.white,
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
@@ -792,29 +792,29 @@ class ModernNurseCard extends StatelessWidget {
             child: Row(
               children: [
                 Stack(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: LinearGradient(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
                           colors: [Color(0xFF667eea), Color(0xFF764ba2)],
-                        ),
-                        boxShadow: [
-                          BoxShadow(
+                    ),
+                    boxShadow: [
+                      BoxShadow(
                             color: Color(0xFF667eea).withOpacity(0.3),
                             blurRadius: 15,
-                            spreadRadius: 2,
-                          ),
-                        ],
+                        spreadRadius: 2,
                       ),
-                      child: CircleAvatar(
+                    ],
+                  ),
+                  child: CircleAvatar(
                         radius: 32,
-                        backgroundColor: Colors.transparent,
+                    backgroundColor: Colors.transparent,
                         backgroundImage: nurseImageUrl.isNotEmpty ? NetworkImage(nurseImageUrl) : null,
                         child: nurseImageUrl.isEmpty
                             ? Icon(Icons.person, color: Colors.white, size: 32)
-                            : null,
-                      ),
+                        : null,
+                  ),
                     ),
                     if (isOnline)
                       Positioned(
@@ -841,9 +841,9 @@ class ModernNurseCard extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              name,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
+                        name,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
                                 fontSize: 17,
                                 color: Color(0xFF2D3748),
                               ),
@@ -933,7 +933,7 @@ class ModernNurseCard extends StatelessWidget {
                   child: Icon(
                     Icons.arrow_forward_ios_rounded,
                     color: Color(0xFF667eea),
-                    size: 16,
+                  size: 16,
                   ),
                 ),
               ],

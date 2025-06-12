@@ -183,11 +183,11 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile>
         ),
       ),
       body: Stack(
-        children: [
+          children: [
           // Animated background
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
+            Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
@@ -200,8 +200,8 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile>
           ),
 
           SingleChildScrollView(
-            child: Column(
-              children: [
+                child: Column(
+                  children: [
                 // Spectacular Header with floating profile
                 AnimatedBuilder(
                   animation: _headerAnimation,
@@ -239,10 +239,10 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile>
                               top: 50,
                               right: 30,
                               child: Container(
-                                width: 80,
-                                height: 80,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
                                   color: Colors.white.withOpacity(0.1),
                                 ),
                               ),
@@ -288,8 +288,8 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile>
                                       gradient: const LinearGradient(
                                         colors: [Colors.white, Color(0xFFF8FAFC)],
                                       ),
-                                      boxShadow: [
-                                        BoxShadow(
+                        boxShadow: [
+                          BoxShadow(
                                           color: Colors.white.withOpacity(0.3),
                                           blurRadius: 20,
                                           spreadRadius: 5,
@@ -309,15 +309,15 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile>
                                           color: Colors.white.withOpacity(0.8),
                                           width: 3,
                                         ),
-                                      ),
-                                      child: CircleAvatar(
+                      ),
+                      child: CircleAvatar(
                                         radius: 52,
-                                        backgroundImage: NetworkImage(
+                        backgroundImage: NetworkImage(
                                           widget.patient.Model['personalPicture'] ??
                                               'https://via.placeholder.com/150',
-                                        ),
-                                        backgroundColor: Colors.white,
-                                      ),
+                        ),
+                        backgroundColor: Colors.white,
+                      ),
                                     ),
                                   ),
 
@@ -335,10 +335,10 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile>
                                           color: Colors.black.withOpacity(0.3),
                                           blurRadius: 10,
                                           offset: const Offset(0, 2),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                    ),
+                  ],
+                ),
+              ),
 
                                   const SizedBox(height: 8),
 
@@ -368,13 +368,13 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile>
                       child: Opacity(
                         opacity: _cardSlideAnimation.value,
                         child: Padding(
-                          padding: const EdgeInsets.all(24.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                               // Personal Information Section with glassmorphism
                               _buildSpectacularSectionCard(
-                                "Personal Information",
+                    "Personal Information",
                                 Icons.person_outline,
                                 const Color(0xFF667EEA),
                                 [
@@ -387,18 +387,18 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile>
                                   buildSpectacularTextField("Specialization", SpecCont, Icons.medical_services_outlined),
 
                                   // Gender Selection with modern design
-                                  const SizedBox(height: 16),
-                                  const Text(
-                                    "Gender",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
+                      const SizedBox(height: 16),
+                      const Text(
+                        "Gender",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
                                       color: Color(0xFF2D3748),
-                                    ),
-                                  ),
+                        ),
+                      ),
                                   const SizedBox(height: 12),
-                                  Container(
-                                    decoration: BoxDecoration(
+                      Container(
+                        decoration: BoxDecoration(
                                       gradient: LinearGradient(
                                         colors: [
                                           Colors.white,
@@ -417,10 +417,10 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile>
                                           offset: const Offset(0, 5),
                                         ),
                                       ],
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
                                           child: Container(
                                             margin: const EdgeInsets.all(4),
                                             decoration: BoxDecoration(
@@ -431,7 +431,7 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile>
                                                   : null,
                                               borderRadius: BorderRadius.circular(16),
                                             ),
-                                            child: RadioListTile<String>(
+                              child: RadioListTile<String>(
                                               title: Text(
                                                 "Male",
                                                 style: TextStyle(
@@ -439,19 +439,19 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile>
                                                   fontWeight: FontWeight.w600,
                                                 ),
                                               ),
-                                              value: "Male",
-                                              groupValue: gender,
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  gender = value!;
-                                                });
-                                              },
+                                value: "Male",
+                                groupValue: gender,
+                                onChanged: (value) {
+                                  setState(() {
+                                    gender = value!;
+                                  });
+                                },
                                               activeColor: Colors.white,
                                               contentPadding: const EdgeInsets.symmetric(horizontal: 8),
                                             ),
-                                          ),
-                                        ),
-                                        Expanded(
+                              ),
+                            ),
+                            Expanded(
                                           child: Container(
                                             margin: const EdgeInsets.all(4),
                                             decoration: BoxDecoration(
@@ -462,7 +462,7 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile>
                                                   : null,
                                               borderRadius: BorderRadius.circular(16),
                                             ),
-                                            child: RadioListTile<String>(
+                              child: RadioListTile<String>(
                                               title: Text(
                                                 "Female",
                                                 style: TextStyle(
@@ -470,59 +470,59 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile>
                                                   fontWeight: FontWeight.w600,
                                                 ),
                                               ),
-                                              value: "Female",
-                                              groupValue: gender,
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  gender = value!;
-                                                });
-                                              },
+                                value: "Female",
+                                groupValue: gender,
+                                onChanged: (value) {
+                                  setState(() {
+                                    gender = value!;
+                                  });
+                                },
                                               activeColor: Colors.white,
                                               contentPadding: const EdgeInsets.symmetric(horizontal: 8),
                                             ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
                               ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
 
                               const SizedBox(height: 32),
 
-                              // Documents Section
+                  // Documents Section
                               _buildSpectacularSectionCard(
-                                "Required Documents",
+                    "Required Documents",
                                 Icons.folder_open,
                                 const Color(0xFF764BA2),
-                                [
+                    [
                                   buildSpectacularImageSelector("ID Card", idCard, Icons.badge, (File? image) {
-                                    setState(() {
-                                      idCard = image;
-                                    });
-                                  }),
+                        setState(() {
+                          idCard = image;
+                        });
+                      }),
                                   buildSpectacularImageSelector("Personal Picture", pfp, Icons.portrait, (File? image) {
-                                    setState(() {
-                                      pfp = image;
-                                    });
-                                  }),
+                        setState(() {
+                          pfp = image;
+                        });
+                      }),
                                   buildSpectacularImageSelector("Professional Practice License", prof, Icons.work, (File? image) {
-                                    setState(() {
-                                      prof = image;
-                                    });
-                                  }),
+                        setState(() {
+                          prof = image;
+                        });
+                      }),
                                   buildSpectacularImageSelector("Graduation Certificate", grad, Icons.school, (File? image) {
-                                    setState(() {
-                                      grad = image;
-                                    });
-                                  }),
+                        setState(() {
+                          grad = image;
+                        });
+                      }),
                                   buildSpectacularImageSelector("Criminal Record and Identification", crim, Icons.security, (File? image) {
-                                    setState(() {
-                                      crim = image;
-                                    });
-                                  }),
-                                ],
-                              ),
+                        setState(() {
+                          crim = image;
+                        });
+                      }),
+                    ],
+                  ),
 
                               const SizedBox(height: 40),
 
@@ -533,7 +533,7 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile>
                                   return Transform.scale(
                                     scale: _fabScaleAnimation.value,
                                     child: Container(
-                                      width: double.infinity,
+                    width: double.infinity,
                                       height: 60,
                                       decoration: BoxDecoration(
                                         gradient: const LinearGradient(
@@ -554,109 +554,109 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile>
                                           ),
                                         ],
                                       ),
-                                      child: ElevatedButton(
-                                        onPressed: () async {
-                                          if (idCard == null) {
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        if (idCard == null) {
                                             _showSpectacularErrorSnackBar("Please select an ID Card image");
-                                            return;
-                                          }
-                                          if (pfp == null) {
+                          return;
+                        }
+                        if (pfp == null) {
                                             _showSpectacularErrorSnackBar("Please select a Personal Picture image");
-                                            return;
-                                          }
-                                          if (prof == null) {
+                          return;
+                        }
+                        if (prof == null) {
                                             _showSpectacularErrorSnackBar("Please select a Professional Practice License image");
-                                            return;
-                                          }
-                                          if (grad == null) {
+                          return;
+                        }
+                        if (grad == null) {
                                             _showSpectacularErrorSnackBar("Please select a Graduation Certificate image");
-                                            return;
-                                          }
-                                          if (crim == null) {
+                          return;
+                        }
+                        if (crim == null) {
                                             _showSpectacularErrorSnackBar("Please select a Criminal Record and Identification image");
-                                            return;
-                                          }
+                          return;
+                        }
 
                                           // Show spectacular loading dialog
                                           _showSpectacularLoadingDialog();
 
-                                          try {
-                                            final idUrl = await imageprovider.uploadImageToCloudinary(idCard);
-                                            final pfpUrl = await imageprovider.uploadImageToCloudinary(pfp);
-                                            final profUrl = await imageprovider.uploadImageToCloudinary(prof);
-                                            final gradUrl = await imageprovider.uploadImageToCloudinary(grad);
-                                            final crimUrl = await imageprovider.uploadImageToCloudinary(crim);
+                        try {
+                          final idUrl = await imageprovider.uploadImageToCloudinary(idCard);
+                          final pfpUrl = await imageprovider.uploadImageToCloudinary(pfp);
+                          final profUrl = await imageprovider.uploadImageToCloudinary(prof);
+                          final gradUrl = await imageprovider.uploadImageToCloudinary(grad);
+                          final crimUrl = await imageprovider.uploadImageToCloudinary(crim);
 
-                                            if (idUrl == null || pfpUrl == null || profUrl == null || gradUrl == null || crimUrl == null) {
+                          if (idUrl == null || pfpUrl == null || profUrl == null || gradUrl == null || crimUrl == null) {
                                               Navigator.pop(context);
                                               _showSpectacularErrorSnackBar("Image upload failed. Try again.");
-                                              return;
-                                            }
+                            return;
+                          }
 
-                                            await patientProvider.updateNurse(
-                                              id: widget.patient.Model['id'] ?? 0,
-                                              fullName: nameController.text,
-                                              idCard: idUrl,
-                                              email: emailController.text,
-                                              password: passController.text,
-                                              contact: phoneController.text,
-                                              dob: dobController.text,
-                                              gender: gender,
-                                              location: locCont.text,
-                                              crim: crimUrl,
-                                              spec: SpecCont.text,
-                                              grad: gradUrl,
-                                              prof: profUrl,
-                                              pfp: pfpUrl,
-                                            );
+                          await patientProvider.updateNurse(
+                            id: widget.patient.Model['id'] ?? 0,
+                            fullName: nameController.text,
+                            idCard: idUrl,
+                            email: emailController.text,
+                            password: passController.text,
+                            contact: phoneController.text,
+                            dob: dobController.text,
+                            gender: gender,
+                            location: locCont.text,
+                            crim: crimUrl,
+                            spec: SpecCont.text,
+                            grad: gradUrl,
+                            prof: profUrl,
+                            pfp: pfpUrl,
+                          );
 
                                             Navigator.pop(context);
                                             _showSpectacularSuccessSnackBar('Profile updated successfully!');
-                                            Navigator.pop(context);
-                                          } catch (e) {
+                          Navigator.pop(context);
+                        } catch (e) {
                                             Navigator.pop(context);
                                             _showSpectacularErrorSnackBar('Update failed. Please try again.');
-                                          }
-                                        },
-                                        style: ElevatedButton.styleFrom(
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
                                           backgroundColor: Colors.transparent,
                                           shadowColor: Colors.transparent,
-                                          shape: RoundedRectangleBorder(
+                        shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(30),
-                                          ),
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: const [
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
                                             Icon(Icons.rocket_launch, color: Colors.white, size: 24),
                                             SizedBox(width: 12),
-                                            Text(
-                                              'Update Profile',
-                                              style: TextStyle(
-                                                fontSize: 18,
+                          Text(
+                            'Update Profile',
+                            style: TextStyle(
+                              fontSize: 18,
                                                 fontWeight: FontWeight.bold,
                                                 color: Colors.white,
                                                 letterSpacing: 1,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                                   );
                                 },
                               ),
 
                               const SizedBox(height: 20),
-                            ],
-                          ),
+                ],
+              ),
                         ),
                       ),
                     );
                   },
-                ),
-              ],
             ),
+          ],
+        ),
           ),
         ],
       ),
@@ -716,10 +716,10 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile>
               ),
             ),
             child: Row(
-              children: [
-                Container(
+            children: [
+              Container(
                   padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
+                decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [accentColor, accentColor.withOpacity(0.8)],
                     ),
@@ -731,25 +731,25 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile>
                         offset: const Offset(0, 4),
                       ),
                     ],
-                  ),
-                  child: Icon(
-                    icon,
+                ),
+                child: Icon(
+                  icon,
                     color: Colors.white,
                     size: 24,
-                  ),
                 ),
+              ),
                 const SizedBox(width: 16),
-                Text(
-                  title,
+              Text(
+                title,
                   style: TextStyle(
                     fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.bold,
                     color: const Color(0xFF2D3748),
                     letterSpacing: 0.5,
-                  ),
                 ),
-              ],
-            ),
+              ),
+            ],
+          ),
           ),
 
           // Content
@@ -789,11 +789,11 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile>
             ],
           ),
           child: TextField(
-            controller: controller,
-            keyboardType: isNumber ? TextInputType.number : TextInputType.text,
-            obscureText: isPassword,
-            decoration: InputDecoration(
-              hintText: 'Enter $label',
+          controller: controller,
+          keyboardType: isNumber ? TextInputType.number : TextInputType.text,
+          obscureText: isPassword,
+          decoration: InputDecoration(
+            hintText: 'Enter $label',
               hintStyle: TextStyle(color: Colors.grey.withOpacity(0.7)),
               prefixIcon: Container(
                 margin: const EdgeInsets.all(8),
@@ -805,19 +805,19 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile>
                 ),
                 child: Icon(icon, color: Colors.white, size: 20),
               ),
-              border: OutlineInputBorder(
+            border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(15),
                 borderSide: BorderSide.none,
-              ),
-              focusedBorder: OutlineInputBorder(
+            ),
+            focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(15),
                 borderSide: const BorderSide(color: Color(0xFF667EEA), width: 2),
-              ),
-              filled: true,
+            ),
+            filled: true,
               fillColor: Colors.white,
               contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-            ),
           ),
+        ),
         ),
         const SizedBox(height: 20),
       ],
@@ -863,13 +863,13 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile>
           ),
           child: Padding(
             padding: const EdgeInsets.all(20),
-            child: Column(
-              children: [
-                if (image != null) ...[
-                  Container(
+          child: Column(
+            children: [
+              if (image != null) ...[
+                Container(
                     width: 120,
                     height: 120,
-                    decoration: BoxDecoration(
+                  decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                       border: Border.all(
                         color: const Color(0xFF667EEA).withOpacity(0.3),
@@ -882,15 +882,15 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile>
                           offset: const Offset(0, 4),
                         ),
                       ],
-                    ),
-                    child: ClipRRect(
+                  ),
+                  child: ClipRRect(
                       borderRadius: BorderRadius.circular(13),
-                      child: Image.file(
-                        image,
-                        fit: BoxFit.cover,
-                      ),
+                    child: Image.file(
+                      image,
+                      fit: BoxFit.cover,
                     ),
                   ),
+                ),
                   const SizedBox(height: 16),
                 ],
 
@@ -899,7 +899,7 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile>
                   spacing: 16,
                   runSpacing: 12,
                   alignment: WrapAlignment.center,
-                  children: [
+                children: [
                     Container(
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
@@ -915,12 +915,12 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile>
                         ],
                       ),
                       child: ElevatedButton.icon(
-                        onPressed: () async {
-                          File? selectedImage = await Provider.of<UploadProvider>(context, listen: false).showOptions(context);
-                          if (selectedImage != null) {
-                            onImageSelected(selectedImage);
-                          }
-                        },
+                    onPressed: () async {
+                      File? selectedImage = await Provider.of<UploadProvider>(context, listen: false).showOptions(context);
+                      if (selectedImage != null) {
+                        onImageSelected(selectedImage);
+                      }
+                    },
                         icon: Icon(icon, size: 20, color: Colors.white),
                         label: Text(
                           image == null ? "Pick Image" : "Change Image",
@@ -929,10 +929,10 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile>
                             color: Colors.white,
                           ),
                         ),
-                        style: ElevatedButton.styleFrom(
+                    style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.transparent,
                           shadowColor: Colors.transparent,
-                          shape: RoundedRectangleBorder(
+                      shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(25),
                           ),
                           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -956,19 +956,19 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile>
                           ),
                         ),
                         child: IconButton(
-                          onPressed: () {
-                            onImageSelected(null);
-                          },
+                      onPressed: () {
+                        onImageSelected(null);
+                      },
                           icon: const Icon(Icons.delete_outline, color: Color(0xFFEF4444)),
-                          style: IconButton.styleFrom(
+                      style: IconButton.styleFrom(
                             backgroundColor: Colors.transparent,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(25),
                             ),
                             padding: const EdgeInsets.all(12),
                           ),
-                        ),
                       ),
+                    ),
                   ],
                 ),
               ],
@@ -1061,7 +1061,7 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile>
             borderRadius: BorderRadius.circular(15),
           ),
           child: Row(
-            children: [
+          children: [
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
@@ -1103,7 +1103,7 @@ class _UpdateProfilePageState extends State<UpdateNurseProfile>
             borderRadius: BorderRadius.circular(15),
           ),
           child: Row(
-            children: [
+          children: [
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
