@@ -44,12 +44,29 @@ class PatientServices
     }
   }
   static delete(int id) async {
-    Response response = await dio.delete('https://medimed.runasp.net/api/Patients/$id',
-    );
-    if (response.statusCode == 200) {
-      return;
-    } else {
-      throw Exception(response.statusMessage);
+    print("Attempting to delete patient with ID: $id");
+    try {
+      Response response = await dio.delete(
+        'https://medimed.runasp.net/api/Patients/$id',
+        options: Options(headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        }),
+      );
+      print("Delete response status code: ${response.statusCode}");
+      print("Delete response data: ${response.data}");
+      
+      final statusCode = response.statusCode ?? 0;
+      if (statusCode >= 200 && statusCode < 300) {
+        print("Patient deleted successfully");
+        return;
+      } else {
+        print("Delete failed with status code: $statusCode");
+        throw Exception(response.statusMessage);
+      }
+    } catch (e) {
+      print("Error deleting patient: $e");
+      rethrow;
     }
   }
   static getById(int id) async {
