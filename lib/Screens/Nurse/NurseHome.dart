@@ -564,7 +564,8 @@ class _NurseHomeState extends State<NurseHome> with TickerProviderStateMixin {
                   return SlideTransition(
                     position: animation.drive(
                       Tween(begin: const Offset(1.0, 0.0), end: Offset.zero)
-                          .chain(CurveTween(curve: Curves.easeInOut)),
+                          .chain(CurveTween(curve: Curves.easeInOut)
+                      ),
                     ),
                     child: child,
                   );

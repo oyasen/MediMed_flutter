@@ -21,7 +21,7 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
   final String _status = "Pending";
   bool _isLoading = false;
 
-  // Helper to calculate age from date of birth string (expects 'yyyy-MM-dd' or DateTime)
+  /// Helper to calculate age from date of birth string (expects 'yyyy-MM-dd' or DateTime)
   String _calculateAge(dynamic dob) {
     if (dob == null) return "Not specified";
     DateTime? date;
@@ -91,7 +91,7 @@ class _PatientDetailsPageState extends State<PatientDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Handle age: Calculate from dateOfBirth if available, else fallback to age/int/str
+    // Display age calculated from dateOfBirth (or fallback to age/int/str)
     final ageValue = widget.patientNurseData['patient']['dateOfBirth'] != null
         ? _calculateAge(widget.patientNurseData['patient']['dateOfBirth'])
         : (widget.patientNurseData['patient']['age']?.toString() ?? "Not specified");
