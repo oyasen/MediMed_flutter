@@ -60,7 +60,7 @@ class PatientProvider extends ChangeNotifier {
   }
 
 
-  // Get All Nurses
+  // Get All Patients
   Future<void> getAllPatient() async {
     _patientsModel = await PatientServices.getAll();
     notifyListeners();
