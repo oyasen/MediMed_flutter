@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:medimed/provider/nurseprovider.dart';
+import 'package:flutter/services.dart';
+import 'package:medimed/Screens/Patient/user_profile/requestNursePage.dart';
 import 'package:medimed/provider/patientprovider.dart';
 import 'package:provider/provider.dart';
-import '../../Nurse/PatientDetailsPage.dart';
-import '../../Nurse/info_page_nurse.dart';
+
 
 class NotificationsPage extends StatefulWidget {
   final int id;
@@ -15,13 +15,17 @@ class NotificationsPage extends StatefulWidget {
 }
 
 class _NotificationsPageState extends State<NotificationsPage>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late AnimationController _animationController;
+  late AnimationController _pulseController;
+  late AnimationController _shimmerController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
+  late Animation<double> _pulseAnimation;
+  late Animation<double> _shimmerAnimation;
   bool _isLoading = true;
   List<dynamic> _filteredPatients = [];
-  Map<int, dynamic> _patientDetails = {}; // Cache for patient details
+  Map<int, dynamic> _patientDetails = {};
   String _selectedFilter = 'All';
   TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
@@ -36,7 +40,17 @@ class _NotificationsPageState extends State<NotificationsPage>
 
   void _initializeAnimations() {
     _animationController = AnimationController(
-      duration: const Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 1200),
+      vsync: this,
+    );
+
+    _pulseController = AnimationController(
+      duration: const Duration(milliseconds: 2000),
+      vsync: this,
+    );
+
+    _shimmerController = AnimationController(
+      duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
 
@@ -45,17 +59,30 @@ class _NotificationsPageState extends State<NotificationsPage>
     );
 
     _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.3),
+      begin: const Offset(0, 0.5),
       end: Offset.zero,
     ).animate(CurvedAnimation(
       parent: _animationController,
-      curve: Curves.easeOutCubic,
+      curve: Curves.elasticOut,
     ));
+
+    _pulseAnimation = Tween<double>(begin: 0.8, end: 1.2).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+    );
+
+    _shimmerAnimation = Tween<double>(begin: -1.0, end: 2.0).animate(
+      CurvedAnimation(parent: _shimmerController, curve: Curves.easeInOut),
+    );
+
+    _pulseController.repeat(reverse: true);
+    _shimmerController.repeat();
   }
 
   @override
   void dispose() {
     _animationController.dispose();
+    _pulseController.dispose();
+    _shimmerController.dispose();
     _searchController.dispose();
     super.dispose();
   }
@@ -66,9 +93,6 @@ class _NotificationsPageState extends State<NotificationsPage>
       await patientProvider.getPatientsNurse(widget.id);
 
       if (mounted && patientProvider.patientsNurse?.Model != null) {
-        // Load patient details for each patient-nurse relationship
-        await _loadAllPatientDetails(patientProvider.patientsNurse!.Model);
-
         setState(() {
           _isLoading = false;
         });
@@ -83,93 +107,33 @@ class _NotificationsPageState extends State<NotificationsPage>
         setState(() {
           _isLoading = false;
         });
-        _showErrorSnackBar('Failed to load patients. Please try again.');
+
       }
     }
   }
 
-  Future<void> _loadAllPatientDetails(List<dynamic> patientNurseList) async {
-    try {
-      setState(() {
-        _isLoadingPatientDetails = true;
-      });
-
-      final patientProvider = Provider.of<PatientProvider>(context, listen: false);
-
-      // Extract unique patient IDs from the patient-nurse relationships
-      Set<int> patientIds = {};
-      for (var patientNurse in patientNurseList) {
-        final patientId = patientNurse['patientId'];
-        if (patientId != null) {
-          patientIds.add(patientId);
-        }
-      }
-
-      // Fetch patient details for each unique patient ID
-      for (int patientId in patientIds) {
-        if (!_patientDetails.containsKey(patientId)) {
-          try {
-            await patientProvider.getPatientById(patientId);
-            if (patientProvider.patientModel != null) {
-              _patientDetails[patientId] = patientProvider.patientModel;
-            }
-          } catch (e) {
-            print('Failed to load patient details for ID $patientId: $e');
-          }
-        }
-      }
-
-      if (mounted) {
-        setState(() {
-          _isLoadingPatientDetails = false;
-        });
-      }
-    } catch (error) {
-      if (mounted) {
-        setState(() {
-          _isLoadingPatientDetails = false;
-        });
-        _showErrorSnackBar('Failed to load some patient details.');
-      }
-    }
-  }
-
-  void _showErrorSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red.shade600,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ),
-    );
-  }
-
-  void _filterAndSearchPatients(List<dynamic> allPatients) {
+  void _filterAndSearchPatients(List<dynamic> allNurses) {
     setState(() {
-      List<dynamic> filtered = allPatients;
+      List<dynamic> filtered = allNurses;
 
-      // Apply status filter
       if (_selectedFilter != 'All') {
         filtered = filtered
-            .where((patient) => patient["status"] == _selectedFilter)
+            .where((nurse) => nurse["status"] == _selectedFilter)
             .toList();
       }
 
-      // Apply search filter
       if (_searchQuery.isNotEmpty) {
-        filtered = filtered.where((patient) {
-          // Get patient details from cache using patientId
-          final patientId = patient['patientId'];
-          final patientData = _patientDetails[patientId];
-
-          final name = (patientData?['fullName'] ?? '').toLowerCase();
-          final phone = (patientData?['phone'] ?? '').toLowerCase();
-          final status = (patient['status'] ?? '').toLowerCase();
+        filtered = filtered.where((nurse) {
+          final nurseData = nurse['nurse'];
+          final name = (nurseData?['fullName'] ?? '').toLowerCase();
+          final specialization = (nurseData?['specialaization'] ?? '').toLowerCase();
+          final location = (nurseData?['location'] ?? '').toLowerCase();
+          final status = (nurse['status'] ?? '').toLowerCase();
           final query = _searchQuery.toLowerCase();
 
           return name.contains(query) ||
-              phone.contains(query) ||
+              specialization.contains(query) ||
+              location.contains(query) ||
               status.contains(query);
         }).toList();
       }
@@ -180,84 +144,175 @@ class _NotificationsPageState extends State<NotificationsPage>
 
   Widget _buildSearchBar() {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: TextField(
-        controller: _searchController,
-        onChanged: (value) {
-          setState(() {
-            _searchQuery = value;
-          });
-        },
-        decoration: InputDecoration(
-          hintText: 'Search patients...',
-          prefixIcon: Icon(Icons.search, color: Colors.blue.shade600),
-          suffixIcon: _searchQuery.isNotEmpty
-              ? IconButton(
-            icon: const Icon(Icons.clear),
-            onPressed: () {
-              _searchController.clear();
-              setState(() {
-                _searchQuery = '';
-              });
-            },
-          )
-              : null,
-          filled: true,
-          fillColor: Colors.grey.shade100,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15),
-            borderSide: BorderSide.none,
+      margin: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.white,
+              Colors.grey.shade50,
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15),
-            borderSide: BorderSide(color: Colors.blue.shade600, width: 2),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 20,
+              offset: const Offset(0, 8),
+            ),
+            BoxShadow(
+              color: Colors.blue.withOpacity(0.1),
+              blurRadius: 40,
+              offset: const Offset(0, 16),
+            ),
+          ],
+        ),
+        child: TextField(
+          controller: _searchController,
+          onChanged: (value) {
+            setState(() {
+              _searchQuery = value;
+            });
+            HapticFeedback.selectionClick();
+          },
+          decoration: InputDecoration(
+            hintText: 'Search nurses, status, specialization, location...',
+            hintStyle: TextStyle(
+              color: Colors.grey.shade400,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
+            prefixIcon: Container(
+              padding: const EdgeInsets.all(12),
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.blue.shade400, Colors.blue.shade600],
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(
+                  Icons.search_rounded,
+                  color: Colors.white,
+                  size: 20,
+                ),
+              ),
+            ),
+            suffixIcon: _searchQuery.isNotEmpty
+                ? Container(
+              padding: const EdgeInsets.all(12),
+              child: GestureDetector(
+                onTap: () {
+                  _searchController.clear();
+                  setState(() {
+                    _searchQuery = '';
+                  });
+                  HapticFeedback.lightImpact();
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade100,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    Icons.close_rounded,
+                    color: Colors.grey.shade600,
+                    size: 20,
+                  ),
+                ),
+              ),
+            )
+                : null,
+            border: InputBorder.none,
+            contentPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
           ),
-          contentPadding: const EdgeInsets.symmetric(vertical: 12),
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: Colors.black87,
+          ),
         ),
       ),
     );
   }
 
   Widget _buildFilterChips() {
-    final filters = ['All', 'Completed', 'Pending', 'In Progress'];
+    final filters = [
+      {'name': 'All', 'icon': Icons.list_rounded, 'gradient': [Colors.purple.shade400, Colors.purple.shade600]},
+      {'name': 'Completed', 'icon': Icons.check_circle_rounded, 'gradient': [Colors.green.shade400, Colors.green.shade600]},
+      {'name': 'Pending', 'icon': Icons.pending_rounded, 'gradient': [Colors.orange.shade400, Colors.orange.shade600]},
+      {'name': 'In Progress', 'icon': Icons.trending_up_rounded, 'gradient': [Colors.blue.shade400, Colors.blue.shade600]},
+    ];
 
     return Container(
-      height: 50,
+      height: 60,
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         itemCount: filters.length,
         itemBuilder: (context, index) {
           final filter = filters[index];
-          final isSelected = _selectedFilter == filter;
+          final isSelected = _selectedFilter == filter['name'];
 
           return Container(
-            margin: const EdgeInsets.only(right: 8),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              child: FilterChip(
-                label: Text(
-                  filter,
-                  style: TextStyle(
-                    color: isSelected ? Colors.white : Colors.blue.shade700,
-                    fontWeight: FontWeight.w600,
+            margin: const EdgeInsets.only(right: 12),
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  _selectedFilter = filter['name'] as String;
+                });
+                HapticFeedback.selectionClick();
+              },
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.elasticOut,
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                decoration: BoxDecoration(
+                  gradient: isSelected
+                      ? LinearGradient(colors: filter['gradient'] as List<Color>)
+                      : LinearGradient(colors: [Colors.white, Colors.grey.shade50]),
+                  borderRadius: BorderRadius.circular(25),
+                  boxShadow: [
+                    if (isSelected) BoxShadow(
+                      color: (filter['gradient'] as List<Color>)[0].withOpacity(0.4),
+                      blurRadius: 15,
+                      offset: const Offset(0, 8),
+                    ),
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                  border: isSelected ? null : Border.all(
+                    color: Colors.grey.shade200,
+                    width: 1,
                   ),
                 ),
-                selected: isSelected,
-                onSelected: (selected) {
-                  setState(() {
-                    _selectedFilter = filter;
-                  });
-                },
-                selectedColor: Colors.blue.shade600,
-                backgroundColor: Colors.blue.shade50,
-                side: BorderSide(
-                  color: isSelected ? Colors.blue.shade600 : Colors.blue.shade200,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      filter['icon'] as IconData,
+                      size: 18,
+                      color: isSelected ? Colors.white : Colors.grey.shade600,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      filter['name'] as String,
+                      style: TextStyle(
+                        color: isSelected ? Colors.white : Colors.grey.shade700,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
                 ),
-                elevation: isSelected ? 4 : 0,
-                shadowColor: Colors.blue.shade200,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
             ),
           );
@@ -266,238 +321,273 @@ class _NotificationsPageState extends State<NotificationsPage>
     );
   }
 
-  Widget _buildPatientCard(dynamic nurse, int index) {
-    final patientId = nurse['patientId'];
-    final patientData = _patientDetails[patientId];
-    final statusColor = _getStatusColor(nurse['status']);
-
-    // Show loading card if patient details are not loaded yet
-    if (patientData == null) {
-      return _buildLoadingPatientCard(index);
-    }
+  Widget _buildNurseCard(dynamic nurseData, int index) {
+    final nurse = nurseData['nurse'];
+    final statusColor = _getStatusColor(nurseData['status']);
 
     return SlideTransition(
       position: Tween<Offset>(
-        begin: Offset(1.0, 0.0),
+        begin: const Offset(1.0, 0.0),
         end: Offset.zero,
       ).animate(CurvedAnimation(
         parent: _animationController,
         curve: Interval(
           (index * 0.1).clamp(0.0, 1.0),
-          ((index * 0.1) + 0.3).clamp(0.0, 1.0),
-          curve: Curves.easeOutCubic,
+          ((index * 0.1) + 0.4).clamp(0.0, 1.0),
+          curve: Curves.elasticOut,
         ),
       )),
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-        child: Card(
-          elevation: 6,
-          shadowColor: Colors.blue.shade100,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(16),
-            onTap: () => _navigateToPatientDetails(nurse, patientData),
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                gradient: LinearGradient(
-                  colors: [Colors.white, Colors.blue],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        child: Material(
+          elevation: 0,
+          borderRadius: BorderRadius.circular(24),
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.white,
+                  Colors.grey.shade50,
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.08),
+                  blurRadius: 20,
+                  offset: const Offset(0, 8),
+                ),
+                BoxShadow(
+                  color: statusColor.withOpacity(0.1),
+                  blurRadius: 30,
+                  offset: const Offset(0, 12),
+                ),
+              ],
+            ),
+            child: Material(
+              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(24),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(24),
+                onTap: () {
+                  HapticFeedback.mediumImpact();
+                  _navigateToNurseDetails(nurseData);
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  child: Row(
+                    children: [
+                      _buildNurseAvatar(nurse, statusColor, nurseData),
+                      const SizedBox(width: 16),
+                      Expanded(child: _buildNurseInfo(nurse, nurseData)),
+
+                    ],
+                  ),
                 ),
               ),
-              child: Row(
-                children: [
-                  _buildPatientAvatar(patientData),
-                  const SizedBox(width: 16),
-                  Expanded(child: _buildPatientInfo(patientData, nurse)),
-                  _buildArrowIcon(),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNurseAvatar(dynamic nurse, Color statusColor, dynamic nurseData) {
+    return Hero(
+      tag: 'nurse_${nurse['id'] ?? DateTime.now().millisecondsSinceEpoch}',
+      child: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                colors: [
+                  statusColor.withOpacity(0.2),
+                  statusColor.withOpacity(0.1),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: statusColor.withOpacity(0.3),
+                  blurRadius: 15,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+            ),
+            padding: const EdgeInsets.all(3),
+            child: Container(
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+              ),
+              padding: const EdgeInsets.all(2),
+              child: CircleAvatar(
+                backgroundImage: nurse['personalPicture'] != null
+                    ? NetworkImage(nurse['personalPicture'])
+                    : null,
+                radius: 30,
+                backgroundColor: Colors.grey.shade100,
+                child: nurse['personalPicture'] == null
+                    ? Icon(
+                  Icons.person_rounded,
+                  size: 28,
+                  color: Colors.grey.shade400,
+                )
+                    : null,
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: statusColor,
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white, width: 2),
+                boxShadow: [
+                  BoxShadow(
+                    color: statusColor.withOpacity(0.4),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
                 ],
               ),
+              child: Icon(
+                _getStatusIcon(nurseData),
+                size: 12,
+                color: Colors.white,
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
 
-  Widget _buildLoadingPatientCard(int index) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      child: Card(
-        elevation: 6,
-        shadowColor: Colors.blue.shade100,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            gradient: LinearGradient(
-              colors: [Colors.white, Colors.blue],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-          child: Row(
-            children: [
-              // Loading avatar
-              Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade200,
-                  shape: BoxShape.circle,
-                ),
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.blue.shade300),
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Loading name
-                    Container(
-                      height: 16,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade200,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    // Loading status
-                    Container(
-                      height: 12,
-                      width: 80,
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade200,
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: Colors.blue.shade50,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.more_horiz,
-                  size: 14,
-                  color: Colors.blue.shade300,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPatientAvatar(dynamic patientData) {
-    return Hero(
-      tag: 'patient_${patientData['id'] ?? DateTime.now().millisecondsSinceEpoch}',
-      child: Container(
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.blue.shade200,
-              blurRadius: 8,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: CircleAvatar(
-          backgroundImage: patientData['idCard'] != null
-              ? NetworkImage(patientData['idCard'])
-              : null,
-          radius: 30,
-          backgroundColor: Colors.blue.shade100,
-          child: patientData['idCard'] == null
-              ? Icon(
-            Icons.person,
-            size: 24,
-            color: Colors.blue.shade600,
-          )
-              : null,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPatientInfo(dynamic patientData, dynamic nurse) {
-    final statusColor = _getStatusColor(nurse['status']);
+  Widget _buildNurseInfo(dynamic nurse, dynamic nurseData) {
+    final statusColor = _getStatusColor(nurseData['status']);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          patientData['fullName'] ?? "Unknown Patient",
-          style: TextStyle(
+          nurse['fullName'] ?? "Unknown Nurse",
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 16,
-            color: Colors.grey.shade800,
+            fontSize: 18,
+            color: Colors.black87,
+            letterSpacing: 0.5,
           ),
           overflow: TextOverflow.ellipsis,
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 8),
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: statusColor.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: statusColor.withOpacity(0.3)),
+            gradient: LinearGradient(
+              colors: [
+                statusColor.withOpacity(0.1),
+                statusColor.withOpacity(0.05),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: statusColor.withOpacity(0.3),
+              width: 1,
+            ),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                width: 6,
-                height: 6,
+                width: 8,
+                height: 8,
                 decoration: BoxDecoration(
                   color: statusColor,
                   shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: statusColor.withOpacity(0.4),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(width: 6),
+              const SizedBox(width: 8),
               Text(
-                nurse['status'] ?? 'Unknown',
+                nurseData['status'] ?? 'Unknown',
                 style: TextStyle(
                   color: statusColor,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                  letterSpacing: 0.5,
                 ),
               ),
             ],
           ),
         ),
-        if (patientData['phone'] != null) ...[
-          const SizedBox(height: 4),
+        if (nurse['specialaization'] != null) ...[
+          const SizedBox(height: 8),
           Row(
             children: [
-              Icon(
-                Icons.phone,
-                size: 14,
-                color: Colors.grey.shade500,
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: Colors.purple.shade50,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  Icons.medical_services_rounded,
+                  size: 14,
+                  color: Colors.purple.shade600,
+                ),
               ),
-              const SizedBox(width: 4),
+              const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  patientData['phone'],
+                  nurse['specialaization'],
                   style: TextStyle(
                     color: Colors.grey.shade600,
-                    fontSize: 13,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+        ],
+        if (nurse['location'] != null) ...[
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade50,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  Icons.location_on_rounded,
+                  size: 14,
+                  color: Colors.blue.shade600,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  nurse['location'],
+                  style: TextStyle(
+                    color: Colors.grey.shade600,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -509,33 +599,12 @@ class _NotificationsPageState extends State<NotificationsPage>
     );
   }
 
-  Widget _buildArrowIcon() {
-    return Container(
-      padding: const EdgeInsets.all(6),
-      decoration: BoxDecoration(
-        color: Colors.blue.shade50,
-        shape: BoxShape.circle,
-      ),
-      child: Icon(
-        Icons.arrow_forward_ios,
-        size: 14,
-        color: Colors.blue.shade600,
-      ),
-    );
-  }
-
-  void _navigateToPatientDetails(dynamic nurse, dynamic patientData) {
-    // Create a combined object with both nurse and patient data
-    final combinedData = {
-      ...nurse,
-      'patient': patientData,
-    };
-
+  void _navigateToNurseDetails(dynamic nurseData) {
     Navigator.push(
       context,
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            PatientDetailsPage(patientNurseData: nurse),
+            RequestDetailsPage(requestData: nurseData),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return SlideTransition(
             position: Tween<Offset>(
@@ -545,24 +614,48 @@ class _NotificationsPageState extends State<NotificationsPage>
               parent: animation,
               curve: Curves.easeOutCubic,
             )),
-            child: FadeTransition(opacity: animation, child: child),
+            child: FadeTransition(
+              opacity: animation,
+              child: ScaleTransition(
+                scale: Tween<double>(begin: 0.95, end: 1.0).animate(
+                  CurvedAnimation(parent: animation, curve: Curves.easeOut),
+                ),
+                child: child,
+              ),
+            ),
           );
         },
-        transitionDuration: const Duration(milliseconds: 300),
+        transitionDuration: const Duration(milliseconds: 400),
       ),
     );
+  }
+
+  IconData _getStatusIcon(dynamic nurseData) {
+    if (nurseData is Map && nurseData.containsKey('status')) {
+      switch (nurseData['status']?.toLowerCase()) {
+        case 'completed':
+          return Icons.check_rounded;
+        case 'pending':
+          return Icons.schedule_rounded;
+        case 'in progress':
+          return Icons.trending_up_rounded;
+        default:
+          return Icons.help_outline_rounded;
+      }
+    }
+    return Icons.help_outline_rounded;
   }
 
   Color _getStatusColor(String? status) {
     switch (status?.toLowerCase()) {
       case 'completed':
-        return Colors.green.shade600;
+        return const Color(0xFF10B981);
       case 'pending':
-        return Colors.orange.shade600;
+        return const Color(0xFFF59E0B);
       case 'in progress':
-        return Colors.blue.shade600;
+        return const Color(0xFF3B82F6);
       default:
-        return Colors.grey.shade600;
+        return const Color(0xFF6B7280);
     }
   }
 
@@ -575,59 +668,108 @@ class _NotificationsPageState extends State<NotificationsPage>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                padding: const EdgeInsets.all(32),
-                decoration: BoxDecoration(
-                  color: Colors.blue.shade50,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  _searchQuery.isNotEmpty
-                      ? Icons.search_off
-                      : Icons.notifications_off_outlined,
-                  size: 64,
-                  color: Colors.blue.shade300,
+              ScaleTransition(
+                scale: _pulseAnimation,
+                child: Container(
+                  padding: const EdgeInsets.all(40),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.blue.shade50,
+                        Colors.purple.shade50,
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.blue.withOpacity(0.2),
+                        blurRadius: 30,
+                        offset: const Offset(0, 15),
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    _searchQuery.isNotEmpty
+                        ? Icons.search_off_rounded
+                        : Icons.notifications_off_rounded,
+                    size: 80,
+                    color: Colors.blue.shade400,
+                  ),
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 32),
               Text(
                 _searchQuery.isNotEmpty
                     ? 'No results found'
                     : 'No notifications available',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey.shade600,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                  letterSpacing: 0.5,
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 12),
               Text(
                 _searchQuery.isNotEmpty
                     ? 'Try adjusting your search or filters'
                     : 'Check back later for updates',
                 style: TextStyle(
                   fontSize: 16,
-                  color: Colors.grey.shade500,
+                  color: Colors.grey.shade600,
+                  fontWeight: FontWeight.w500,
                 ),
                 textAlign: TextAlign.center,
               ),
               if (_searchQuery.isNotEmpty) ...[
-                const SizedBox(height: 16),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    _searchController.clear();
-                    setState(() {
-                      _searchQuery = '';
-                      _selectedFilter = 'All';
-                    });
-                  },
-                  icon: const Icon(Icons.clear_all),
-                  label: const Text('Clear Filters'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue.shade600,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                const SizedBox(height: 32),
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Colors.blue.shade400, Colors.blue.shade600],
+                    ),
+                    borderRadius: BorderRadius.circular(25),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.blue.withOpacity(0.4),
+                        blurRadius: 15,
+                        offset: const Offset(0, 8),
+                      ),
+                    ],
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(25),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(25),
+                      onTap: () {
+                        _searchController.clear();
+                        setState(() {
+                          _searchQuery = '';
+                          _selectedFilter = 'All';
+                        });
+                        HapticFeedback.mediumImpact();
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.clear_all_rounded, color: Colors.white, size: 20),
+                            const SizedBox(width: 8),
+                            const Text(
+                              'Clear Filters',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -644,18 +786,60 @@ class _NotificationsPageState extends State<NotificationsPage>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.blue.shade600),
-            strokeWidth: 3,
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              ScaleTransition(
+                scale: _pulseAnimation,
+                child: Container(
+                  width: 100,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.blue.shade100,
+                        Colors.purple.shade100,
+                      ],
+                    ),
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+              Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.blue.shade400, Colors.blue.shade600],
+                  ),
+                  shape: BoxShape.circle,
+                ),
+                child: const CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  strokeWidth: 3,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 32),
           Text(
             _isLoadingPatientDetails
                 ? 'Loading patient details...'
                 : 'Loading notifications...',
+            style: const TextStyle(
+              color: Colors.black87,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.5,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Please wait a moment',
             style: TextStyle(
               color: Colors.grey.shade600,
-              fontSize: 16,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ],
@@ -665,34 +849,112 @@ class _NotificationsPageState extends State<NotificationsPage>
 
   Widget _buildHeader() {
     return Container(
-      padding: const EdgeInsets.all(20),
-      child: Row(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: IconButton(
-              icon: const Icon(Icons.arrow_back_ios),
-              color: Colors.white,
-              onPressed: () => Navigator.pop(context),
-            ),
-          ),
-          const Expanded(
-            child: Text(
-              'Notifications',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-                letterSpacing: 0.5,
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 30),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Colors.blue.shade600,
+            Colors.blue.shade800,
+            Colors.purple.shade800,
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      child: SafeArea(
+        child: Row(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.3),
+                  width: 1,
+                ),
+              ),
+              child: Material(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(16),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(16),
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    child: const Icon(
+                      Icons.arrow_back_ios_rounded,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                  ),
+                ),
               ),
             ),
-          ),
-          const SizedBox(width: 48), // Balance the back button
-        ],
+            Expanded(
+              child: Column(
+                children: [
+                  const Text(
+                    'Notifications',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      letterSpacing: 1,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Container(
+                    height: 3,
+                    width: 40,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.white.withOpacity(0.5),
+                          Colors.white,
+                          Colors.white.withOpacity(0.5),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.3),
+                  width: 1,
+                ),
+              ),
+              child: Material(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(16),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(16),
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    _loadPatients();
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    child: const Icon(
+                      Icons.refresh_rounded,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -700,84 +962,346 @@ class _NotificationsPageState extends State<NotificationsPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Colors.blue.shade400,
-                Colors.blue.shade600,
-                Colors.blue.shade800,
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-          child: Column(
-            children: [
-              _buildHeader(),
-
-              Expanded(
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      topRight: Radius.circular(30),
-                    ),
-                  ),
-                  child: Consumer<PatientProvider>(
-                    builder: (context, patientProvider, child) {
-                      if (_isLoading || _isLoadingPatientDetails) {
-                        return _buildLoadingState();
-                      }
-
-                      if (patientProvider.patientsNurse?.Model == null) {
-                        return _buildEmptyState();
-                      }
-
-                      final allPatients = patientProvider.patientsNurse!.Model;
-
-                      // Apply filters and search
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        _filterAndSearchPatients(allPatients);
-                      });
-
-                      return Column(
-                        children: [
-                          _buildSearchBar(),
-                          _buildFilterChips(),
-                          Expanded(
-                            child: _filteredPatients.isEmpty
-                                ? _buildEmptyState()
-                                : RefreshIndicator(
-                              onRefresh: _loadPatients,
-                              color: Colors.blue.shade600,
-                              child: ListView.builder(
-                                physics: const AlwaysScrollableScrollPhysics(),
-                                padding: const EdgeInsets.only(
-                                  top: 8,
-                                  bottom: 20,
-                                ),
-                                itemCount: _filteredPatients.length,
-                                itemBuilder: (context, index) {
-                                  return _buildPatientCard(
-                                    _filteredPatients[index],
-                                    index,
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
+      backgroundColor: Colors.grey.shade50,
+      body: Column(
+        children: [
+          _buildHeader(),
+          Expanded(
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30),
+                  topRight: Radius.circular(30),
                 ),
               ),
-            ],
+              child: Consumer<PatientProvider>(
+                builder: (context, patientProvider, child) {
+                  if (_isLoading) {
+                    return _buildLoadingState();
+                  }
+
+                  if (patientProvider.patientsNurse?.Model == null) {
+                    return _buildEmptyState();
+                  }
+
+                  final allNurses = patientProvider.patientsNurse!.Model;
+
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    _filterAndSearchPatients(allNurses);
+                  });
+
+                  return Column(
+                    children: [
+                      _buildSearchBar(),
+                      _buildFilterChips(),
+                      Expanded(
+                        child: _filteredPatients.isEmpty
+                            ? _buildEmptyState()
+                            : RefreshIndicator(
+                          onRefresh: _loadPatients,
+                          color: Colors.blue.shade600,
+                          backgroundColor: Colors.white,
+                          strokeWidth: 3,
+                          child: ListView.builder(
+                            physics: const BouncingScrollPhysics(
+                              parent: AlwaysScrollableScrollPhysics(),
+                            ),
+                            padding: const EdgeInsets.only(
+                              top: 8,
+                              bottom: 30,
+                            ),
+                            itemCount: _filteredPatients.length,
+                            itemBuilder: (context, index) {
+                              final nurseData = _filteredPatients[index];
+                              final nurse = nurseData['nurse'];
+                              final statusColor = _getStatusColor(nurseData['status']);
+                              
+                              return Container(
+                                margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                                child: Material(
+                                  elevation: 0,
+                                  borderRadius: BorderRadius.circular(24),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Colors.white,
+                                          Colors.grey.shade50,
+                                        ],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      ),
+                                      borderRadius: BorderRadius.circular(24),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.08),
+                                          blurRadius: 20,
+                                          offset: const Offset(0, 8),
+                                        ),
+                                        BoxShadow(
+                                          color: statusColor.withOpacity(0.1),
+                                          blurRadius: 30,
+                                          offset: const Offset(0, 12),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Material(
+                                      color: Colors.transparent,
+                                      borderRadius: BorderRadius.circular(24),
+                                      child: InkWell(
+                                        borderRadius: BorderRadius.circular(24),
+                                        onTap: () {
+                                          HapticFeedback.mediumImpact();
+                                          _navigateToNurseDetails(nurseData);
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.all(20),
+                                          child: Row(
+                                            children: [
+                                              // Nurse Avatar
+                                              Hero(
+                                                tag: 'nurse_${nurse['id'] ?? DateTime.now().millisecondsSinceEpoch}',
+                                                child: Stack(
+                                                  children: [
+                                                    Container(
+                                                      decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        gradient: LinearGradient(
+                                                          colors: [
+                                                            statusColor.withOpacity(0.2),
+                                                            statusColor.withOpacity(0.1),
+                                                          ],
+                                                          begin: Alignment.topLeft,
+                                                          end: Alignment.bottomRight,
+                                                        ),
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: statusColor.withOpacity(0.3),
+                                                            blurRadius: 15,
+                                                            offset: const Offset(0, 8),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      padding: const EdgeInsets.all(3),
+                                                      child: Container(
+                                                        decoration: const BoxDecoration(
+                                                          shape: BoxShape.circle,
+                                                          color: Colors.white,
+                                                        ),
+                                                        padding: const EdgeInsets.all(2),
+                                                        child: CircleAvatar(
+                                                          backgroundImage: nurse['personalPicture'] != null
+                                                              ? NetworkImage(nurse['personalPicture'])
+                                                              : null,
+                                                          radius: 30,
+                                                          backgroundColor: Colors.grey.shade100,
+                                                          child: nurse['personalPicture'] == null
+                                                              ? Icon(
+                                                                  Icons.person_rounded,
+                                                                  size: 28,
+                                                                  color: Colors.grey.shade400,
+                                                                )
+                                                              : null,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Positioned(
+                                                      bottom: 0,
+                                                      right: 0,
+                                                      child: Container(
+                                                        padding: const EdgeInsets.all(6),
+                                                        decoration: BoxDecoration(
+                                                          color: statusColor,
+                                                          shape: BoxShape.circle,
+                                                          border: Border.all(color: Colors.white, width: 2),
+                                                          boxShadow: [
+                                                            BoxShadow(
+                                                              color: statusColor.withOpacity(0.4),
+                                                              blurRadius: 8,
+                                                              offset: const Offset(0, 2),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        child: Icon(
+                                                          _getStatusIcon(nurseData),
+                                                          size: 12,
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              const SizedBox(width: 16),
+                                              // Nurse Info
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      nurse['fullName'] ?? "Unknown Nurse",
+                                                      style: const TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 18,
+                                                        color: Colors.black87,
+                                                        letterSpacing: 0.5,
+                                                      ),
+                                                      overflow: TextOverflow.ellipsis,
+                                                    ),
+                                                    const SizedBox(height: 8),
+                                                    Container(
+                                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                                      decoration: BoxDecoration(
+                                                        gradient: LinearGradient(
+                                                          colors: [
+                                                            statusColor.withOpacity(0.1),
+                                                            statusColor.withOpacity(0.05),
+                                                          ],
+                                                        ),
+                                                        borderRadius: BorderRadius.circular(20),
+                                                        border: Border.all(
+                                                          color: statusColor.withOpacity(0.3),
+                                                          width: 1,
+                                                        ),
+                                                      ),
+                                                      child: Row(
+                                                        mainAxisSize: MainAxisSize.min,
+                                                        children: [
+                                                          Container(
+                                                            width: 8,
+                                                            height: 8,
+                                                            decoration: BoxDecoration(
+                                                              color: statusColor,
+                                                              shape: BoxShape.circle,
+                                                              boxShadow: [
+                                                                BoxShadow(
+                                                                  color: statusColor.withOpacity(0.4),
+                                                                  blurRadius: 4,
+                                                                  offset: const Offset(0, 2),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          const SizedBox(width: 8),
+                                                          Text(
+                                                            nurseData['status'] ?? 'Unknown',
+                                                            style: TextStyle(
+                                                              color: statusColor,
+                                                              fontWeight: FontWeight.bold,
+                                                              fontSize: 12,
+                                                              letterSpacing: 0.5,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    if (nurse['specialaization'] != null) ...[
+                                                      const SizedBox(height: 8),
+                                                      Row(
+                                                        children: [
+                                                          Container(
+                                                            padding: const EdgeInsets.all(6),
+                                                            decoration: BoxDecoration(
+                                                              color: Colors.purple.shade50,
+                                                              borderRadius: BorderRadius.circular(8),
+                                                            ),
+                                                            child: Icon(
+                                                              Icons.medical_services_rounded,
+                                                              size: 14,
+                                                              color: Colors.purple.shade600,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(width: 8),
+                                                          Expanded(
+                                                            child: Text(
+                                                              nurse['specialaization'],
+                                                              style: TextStyle(
+                                                                color: Colors.grey.shade600,
+                                                                fontSize: 14,
+                                                                fontWeight: FontWeight.w500,
+                                                              ),
+                                                              overflow: TextOverflow.ellipsis,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                    if (nurse['location'] != null) ...[
+                                                      const SizedBox(height: 8),
+                                                      Row(
+                                                        children: [
+                                                          Container(
+                                                            padding: const EdgeInsets.all(6),
+                                                            decoration: BoxDecoration(
+                                                              color: Colors.blue.shade50,
+                                                              borderRadius: BorderRadius.circular(8),
+                                                            ),
+                                                            child: Icon(
+                                                              Icons.location_on_rounded,
+                                                              size: 14,
+                                                              color: Colors.blue.shade600,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(width: 8),
+                                                          Expanded(
+                                                            child: Text(
+                                                              nurse['location'],
+                                                              style: TextStyle(
+                                                                color: Colors.grey.shade600,
+                                                                fontSize: 14,
+                                                                fontWeight: FontWeight.w500,
+                                                              ),
+                                                              overflow: TextOverflow.ellipsis,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ],
+                                                ),
+                                              ),
+                                              // Arrow Icon
+                                              Container(
+                                                padding: const EdgeInsets.all(12),
+                                                decoration: BoxDecoration(
+                                                  gradient: LinearGradient(
+                                                    colors: [
+                                                      statusColor.withOpacity(0.1),
+                                                      statusColor.withOpacity(0.05),
+                                                    ],
+                                                  ),
+                                                  shape: BoxShape.circle,
+                                                  border: Border.all(
+                                                    color: statusColor.withOpacity(0.2),
+                                                    width: 1,
+                                                  ),
+                                                ),
+                                                child: Icon(
+                                                  Icons.arrow_forward_ios_rounded,
+                                                  size: 16,
+                                                  color: statusColor,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
